@@ -1,7 +1,3 @@
-<INTRO>
-Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para continuar, o ~Q~ para salir.
-</INTRO>
-
 <MENU>Sistema de pistas interactivas
 
   <MENU>Información general - Lee esto primero
@@ -32,7 +28,6 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
       Los verbos se pueden escribir en imperativo («COGE») o infinitivo («COGER»), si bien
       ^se recomienda la primera opción, más que nada porque resulta más corta. Y los
       ^artículos («EL», «LA») se pueden poner, aunque no son necesarios.
-
     </TEXTO>
 
     <TEXTO>Algunas acciones frecuentes
@@ -89,6 +84,10 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
       ^SONIDO FONDO SI/NO . : Activar o desactivar el sonido de fondo.
       ^SONIDO DETECTOR SI/NO: Activar o desactivar el sonido del detector de movimiento.
       ^GRAFICOS SI/NO . . . : Activar o desactivar la visualización de gráficos.
+      ^GRAFICOS PEQUEÑOS/
+      ^  MEDIANOS/GRANDES . : Cambia el tamaño de la ventana de gráficos (por omisión
+      ^                       se mostrarán en tamaño MEDIANO).
+      ^CONFIGURACION . . . .: Muestra un menú de opciones de gráficos y sonido.
       ^SALIDAS (o X) . . . .: Mostrar las salidas visibles en la localidad actual.
       ^SALIDAS SI/NO . . . .: Mostrar (o no) automáticamente las salidas visibles en
       ^                       cada localidad.
@@ -98,7 +97,7 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
       ^                       GUARDAR.
       ^AYUDA . . . . . . . .: Por si alguna vez te encuentras atascado.
       ^REINICIAR . . . . . .: Volver a empezar desde el principio.
-      ^ACABAR (o FIN) . . . : Salir de la aventura (cuidado: no guarda la situación actual).^
+      ^ACABAR (o FIN) . . . : Salir de la aventura (cuidado: no guarda la situación actual).
     </TEXTO>
     
     <TEXTO>Consejos y ayudas
@@ -110,7 +109,220 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
       ^- Graba frecuentemente tu situación con la orden GUARDAR. Nunca se sabe lo que
       ^  puedes encontrarte tras esa esquina...
       ^- Si te encuentras con algún fallo o no sabes cómo avanzar, puedes plantear tus
-      ^  dudas en el foro del CAAD o en alpha.aventuras@gmail.com.^
+      ^  dudas en el foro del CAAD o en alpha.aventuras@gmail.com.
+    </TEXTO>
+
+    <MENU>Problemas y preguntas frecuentes
+
+      <TEXTO>Al jugar la aventura, las letras se ven feas o con colores extraños
+        <NOFONT>
+
+   a) [Si usas otro sistema que no sea Windows] Asegúrate de tener instalada
+      la última versión de Gargoyle (al menos, la 2011.1). Los usuarios de
+      Windows que instalen la aventura con el programa de instalación no
+      necesitan comprobar esto, ya que Gargoyle se instala con la aventura.
+
+   b) Asegúrate de que exista el archivo 'garglk.ini' en la misma carpeta que
+      la aventura. Para ello:
+
+       i. Si usas Linux, y has instalado la aventura usando el paquete .deb,
+          comprueba si existe el archivo en esta ruta:
+
+            /usr/share/games/alphaaventuras-alien-ee/garglk.ini
+
+      ii. Si estas usando la versión multiplataforma, comprueba simplemente
+          que el archivo 'garglk.ini' se encuentra en la misma carpeta que la
+          aventura 'alien.blb', junto al resto de los archivos incluidos.
+
+   Si todo lo anterior no funciona, instala de nuevo la aventura.
+        </NOFONT>
+      </TEXTO>
+
+      <TEXTO>Las letras se ven demasiado grandes o demasiado pequeñas
+        <NOFONT>
+
+  Puedes cambiar el tamaño de las letras editando el archivo 'garglk.ini':
+
+  a) En Windows estará en la ruta:
+     \Program Files\Juegos Conversacionales\ALIEN - La aventura - Edición Especial\
+
+  b) En Linux, si instalaste la aventura con el paquete .deb, estará en:
+     /usr/share/games/alphaaventuras-alien-ee/
+
+  c) En la versión multiplataforma lo encontrarás en la misma ruta que el resto
+     de los archivos distribuidos con la aventura.
+
+  Cuando hayas abierto el archivo 'garglk.ini' con tu editor de textos favorito,
+  localiza las líneas que empiecen por 'monosize' y 'propsize'. Para ajustar el
+  tamaño de las letras, simplemente cambia los números que aparezcan al lado.
+  Poniendo números mayores, las letras se verán más grandes, y viceversa. Asegúrate
+  de que el 'propsize' sea siempre un poco mayor que el 'monosize'.
+
+  Guarda los cambios en el mismo archivo y ejecuta de nuevo la aventura.
+        </NOFONT>
+      </TEXTO>
+
+      <TEXTO>Los gráficos se ven demasiado grandes y es incómodo jugar así
+        <NOFONT>
+
+   a) Amplía el tamaño de la ventana del juego, maximizándola hasta ocupar
+      todo el escritorio.
+
+   b) Configura la aventura para que use gráficos más pequeños, usando el
+      comando siguiente dentro del juego:
+
+      > CONFIGURACIÓN
+      
+      Una vez dentro, cambia el tamaño de los gráficos a uno pequeño (entre
+      200 y 350 píxeles puede resultar más adecuado para tu pantalla).
+
+   c) Si lo anterior no fuera suficiente, siempre puedes desactivar los gráficos
+      completamente, aunque no te lo recomendamos, ya que con ello perderías
+      gran parte del atractivo de la aventura. Para ello, ejecuta el comando
+      siguiente dentro del juego:
+
+      > GRÁFICOS NO
+        </NOFONT>
+      </TEXTO>
+
+      <TEXTO>Los gráficos se ven demasiado pequeños
+        <NOFONT>
+
+  Prueba lo siguiente:
+
+   a) Amplía el tamaño de la ventana del juego, maximizándola hasta ocupar
+      todo el escritorio. Si la ventana es demasiado pequeña, los gráficos
+      se reescalarán automáticamente para que quepan completos dentro de la
+      misma, pero se verán muy pequeños.
+
+   b) Configura la aventura para que use gráficos más grandes, usando uno de
+      los comandos siguientes dentro del juego:
+
+      > GRÁFICOS MEDIANOS
+          (esto hará que la aventura use los gráficos a tamaño mediano)
+
+      > GRÁFICOS GRANDES
+          (esto hará que la aventura use los gráficos al tamaño más grande)
+
+      > CONFIGURACIÓN
+          (mostrará un menú donde podrás cambiar el tamaño con más detalle)
+        </NOFONT>
+      </TEXTO>
+
+      <TEXTO>¡No veo gráficos en ningún momento!
+        <NOFONT>
+
+  Comprueba lo siguiente:
+
+   a) Asegúrate de tener activados los gráficos dentro del juego. Para ello,
+      usa el comando siguiente dentro del juego:
+
+      > GRÁFICOS SI
+
+      Ten en cuenta también que los gráficos se apagan automáticamente en
+      ciertas partes de la aventura, para que el texto ocupe toda la ventana
+      de juego.
+
+   b) Asegúrate de que no estás en un lugar a oscuras y sin ninguna fuente de
+      luz, como una linterna encendida.
+        </NOFONT>
+      </TEXTO>
+
+      <TEXTO>¡No oigo nada!
+        <NOFONT>
+
+  Si no oyes música ni sonidos durante el juego, comprueba lo siguiente:
+
+   a) Asegúrate de tener activados los sonidos dentro del juego. Para ello,
+      usa el comando siguiente dentro del juego:
+
+      > SONIDO SI
+
+   b) Si no oyes el sonido de fondo, asegúrate de tenerlo activado usando el
+      comando siguiente:
+
+      > SONIDO FONDO SI
+
+   c) Si no oyes el sonido del detector de movimiento, asegúrate de tenerlo
+      activado usando el comando siguiente:
+
+      > SONIDO DETECTOR SI
+        </NOFONT>
+      </TEXTO>
+
+      <TEXTO>Mi lector de pantalla para ciegos no lee bien los ~teletipo~
+        <NOFONT>
+
+   Algunos lectores de pantalla usados por personas con deficiencias visuales
+   tienen problemas para leer los mensajes que aparecen letra a letra (mensajes
+   'teletipo'). En tal caso, puedes desactivar el efecto 'teletipo' usando el
+   comando:
+
+   > CONFIGURACIÓN
+
+   Entra en el submenú ~Accesibilidad~ y desactiva la opción ~Efecto teletipo~.
+        </NOFONT>
+      </TEXTO>
+
+      <TEXTO>Tengo dificultades motrices y el alien siempre me alcanza
+        <NOFONT>
+
+   Si tienes dificultades para escribir con la velocidad necesaria para que el
+   alien no te alcance, puedes desactivar los eventos en tiempo real usando el
+   comando:
+
+   > CONFIGURACIÓN
+
+   Entra en el submenú ~Accesibilidad~ y desactiva la opción ~Tiempo real~. De
+   esta forma, el juego no avanzará mientras no teclees ninguna orden.
+        </NOFONT>
+      </TEXTO>
+
+      <TEXTO>Estoy atascado y no sé cómo continuar
+        <NOFONT>
+
+  Si andas perdido y no sabes cómo resolver algún puzzle o situación:
+
+   a) Usa el sistema de pistas interactivas, tecleando:
+
+        > PISTAS
+
+      en cualquier momento del juego.
+
+   b) Pregunta en el foro del CAAD, en la siguiente dirección:
+
+        http://foro.caad.es
+
+   c) Contacta con nosotros por alguna de las las estas vías:
+
+      - email: alpha.aventuras@gmail.com
+      - web: http://sites.google.com/site/alphaaventuras
+      - facebook: https://www.facebook.com/alphaaventuras
+      - wikiCAAD: http://wiki.caad.es/Alpha_Aventuras
+        </NOFONT>
+      </TEXTO>
+
+    </MENU>
+
+    <TEXTO>Créditos
+       A·L·I·E·N: LA AVENTURA - EDICIÓN ESPECIAL (c) 2008-2012 Alpha Aventuras^
+      ^- PROGRAMACIÓN Y DISEÑO:
+      ^     Ricardo Pérez López
+      ^- GRÁFICOS E IDEA ORIGINAL:
+      ^     Manuel Millán Ruiz
+      ^- TEXTOS:
+      ^     Ricardo Pérez López
+      ^     Francisco J. Roldán Domínguez
+      ^     Manuel I. Monge García
+      ^- MAPEADO Y DOCUMENTACIÓN:
+      ^     Francisco J. Roldán Domínguez
+      ^     Antonio Matiola Ortiz
+      ^- PRUEBAS:
+      ^     Ricardo Pérez López
+      ^     Manuel Millán Ruiz
+      ^     Francisco Picazo Millán
+      ^     Manuel I. Monge García^
+      ^  Para más información, usa el comando CRÉDITOS durante el juego.
     </TEXTO>
     
   </MENU>
@@ -231,7 +443,7 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
       
     <PREG>¿Mejor solo o acompañado?
       <PISTA>¿Has probado a entrar solo?
-      <PISTA>El monstruo sale y te mata...
+      <PISTA>Si entras solo, el monstruo sale y te mata...
       <PISTA>Está claro que es mejor llegar acompañado.
     
     <PREG>¡Socorro!
@@ -278,45 +490,68 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
     
       <PREG>Generalidades
         <PISTA>El complejo contiene todo lo necesario para vivir en un paraje tan inhóspito como éste.
-        <PISTA>Si sigues leyendo, sabrás cosas que puedes descubrir tú mismo, simplemente moviéndote por el mapa.
+        <PISTA>Si sigues leyendo, sabrás cosas que puedes descubrir fácilmente por ti mismo, simplemente moviéndote por el mapa.
         <PISTA>En el nivel 0 encuentras la la oficina y el aula.
         <PISTA>En el nivel -1 está el comedor, la despensa, la cocina, la enfermería, la sala de seguridad y el laboratorio.
         <PISTA>La zona de emergencia se encuentra aislada por una puerta en el nivel -1, hacia el sur.
         <PISTA>En el nivel -2 encuentras las salas de ventilación y el ascensor de emergencia.
         <PISTA>Jason queda atrapado en una vaina viscosa situada en una sala de ventilación.
 
-      <PREG>La sala de seguridad
-        <PISTA>¿De qué son esos dos cables que salen de la consola de control?
-        <PISTA>Transmiten imágenes captadas por cámaras de seguridad.
-        <PISTA>Las cámaras están en la oficina y el laboratorio.
-        <PISTA>La consola de control registra y graba esas imágenes. Las puedes reproducir.
-        <PISTA>Pulsa el botón que pone ~Reproducir~...
-        <PISTA>... al menos DOS veces.
+      <MENU>Zonas del complejo
 
-      <PREG>La oficina
-        <PISTA>Examínalo todo.
-        <PISTA>¿Has estado ya en la sala de seguridad?
-        <PISTA>Si es así, verás que hay un cuadro que oculta algo.
-        <PISTA>Quítalo de la pared.
-        <PISTA>¿Anotaste el código de la caja fuerte cuando viste la grabación de seguridad?
-        <PISTA>El código es 111582.
+          <TEXTO>¡Cuidado!
+           ^Si sigues adelante, sabrás qué estancias tiene el complejo. Te recomendamos que
+           ^intentes descubrirlo por ti mismo, moviéndote por su interior, pero si aún así
+           ^quieres continuar con las pistas, entra en la siguiente opción del menú.
+          </TEXTO>
+
+        <MENU>Zonas del complejo (¿has leído la advertencia anterior?)
+
+          <PREG>La sala de seguridad
+            <PISTA>¿De qué son esos dos cables que salen de la consola de control?
+            <PISTA>Transmiten imágenes captadas por cámaras de seguridad.
+            <PISTA>Las cámaras están en la oficina y el laboratorio.
+            <PISTA>La consola de control registra y graba esas imágenes. Las puedes reproducir.
+            <PISTA>Pulsa el botón que pone ~Reproducir~...
+            <PISTA>... al menos DOS veces.
+
+          <PREG>La oficina
+            <PISTA>Examínalo todo.
+            <PISTA>¿Has estado ya en la sala de seguridad?
+            <PISTA>Si es así, verás que hay un cuadro que oculta algo.
+            <PISTA>Quítalo de la pared.
+            <PISTA>¿Anotaste el código de la caja fuerte cuando viste la grabación de seguridad?
+            <PISTA>El código es 111582.
       
-      <PREG>El aula
-        <PISTA>Ese proyector tiene que servir para algo...
-        <PISTA>¿Has estado ya en la oficina?
-        <PISTA>Si es así, tal vez tengas algo que proyectar.
-        <PISTA>Proyecta el holocubo y examina la pantalla.
+          <PREG>El aula
+            <PISTA>Ese proyector tiene que servir para algo...
+            <PISTA>¿Has estado ya en la oficina?
+            <PISTA>Si es así, tal vez tengas algo que proyectar.
+            <PISTA>Proyecta el holocubo y examina la pantalla.
 
-      <PREG>El laboratorio
-        <PISTA>Examínalo todo.
-        <PISTA>¿Has mirado en las estanterías?
-        <PISTA>En una de ellas hay algo.
-        <PISTA>Es un bisturí láser. Cógelo.
+          <PREG>El laboratorio
+            <PISTA>Examínalo todo.
+            <PISTA>¿Has mirado en las estanterías?
+            <PISTA>En una de ellas hay algo.
+            <PISTA>Es un bisturí láser. Cógelo.
+            <PISTA>La necesitarás para cortar la vaina donde se encuentra atrapado Jason.
 
-      <PREG>La despensa, la cocina y el comedor
-        <PISTA>A veces se oyen ruidos raros por esa zona, procedentes de la despensa.
-        <PISTA>Lo mejor es que estés allí el menor tiempo posible.
-        <PISTA>Mejor aún: evita esas tres estancias en todo lo posible.
+          <PREG>La enfermería
+            <PISTA>Examínalo todo.
+            <PISTA>¿Has mirado en los armarios?
+            <PISTA>En concreto: ¿has mirado en los cajones?
+            <PISTA>En uno de los cajones hay algo.
+            <PISTA>Es una jeringa de adrenalina. Cógela.
+            <PISTA>La necesitarás para reanimar a Jason cuando caiga inconsciente.
+
+          <PREG>La despensa, la cocina y el comedor
+            <PISTA>A veces se oyen ruidos raros por esa zona, procedentes de la despensa.
+            <PISTA>Lo mejor es que estés allí el menor tiempo posible.
+            <PISTA>Mejor aún: evita esas tres estancias en todo lo posible.
+
+        </MENU>
+  
+      </MENU>
 
     </MENU>
 
@@ -342,8 +577,8 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
         <PISTA>¿Ya has encontrado a Jason?
         <PISTA>Está dentro de una vaina mucosa, muy dura.
         <PISTA>Necesitas un instrumento cortante y muy potente para poder cortar la dura vaina.
-        <PISTA>¿Has mirado en la enfermería?
-        <PISTA>Está en el nivel -1, por el este.
+        <PISTA>¿Has mirado en el laboratorio?
+        <PISTA>Está en el nivel -1, por el sureste.
         <PISTA>Mira en una de las estanterías.
         <PISTA>Recoge el bisturí láser y abre la vaina con él.
         <PISTA>Saca a Jason de la vaina.
