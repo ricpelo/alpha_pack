@@ -64,7 +64,7 @@ Class PnjPuerta
       else  
         if (quien.tras_abrir == NO_PUEDE_ABRIR) {
           if (PruebaDeAlcance(quien))
-            print (_El) quien, " quiere abrir ", (el) self, ", pero no puede.^";
+            print "^", (_El) quien, " quiere abrir ", (el) self, ", pero no puede.^";
           else
             if (PruebaDeAlcance(self))
               print "^Se oyen ruidos al otro lado de ", (el) self,

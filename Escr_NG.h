@@ -8,6 +8,8 @@ System_file;
 #ifndef  ESCR_LIB;
 Constant ESCR_LIB;
 
+Include "Array";
+
 Message "Compilando librería de escritura letra a letra. Baltasar, el arquero.";
 
 Constant MAX_TAM_BUFFER = 310;
@@ -27,10 +29,11 @@ Constant POR_MENSAJE = 1;
 
 ! Tipos de pausa:
 
+Constant SIN_PAUSA = -1;
 Constant PAUSA_NORMAL = 0;
-Constant SIN_PAUSA = 1;
-Constant ESPERAR_TECLA = 2;
-Constant PAUSA_DOBLE = 3;
+Constant ESPERAR_TECLA = 1;
+Constant PAUSA_DOBLE = 2;
+Constant PAUSA_TRIPLE = 3;
 
 ! Tipos de letra:
 
@@ -40,6 +43,20 @@ Constant LETRA_CURSIVA = $$00100;
 Constant LETRA_FIJA    = $$01000;
 Constant LETRA_INVERSA = $$10000;
 
+! Hace lo mismo que EsperarTecla pero no espera teclas,
+! sólo timers:
+[ EsperarTimer espera;
+  glk($00D6, espera * 5);            ! request_timer_events
+  while (1) {
+    glk($00C0, gg_arguments);        ! glk_select(gg_arguments);
+    if ((gg_arguments-->0) == 1) {
+      ControlTimer.ReactivarTick();
+      break;
+    }
+  }
+];
+
+
 class Escritura
   class Vector
   private
@@ -48,17 +65,12 @@ class Escritura
   with
     hazPausaLetra [;
       if ( self.pausaLetra > -1 ) {
-        EsperarTecla(0, self.pausaLetra);
+        EsperarTimer(self.pausaLetra);
       }
     ],
-    hazPausaMensaje [;
+    hazPausaMensaje [ multi;
       if ( self.pausaMensaje > -1 ) {
-        EsperarTecla(0, self.pausaMensaje);
-      }
-    ],
-    hazPausaDobleMensaje [;
-      if ( self.pausaMensaje > -1 ) {
-        EsperarTecla(0, self.pausaMensaje * 2);
+        EsperarTecla(0, self.pausaMensaje * multi);
       }
     ],
     pausaLetra 1,
@@ -71,42 +83,40 @@ class Escritura
         ! Para cada una de las cadenas
         ! Convertirlas a vector
         lon = PrintAnyToArray(escr_buffer_lib + WORDSIZE, MAX_TAM_BUFFER, (self.elemento(n)));
-!        lon = (self.elemento(n)).print_to_array(escr_buffer_lib);
 
         tipo_mensaje = self.elemento(n + 1);
         tipo_letra = self.elemento(n + 2);
         tipo_pausa = self.elemento(n + 3);
         
         if (tipo_letra & LETRA_NORMAL)  style roman;
-        if (tipo_letra & LETRA_NEGRITA) style bold;    
+        if (tipo_letra & LETRA_NEGRITA) glk_set_style(style_User1);
         if (tipo_letra & LETRA_CURSIVA) style underline;
-        if (tipo_letra & LETRA_FIJA)    style fixed;       
+        if (tipo_letra & LETRA_FIJA)    glk_set_style(style_Preformatted);
         if (tipo_letra & LETRA_INVERSA) style reverse;
 
-        if (tipo_mensaje == POR_MENSAJE) {
-          print (string) self.elemento(n);          
+        if (tipo_mensaje == POR_MENSAJE ||
+           (tipo_mensaje == POR_LETRA && ~~hayTeletipo)) {
+          print (string) self.elemento(n);
         } else {
-          
+          if (self.sonido ~= 0) {
+            Damusix.TocarCanal(CANAL_TELETIPO);
+          }
           ! Visualizar las letras una a una
           for (p = ESCR_PRIMERA_LETRA : p < (lon + ESCR_PRIMERA_LETRA) : p++) {
             print (char) escr_buffer_lib->p;
-                
-            #ifdef TARGET_GLULX;
-              ! Tocar un sonido, esperar a pulsar una tecla o que pase un tiempo
-              if ( self.sonido ~= 0 ) {
-!                EfectosSonoros.ActivarEfecto(Teletipo_ogg, 1, CANAL_COMPUTADORA);
-              }
-              self.hazPausaLetra();
-            #endif;
-            #ifdef TARGET_ZCODE;
-              self.hazPausaLetra();
-            #endif;
+            self.hazPausaLetra();
+          }
+          if (self.sonido ~= 0) {
+            Damusix.PararCanal(CANAL_TELETIPO);
           }
         }          
         switch (tipo_pausa) {
+          SIN_PAUSA:     break;
           ESPERAR_TECLA: EsperarTecla();
-          PAUSA_NORMAL: self.hazPausaMensaje();
-          PAUSA_DOBLE: self.hazPausaDobleMensaje();
+          PAUSA_NORMAL:  self.hazPausaMensaje(1);
+          PAUSA_DOBLE:   self.hazPausaMensaje(2);
+          PAUSA_TRIPLE:  self.hazPausaMensaje(3);
+          default:       self.hazPausaMensaje(tipo_pausa);
         }
         style roman;
         n = n + 3;

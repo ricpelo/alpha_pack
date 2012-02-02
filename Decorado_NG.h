@@ -45,7 +45,7 @@
 !  referenciado, y asi se lo notificara al parser, actualizando ademas
 !   los siguientes campos del objeto decorado_celda:
 !
-!   cantidad  -> Toma el valor de la palabra usada por el jugador
+!   palabra -> Toma el valor de la palabra usada por el jugador
 !               ('pared')
 !   descripcion -> Toma el valor de la cadena que sigue a 'pared', en
 !              la propiedad describir es decir "Paredes lugubres y
@@ -78,10 +78,10 @@
 !  Deja las paredes en paz, no son mas que decorado.
 !
 !  Incluso, si quisieras particularizar para un objeto concreto,
-!  podrias examinar la propiedad cantidad, que te dira que palabra ha
+!  podrias examinar la propiedad palabra, que te dira que palabra ha
 !  usado el jugador. Por ejemplo:
 !
-!  Empujar: if (self.cantidad=='techo') "No llegas.",
+!  Empujar: if (self.palabra=='techo') "No llegas.",
 !           "Deja ", (el) self, " en paz.";
 !
 !
@@ -93,8 +93,8 @@
 !  Puede evitarse redefiniendo habilmente la rutina nombre_corto en el
 !  objeto derivado de la clase, y cambiandolo por algo como:
 !
-!     if (self.cantidad=='instalacion') print "instalacion";
-!     else print (address) self.cantidad;
+!     if (self.palabra=='instalacion') print "instalacion";
+!     else print (address) self.palabra;
 !     rtrue;
 !
 !  Pero evidentemente habria que particularizarlo para cada caso.
@@ -152,16 +152,46 @@ EndIf;
 !
 Class Decorado
   with
-    descripcion 0,
-    cantidad 0,
-    describir 0,
-    genero 0,
-    sinonimos 0,
+    descripcion 0,  ! La descripción del objeto
+    palabra_real 0, ! La palabra exacta que ha usado el jugador
+    genero 0,       ! El género del objeto
+    describir 0,    ! El array de descripciones
+    sinonimos 0,    ! El array de sinónimos
+    palabra 0,      ! Si es un sinónimo, la palabra correspondiente en 'describir'.
+                    ! Si no lo es, vale lo mismo que 'palabra_real'
     nombre_corto [;
-      print (address) self.cantidad;
+      print (address) self.palabra;
       rtrue;
     ],
-    parse_nombre [ i n w c r f m j p;
+    buscar_nombre [ x i j;   ! Se usa en ExaminarFalso
+      for (i = 0: i < (self.#describir) / (3 * WORDSIZE): i++) {
+        if ((self.&describir)-->(i * 3) == x) {
+          self.descripcion = VR((self.&describir)-->(i * 3 + 1));
+          self.genero = (self.&describir)-->(i * 3 + 2);
+          self.palabra = x;
+          self.palabra_real = x;
+          rtrue;
+        }
+      }
+      if (self.sinonimos == 0) return false;
+      for (j = 0: j < (self.#sinonimos) / (3 * WORDSIZE): j++) {
+        if ((self.&sinonimos)-->(j * 3) == x) {
+          for (i = 0: i < n: i++) {
+            if ((self.&describir)-->(i * 3) == (self.&sinonimos)-->(j * 3 + 1)) {
+              self.descripcion = VR((self.&describir)-->(i * 3 + 1));
+              self.palabra = (self.&describir)-->(i * 3);
+              self.palabra_real = (self.&sinonimos)-->(j * 3);
+              self.genero = (self.&sinonimos)-->(j * 3 + 2);
+              if (self.genero == -1) {
+                self.genero = (self.&describir)-->(i * 3 + 2);
+              }
+              rtrue;
+            }
+          }
+        }
+      }
+    ],
+    parse_nombre [ i n w c r f j p;
       self.descripcion = 0;
       n = (self.#describir) / (3 * WORDSIZE);
 
@@ -173,12 +203,10 @@ Class Decorado
 
       while (true) {
         w = SiguientePalabraParar(); if (w == -1) return c;
-
         if (w == 'de' or 'del') {
           w = SiguientePalabraParar(); if (w == -1) return c;
           r++;
         }
-
         if (w == 'el' or 'la' or 'los' or 'las') {
           w = SiguientePalabraParar(); if (w == -1) return c;
           r++;
@@ -198,7 +226,8 @@ Class Decorado
             f = true;
             if (self.descripcion == 0) {
               self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-              self.cantidad = w;
+              self.palabra = w;
+              self.palabra_real = w;
               self.genero = (self.&describir)-->(i * 3 + 2);
             }
             c++;
@@ -210,12 +239,11 @@ Class Decorado
         }
 
         if ((~~f) && self.sinonimos ~= 0) {
-          m = (self.#sinonimos) / (3 * WORDSIZE);
-          for (j = 0 : j < m : j++) {
+          for (j = 0: j < (self.#sinonimos) / (3 * WORDSIZE): j++) {
 .synonymContinue;
             if ((self.&sinonimos)-->(j * 3) == w) {
               f = false;
-              for (i = 0 : i < n : i++) {
+              for (i = 0: i < n: i++) {
                 if ((self.&describir)-->(i * 3) == (self.&sinonimos)-->(j * 3 + 1)) {
                   if (p == null) {
                     p = (self.&describir)-->(i * 3);
@@ -227,7 +255,8 @@ Class Decorado
                   }
                   if (self.descripcion == 0) {
                     self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-                    self.cantidad = (self.&describir)-->(i * 3);
+                    self.palabra = (self.&describir)-->(i * 3);
+                    self.palabra_real = (self.&sinonimos)-->(j * 3);
                     self.genero = (self.&sinonimos)-->(j * 3 + 2);
                     if (self.genero == -1) {
                       self.genero = (self.&describir)-->(i * 3 + 2);
@@ -254,7 +283,15 @@ Class Decorado
     ],
     antes [;
       Examinar: rfalse;
-      default: "Déjalo, sólo es decorado.";
+      Coger:    "No puedes hacerlo, ya que está", (n) self, " fij", (o) self,
+                " en su sitio.";
+      Empujar:  print_ret (_El) self, " no parece que pueda", (n) self,
+                " ser empujad", (o) self, ".";
+      Oler:     "No parece que huela", (n) self, " a nada especial.";
+      Escuchar: "No produce", (n) self, " ningún sonido.";
+      BuscarEn: "No hay nada que buscar en eso.";
+      Tocar:    "No notas nada especial al tacto.";
+      default:  "No hay ninguna razón para hacer eso.";
     ],
   has
     escenario oculto;
