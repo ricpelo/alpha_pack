@@ -150,24 +150,24 @@ EndIf;
 ! Si el jugador escribe EX GRANDE, el algoritmo se decidirá por el primero que encuentre
 ! en la lista de sinónimos (en este caso, la mesa).
 !
-Class Decorado
+class Decorado
   with
-    descripcion 0,  ! La descripción del objeto
+    description 0,  ! La descripción del objeto
     palabra_real 0, ! La palabra exacta que ha usado el jugador
-    genero 0,       ! El género del objeto
-    describir 0,    ! El array de descripciones
+    gender 0,       ! El género del objeto
+    describe 0,    ! El array de descripciones
     sinonimos 0,    ! El array de sinónimos
     palabra 0,      ! Si es un sinónimo, la palabra correspondiente en 'describir'.
                     ! Si no lo es, vale lo mismo que 'palabra_real'
-    nombre_corto [;
+    short_name [;
       print (address) self.palabra;
       rtrue;
     ],
     buscar_nombre [ x i j;   ! Se usa en ExaminarFalso
-      for (i = 0: i < (self.#describir) / (3 * WORDSIZE): i++) {
-        if ((self.&describir)-->(i * 3) == x) {
-          self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-          self.genero = (self.&describir)-->(i * 3 + 2);
+      for (i = 0: i < (self.#describe) / (3 * WORDSIZE): i++) {
+        if ((self.&describe)-->(i * 3) == x) {
+          self.description = VR((self.&describe)-->(i * 3 + 1));
+          self.gender = (self.&describe)-->(i * 3 + 2);
           self.palabra = x;
           self.palabra_real = x;
           rtrue;
@@ -177,13 +177,13 @@ Class Decorado
       for (j = 0: j < (self.#sinonimos) / (3 * WORDSIZE): j++) {
         if ((self.&sinonimos)-->(j * 3) == x) {
           for (i = 0: i < n: i++) {
-            if ((self.&describir)-->(i * 3) == (self.&sinonimos)-->(j * 3 + 1)) {
-              self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-              self.palabra = (self.&describir)-->(i * 3);
+            if ((self.&describe)-->(i * 3) == (self.&sinonimos)-->(j * 3 + 1)) {
+              self.description = VR((self.&describe)-->(i * 3 + 1));
+              self.palabra = (self.&describe)-->(i * 3);
               self.palabra_real = (self.&sinonimos)-->(j * 3);
-              self.genero = (self.&sinonimos)-->(j * 3 + 2);
-              if (self.genero == -1) {
-                self.genero = (self.&describir)-->(i * 3 + 2);
+              self.gender = (self.&sinonimos)-->(j * 3 + 2);
+              if (self.gender == -1) {
+                self.gender = (self.&describe)-->(i * 3 + 2);
               }
               rtrue;
             }
@@ -191,32 +191,32 @@ Class Decorado
         }
       }
     ],
-    parse_nombre [ i n w c r f j p;
-      self.descripcion = 0;
-      n = (self.#describir) / (3 * WORDSIZE);
+    parse_name [ i n w c r f j p;
+      self.description = 0;
+      n = (self.#describe) / (3 * WORDSIZE);
 
       if (w == 'el' or 'la' or 'los' or 'las')
-        w = SiguientePalabra();
+        w = NextWord();
 
       c = r = 0;
-      p = null;
+      p = NULL;
 
       while (true) {
-        w = SiguientePalabraParar(); if (w == -1) return c;
+        w = NextWordStopped(); if (w == -1) return c;
         if (w == 'de' or 'del') {
-          w = SiguientePalabraParar(); if (w == -1) return c;
+          w = NextWordStopped(); if (w == -1) return c;
           r++;
         }
         if (w == 'el' or 'la' or 'los' or 'las') {
-          w = SiguientePalabraParar(); if (w == -1) return c;
+          w = NextWordStopped(); if (w == -1) return c;
           r++;
         }
 
         f = false;
 
         for (i = 0 : i < n : i++) {
-          if ((self.&describir)-->(i * 3) == w) {
-            if (p == null) {
+          if ((self.&describe)-->(i * 3) == w) {
+            if (p == NULL) {
               p = w;
             } else {
               if (p ~= w) {
@@ -224,11 +224,11 @@ Class Decorado
               }
             }
             f = true;
-            if (self.descripcion == 0) {
-              self.descripcion = VR((self.&describir)-->(i * 3 + 1));
+            if (self.description == 0) {
+              self.description = VR((self.&describe)-->(i * 3 + 1));
               self.palabra = w;
               self.palabra_real = w;
-              self.genero = (self.&describir)-->(i * 3 + 2);
+              self.gender = (self.&describe)-->(i * 3 + 2);
             }
             c++;
             if (r > 0) {
@@ -244,22 +244,22 @@ Class Decorado
             if ((self.&sinonimos)-->(j * 3) == w) {
               f = false;
               for (i = 0: i < n: i++) {
-                if ((self.&describir)-->(i * 3) == (self.&sinonimos)-->(j * 3 + 1)) {
-                  if (p == null) {
-                    p = (self.&describir)-->(i * 3);
+                if ((self.&describe)-->(i * 3) == (self.&sinonimos)-->(j * 3 + 1)) {
+                  if (p == NULL) {
+                    p = (self.&describe)-->(i * 3);
                   } else {
-                    if (p ~= (self.&describir)-->(i * 3)) {
+                    if (p ~= (self.&describe)-->(i * 3)) {
                       j++;
                       jump synonymContinue;
                     }
                   }
-                  if (self.descripcion == 0) {
-                    self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-                    self.palabra = (self.&describir)-->(i * 3);
+                  if (self.description == 0) {
+                    self.description = VR((self.&describe)-->(i * 3 + 1));
+                    self.palabra = (self.&describe)-->(i * 3);
                     self.palabra_real = (self.&sinonimos)-->(j * 3);
-                    self.genero = (self.&sinonimos)-->(j * 3 + 2);
-                    if (self.genero == -1) {
-                      self.genero = (self.&describir)-->(i * 3 + 2);
+                    self.gender = (self.&sinonimos)-->(j * 3 + 2);
+                    if (self.gender == -1) {
+                      self.gender = (self.&describe)-->(i * 3 + 2);
                     }
                   }
                   f = true;
@@ -281,18 +281,18 @@ Class Decorado
         }
       }
     ],
-    antes [;
-      Examinar: rfalse;
-      Coger:    "No puedes hacerlo, ya que está", (n) self, " fij", (o) self,
+    before [;
+      Examine: rfalse;
+      Take:    "No puedes hacerlo, ya que está", (n) self, " fij", (o) self,
                 " en su sitio.";
-      Empujar:  print_ret (_El) self, " no parece que pueda", (n) self,
+      Push:  print_ret (The) self, " no parece que pueda", (n) self,
                 " ser empujad", (o) self, ".";
-      Oler:     "No parece que huela", (n) self, " a nada especial.";
-      Escuchar: "No produce", (n) self, " ningún sonido.";
-      BuscarEn: "No hay nada que buscar en eso.";
-      Tocar:    "No notas nada especial al tacto.";
+      Smell:     "No parece que huela", (n) self, " a nada especial.";
+      Listen: "No produce", (n) self, " ningún sonido.";
+      Search: "No hay nada que buscar en eso.";
+      Touch:    "No notas nada especial al tacto.";
       default:  "No hay ninguna razón para hacer eso.";
     ],
   has
-    escenario oculto;
+    scenery concealed;
 

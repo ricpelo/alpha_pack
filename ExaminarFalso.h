@@ -9,14 +9,14 @@
 
 System_file;
 
-#ifdef VerboDesconocido;
+#ifdef UnknownVerb;
   Message "[ExaminarFalso: Usando rutina VerboDesconocido() proporcionada por el juego]";
   Message "[ExaminarFalso: IMPORTANTE: NO OLVIDES USAR EN ESA RUTINA EL RESULTADO DE...]";
   Message "[ExaminarFalso: ExaminarFalso.EF_VerboDesconocido(x) ]";
 #endif; ! VerboDesconocido
 
-#ifndef VerboDesconocido;
-  [ VerboDesconocido x;
+#ifndef UnknownVerb;
+  [ UnknownVerb x;
     return ExaminarFalso.EF_VerboDesconocido(x);
   ];
 #endif; ! VerboDesconocido
@@ -25,18 +25,18 @@ Object ExaminarFalso
   with
     objetoVerboDesconocido 0,
     EF_VerboDesconocido [x obj;
-      objectloop (obj ofclass Object && PruebaDeAlcance(obj)) {
+      objectloop (obj ofclass Object && TestScope(obj)) {
 #ifdef Decorado;
         if (obj ofclass Decorado && obj.buscar_nombre(x)) {
           jump PalabraEncontrada;
         } else
 #endif;
-          if (obj ~= jugador) {
-            if (PalabraEnPropiedad(x, obj, nombre) ||
-              PalabraEnPropiedad(x, obj, nombre_m) ||
-              PalabraEnPropiedad(x, obj, nombre_f) ||
-              PalabraEnPropiedad(x, obj, nombre_mp) ||
-              PalabraEnPropiedad(x, obj, nombre_fp)) {
+          if (obj ~= player) {
+            if (WordInProperty(x, obj, name) ||
+              WordInProperty(x, obj, name_m) ||
+              WordInProperty(x, obj, name_f) ||
+              WordInProperty(x, obj, name_mp) ||
+              WordInProperty(x, obj, name_fp)) {
             jump PalabraEncontrada;
           }
         }
@@ -53,8 +53,8 @@ Verb 'examinar.falso'
 
 
 [ ExaminarFalsoSub;
-  uno = ExaminarFalso.objetoVerboDesconocido;
-  ActualizarPronombre(uno);
-  <<Examinar uno>>;
+  noun = ExaminarFalso.objetoVerboDesconocido;
+  PronounNotice(noun);
+  <<Examine noun>>;
 ];
 

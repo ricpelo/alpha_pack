@@ -149,7 +149,7 @@ Array  infix_text -> 128;
 
         for (j = 1 : j < k : j++) ! Compare the strings...
             if (itlc->(it2->j) ~= wa->j) jump XL;       
-        numero_interpretado = i + range1 + plus;
+        parsed_number = i + range1 + plus;
         rtrue;
       .XL;
     }
@@ -158,30 +158,30 @@ Array  infix_text -> 128;
 
 [ InfixActionToken;
     if (InfixMatchPrule(InfixPrintAction, #lowest_action_number,
-        #highest_action_number, DireccionDePalabra(np), LongitudDePalabra(np))) {
-        np++; infix_lvalue = numero_interpretado; return 0;
+        #highest_action_number, WordAddress(wn), WordLength(wn))) {
+        wn++; infix_lvalue = parsed_number; return 0;
     }
     if (InfixMatchPrule(InfixPrintFakeAction, #lowest_fake_action_number,
-        #highest_fake_action_number, DireccionDePalabra(np), LongitudDePalabra(np))) {
-        np++; infix_lvalue = numero_interpretado; return 0;
+        #highest_fake_action_number, WordAddress(wn), WordLength(wn))) {
+        wn++; infix_lvalue = parsed_number; return 0;
     }
     return -1;
 ];
 
 [ InfixRvalueTerm n w i initial_np wa wl sign base digit dcount;
   
-    initial_np = np;
+    initial_np = wn;
 
     infix_parsed_lvalue = -1;
     infix_term_type = INFIXTT_NUMBER;
     
-    w = SiguientePalabraParar();
+    w = NextWordStopped();
 !   print "W:", w;
     
     if (w == -1) return -1;
 
-    wa = DireccionDePalabra(np - 1);
-    wl = LongitudDePalabra(np - 1);
+    wa = WordAddress(wn - 1);
+    wl = WordLength(wn - 1);
     
     
     if (wa->0 == '-' or '$' or '0' or '1' or '2' or '3'
@@ -217,32 +217,32 @@ Array  infix_text -> 128;
             else return -1;
             wl--; wa++;
         }
-        numero_interpretado = n * sign; return 1;
+        parsed_number = n * sign; return 1;
     }
 
     ! Parse character constant 'a'
 
     if (wl == 3 && wa->0 == ''' && wa->2 == ''') {
-        numero_interpretado = wa->1; return 1;
+        parsed_number = wa->1; return 1;
     }
 
     ! ##Action, 'dword'
 
     switch (w) {
       '##': infix_term_type = INFIXTT_ACTION;
-            w = SiguientePalabraParar(); if (w == -1) return -1;
-            np--;
+            w = NextWordStopped(); if (w == -1) return -1;
+            wn--;
             if (InfixActionToken() == 0) return 1;
             return -1;
       '^^': infix_term_type = INFIXTT_DWORD;
-            w = SiguientePalabraParar(); if (w == -1) return -1;
-            numero_interpretado = w; return 1;
+            w = NextWordStopped(); if (w == -1) return -1;
+            parsed_number = w; return 1;
     }
 
     ! Test for attribute, property, class name, variable name, array name, routine
     ! name, constant name
 !   print "Testing...";
-    np--;
+    wn--;
     if ((wa->0 >= 'a' && wa->0 <= 'z') ||
         (wa->0 >= 'A' && wa->0 <= 'Z') ||
          wa->0 == '_') {
@@ -253,7 +253,7 @@ Array  infix_text -> 128;
         if (InfixMatchPrule(InfixPrintAttribute, #lowest_attribute_number,
                             #highest_attribute_number, wa, wl)) {
 !           print "yes^";
-            np++; return 1; }
+            wn++; return 1; }
         
         infix_term_type = INFIXTT_PROPERTY;
 !       print "no ^Propertie? (from ",#lowest_property_number," to ",#highest_property_number,")";
@@ -265,54 +265,54 @@ Array  infix_text -> 128;
             ! The numero_interpretado will be found in the name_table but in glulx the number will be different
             ! thant the real property number. We perform this operation to find its position
             ! in the properties table.
-            if (numero_interpretado > (#identifiers_table-->1) - 1)
-              numero_interpretado = (numero_interpretado - #identifiers_table-->1) + INDIV_PROP_START;
+            if (parsed_number > (#identifiers_table-->1) - 1)
+              parsed_number = (parsed_number - #identifiers_table-->1) + INDIV_PROP_START;
 !             numero_interpretado = numero_interpretado - (INDIV_PROP_START - (#identifiers_table-->1));
             #endif;
-            np++; return 1;
+            wn++; return 1;
         }
 !       print "no ^Global?...";
         infix_term_type = INFIXTT_GLOBAL;
         if (InfixMatchPrule(InfixPrintGlobal, #lowest_global_number,
                             #highest_global_number, wa, wl)) {
-            infix_parsed_lvalue = numero_interpretado - 16;
-            numero_interpretado = #globals_array-->infix_parsed_lvalue;
+            infix_parsed_lvalue = parsed_number - 16;
+            parsed_number = #globals_array-->infix_parsed_lvalue;
 !           print "yes^";
-            np++; return 1;
+            wn++; return 1;
         }
 !       print "no ^Array?...";
         infix_term_type = INFIXTT_ARRAY;
         if (InfixMatchPrule(InfixPrintArray, #lowest_array_number,
                             #highest_array_number, wa, wl)) {
-            infix_parsed_lvalue = numero_interpretado;
-            numero_interpretado = Symb__Tab(INFIXTT_ARRAY, numero_interpretado);
+            infix_parsed_lvalue = parsed_number;
+            parsed_number = Symb__Tab(INFIXTT_ARRAY, parsed_number);
             infix_data1 = temp__global3;
             infix_data2 = temp__global2;
 !           print "yes^";
-            np++; return 1;
+            wn++; return 1;
         }
 !       print "no ^ROUTINE?...";
         infix_term_type = INFIXTT_ROUTINE;
 !       print "(from ", #lowest_routine_number, " to ", #highest_routine_number, ")";
         if (InfixMatchPrule(InfixPrintRoutine, #lowest_routine_number,
                             #highest_routine_number, wa, wl)) {
-            infix_parsed_lvalue = numero_interpretado;
-            numero_interpretado = Symb__Tab(INFIXTT_ROUTINE, numero_interpretado);
+            infix_parsed_lvalue = parsed_number;
+            parsed_number = Symb__Tab(INFIXTT_ROUTINE, parsed_number);
             infix_data1 = temp__global3;
             infix_data2 = temp__global2;
 !           print "yes^";
-            np++; return 1;
+            wn++; return 1;
         }
 !       print "no ^CONSTANT?...";
         infix_term_type = INFIXTT_CONSTANT;
         if (InfixMatchPrule(InfixPrintConstant, #lowest_constant_number,
                             #highest_constant_number, wa, wl)) {
-            infix_parsed_lvalue = numero_interpretado;
-            numero_interpretado = Symb__Tab(INFIXTT_CONSTANT, numero_interpretado);
+            infix_parsed_lvalue = parsed_number;
+            parsed_number = Symb__Tab(INFIXTT_CONSTANT, parsed_number);
             infix_data1 = temp__global3;
             infix_data2 = temp__global2;
 !           print "yes^";
-            np++; return 1;
+            wn++; return 1;
         }
         
 !       print "no^";
@@ -320,28 +320,28 @@ Array  infix_text -> 128;
         switch (w) {
           'parent', 'child', 'children',
           'random', 'metaclass', 'sibling':
-            numero_interpretado = w;
+            parsed_number = w;
             infix_parsed_lvalue = INFIXTT_SYSFUN;
-            np++; return 1;
+            wn++; return 1;
         }
     }
 
     infix_term_type = INFIXTT_NAMEDOBJECT;
 
-    np = initial_np; i = InterpretarToken(TT_ALCANCE, InfixBigScope);
+    wn = initial_np; i = ParseToken(SCOPE_TT, InfixBigScope);
 
-    if (i == RPG_REPARSE) return i;
+    if (i == GPR_REPARSE) return i;
     if (i > RPG_MULTIPLE) {
         print "(", (name) i, " (", i, "))^";
-        numero_interpretado = i; return 1;
+        parsed_number = i; return 1;
     }
     return -1;
 ]; ! end of InfixRvalueTerm
 
 [ InfixBigScope x;
-    if (estadio_alcance == 1) return false;  ! No multiples here
-    if (estadio_alcance == 2) {
-        objectloop (x ofclass Object) PonerAlAlcance(x);
+    if (scope_stage == 1) return false;  ! No multiples here
+    if (scope_stage == 2) {
+        objectloop (x ofclass Object) PlaceInScope(x);
         return true; ! That's the whole scope
     }
     print "; I'm unable to make any sense of that term.^";
@@ -349,8 +349,8 @@ Array  infix_text -> 128;
 
 [ InfixCheckLineSpaced wa wl i force altered;
     for (i = 1 : i <= parse->1 : i++) {
-        wa = DireccionDePalabra(i);
-        wl = LongitudDePalabra(i);
+        wa = WordAddress(i);
+        wl = WordLength(i);
         if (wl > 3 && wa->0 == ''' && wa->(wl - 1) == ''') {
             wa->(wl - 1) = ' ';
             if (wa->(wl - 2) == '/' && wa->(wl - 3) == '/') {
@@ -839,7 +839,7 @@ Array InfixRV_commas --> 32;
 [ Infixhexdigit x; x = x % $10; if (x < 10) print x; else print (char) 'a' + x - 10; ];
 
 [ InfixExamineOSub;
-    infix_data1 = metaclass(uno);
+    infix_data1 = metaclass(noun);
     infix_term_type = INFIXTT_NAMEDOBJECT;  ! Antes era INFIXTT_CONSTANT
     InfixExamineP(false);
 ];
@@ -854,22 +854,22 @@ Array InfixRV_commas --> 32;
 [ InfixExamineP brief x a b w flag lines;
     switch (infix_term_type) {
       INFIXTT_NUMBER:
-        if (brief) "; == ", uno;
-        print "; El número ", uno, " == $", (InfixHex) uno;
-        if (uno >= 32 && uno < 127) print " == '", (char) uno, "'";
+        if (brief) "; == ", noun;
+        print "; El número ", noun, " == $", (InfixHex) noun;
+        if (noun >= 32 && noun < 127) print " == '", (char) noun, "'";
         new_line;
       INFIXTT_NAMEDOBJECT:
-        print "~", (name) uno, "~ (", uno, ")^"; if (brief) return;
-        <<MostrarObjeto uno>>;
+        print "~", (name) noun, "~ (", noun, ")^"; if (brief) return;
+        <<Showobj noun>>;
       INFIXTT_CONSTANT:
-        if (brief) "; == ", uno;
+        if (brief) "; == ", noun;
         switch (infix_data1 & 15) {
             nothing:
                 print "; Constante ", (InfixPrintConstant) infix_parsed_lvalue,
-                      " == ", uno, "^";
-            2:  <<MostrarObjeto uno>>;              ! Object
-            1:  print "Clase ", (name) uno, "^";    ! Class
-                objectloop (a ofclass uno) {
+                      " == ", noun, "^";
+            2:  <<Showobj noun>>;              ! Object
+            1:  print "Clase ", (name) noun, "^";    ! Class
+                objectloop (a ofclass noun) {
                     if (flag) print ", "; else print "Contiene: ";
                     print (name) a, " (", a, ")"; flag = true;
                 }
@@ -877,33 +877,33 @@ Array InfixRV_commas --> 32;
         }
         new_line;
       INFIXTT_ATTRIBUTE:
-        if (brief) "; == ", uno;
-        if (uno >= 48 || uno < 0) "; No existe ese atributo";
-        print "; Atributo ", (InfixPrintAttribute) uno,
-              " (de número ", uno, ")^";
-        objectloop (x has uno) {
+        if (brief) "; == ", noun;
+        if (noun >= 48 || noun < 0) "; No existe ese atributo";
+        print "; Atributo ", (InfixPrintAttribute) noun,
+              " (de número ", noun, ")^";
+        objectloop (x has noun) {
             if (flag) print ", ";
-            else print "Todos estos ~tienen ", (InfixPrintAttribute) uno, "~: ";
+            else print "Todos estos ~tienen ", (InfixPrintAttribute) noun, "~: ";
             print (name) x, " (", x, ")"; flag = true;
         }
-        if (flag == false) "Ningún objeto ~tiene ", (InfixPrintAttribute) uno, "~";
+        if (flag == false) "Ningún objeto ~tiene ", (InfixPrintAttribute) noun, "~";
         new_line;
       INFIXTT_PROPERTY:
-        if (brief) "; == ", uno;
-        print "; Propiedad ", (property) uno, " (de número ", uno, ")^";
-        objectloop (x provides uno) {
+        if (brief) "; == ", noun;
+        print "; Propiedad ", (property) noun, " (de número ", noun, ")^";
+        objectloop (x provides noun) {
             if (flag) print ", "; else print "Proporcionada por: ";
             print (name) x, " (", x, ")"; flag = true;
         }
         if (flag == false) "No la proporciona ningún objeto";
         new_line;
       INFIXTT_DWORD:
-        if (brief) "; == ", uno;
-        if (uno == 0) "; Esta palabra no está en el diccionario";
-        a = uno->#dict_par1;
-        print "; Palabra del diccionario '", (address) uno;
+        if (brief) "; == ", noun;
+        if (noun == 0) "; Esta palabra no está en el diccionario";
+        a = noun->#dict_par1;
+        print "; Palabra del diccionario '", (address) noun;
         if (a & 4) print "//p";
-        print "' (dirección ", uno, ")";
+        print "' (dirección ", noun, ")";
         if (a) {
             print ": ";
             if (a & 2)   print "meta ";
@@ -913,16 +913,16 @@ Array InfixRV_commas --> 32;
             if (a & 128) print "nombre ";
         }
         new_line;
-        if (a & 1) <<MostrarVerbo uno>>;
+        if (a & 1) <<Showverb noun>>;
       INFIXTT_ROUTINE:
-        if (brief) "; == ", uno;
+        if (brief) "; == ", noun;
         print "; Rutina ", (InfixPrintRoutine) infix_parsed_lvalue, " (de número ",
-              infix_parsed_lvalue, ", dirección empaquetada ", uno, ")^";
+              infix_parsed_lvalue, ", dirección empaquetada ", noun, ")^";
       INFIXTT_GLOBAL:
-        if (brief) "; == ", uno;
-        print "; Global ", (InfixPrintGlobal) infix_parsed_lvalue, " == ", uno, "^";
+        if (brief) "; == ", noun;
+        print "; Global ", (InfixPrintGlobal) infix_parsed_lvalue, " == ", noun, "^";
       INFIXTT_ARRAY:
-        if (brief) "; == ", uno;
+        if (brief) "; == ", noun;
         print "; Array ", (InfixPrintArray) infix_parsed_lvalue, " ";
         infix_data1 = infix_data1 % 16;
         switch (infix_data1) {
@@ -934,22 +934,22 @@ Array InfixRV_commas --> 32;
         }
         print " ", infix_data2 + 1 - a, "^; == "; b = infix_data2;
         for (w = b : w >= a : w--)
-            if (infix_data1 == 0 or 2 or 4) { if (uno->w) break; }
-            else { if (uno-->w) break; }
+            if (infix_data1 == 0 or 2 or 4) { if (noun->w) break; }
+            else { if (noun-->w) break; }
         if (b - w < 5) w = b;
         for ( : x <= w : x++) {
-            if (infix_data1 == 0 or 2 or 4) print uno->x,  " ";
-            else                            print uno-->x, " ";
+            if (infix_data1 == 0 or 2 or 4) print noun->x,  " ";
+            else                            print noun-->x, " ";
             if (x + 1 == a) print ": ";
         }
         if (w < b) print "(y después ", b - w, " entradas con valor cero)";
         new_line;
       INFIXTT_ACTION:
-        if (brief) "; == ", uno;
-        if (uno >= #lowest_fake_action_number && uno <= #highest_fake_action_number)
-            "; Acción falsa ", (InfixPrintFakeAction) uno,
-            " (de número ", uno, ")^No generada por ninguna gramática";
-        print "; Acción ", (InfixPrintAction) uno, " (de número ", uno, ")^";
+        if (brief) "; == ", noun;
+        if (noun >= #lowest_fake_action_number && noun <= #highest_fake_action_number)
+            "; Acción falsa ", (InfixPrintFakeAction) noun,
+            " (de número ", noun, ")^No generada por ninguna gramática";
+        print "; Acción ", (InfixPrintAction) noun, " (de número ", noun, ")^";
         #ifdef TARGET_ZCODE;
         w = HDR_DICTIONARY-->0;
         for (b = 0 : b < (HDR_DICTIONARY-->0 + 5)-->0 : b++) {
@@ -958,9 +958,9 @@ Array InfixRV_commas --> 32;
                 a = (HDR_STATICMEMORY-->0)-->($ff - (w->#dict_par2));
                 lines = a -> 0; a++;
                 for ( : lines > 0 : lines--) {
-                    a = DesempaquetarLineaGramatica(a);
-                    if (accion_que_seria == uno) {
-                        print "'", (address) w, "' "; DepurarLineaGramatica();
+                    a = UnpackGrammarLine(a);
+                    if (action_to_be == noun) {
+                        print "'", (address) w, "' "; DebugGrammarLine();
                         new_line;
                         flag = true;
                     }
@@ -974,9 +974,9 @@ Array InfixRV_commas --> 32;
                a = (#grammar_table)-->($100 - (w->#dict_par2));
                 lines = a->0; a++;
                 for ( : lines > 0 : lines--) {
-                    a = DesempaquetarLineaGramatica(a);
-                    if (accion_que_seria == uno) {
-                        print "'", (address) w, "' "; DepurarLineaGramatica();
+                    a = UnpackGrammarLine(a);
+                    if (action_to_be == noun) {
+                        print "'", (address) w, "' "; DebugGrammarLine();
                         new_line;
                         flag = true;
                     }
@@ -986,17 +986,17 @@ Array InfixRV_commas --> 32;
         #endif;
         if (flag == 0) "No está generada por ninguna gramática";
       INFIXTT_SYSFUN:
-        if (brief) "; == ", uno;
+        if (brief) "; == ", noun;
         "; La función del sistema ~", (address) infix_parsed_lvalue, "~ no ha
         sido sobreescrita por ninguna rutina, y por lo tanto conserva su
         definición estándar.";
       INFIXTT_STATICSTRING:
-        if (brief) "; == ", uno;
-        if (metaclass(uno) ~= String) "; ", uno, " no es una cadena.";
-        print "~", (string) uno, "~^";
+        if (brief) "; == ", noun;
+        if (metaclass(noun) ~= String) "; ", noun, " no es una cadena.";
+        print "~", (string) noun, "~^";
       INFIXTT_LOGICAL:
-        if (uno == true) "; true"; if (uno == false) "; false";
-        "; ", uno;
+        if (noun == true) "; true"; if (noun == false) "; false";
+        "; ", noun;
     }
 ]; ! end of InfixExamineP
 
@@ -1045,7 +1045,7 @@ Array InfixRV_commas --> 32;
 ];
 
 [ InfixWatchOnSub i j k l;
-    if (uno == 0) return InfixDescribeWatchSub();
+    if (noun == 0) return InfixDescribeWatchSub();
     if (infix_term_type == INFIXTT_ROUTINE) {
         i = infix_parsed_lvalue / 8;
         for (j = 0, k = 1 : j < infix_parsed_lvalue % 8 : j++) k = k * 2;
@@ -1060,16 +1060,16 @@ Array InfixRV_commas --> 32;
 
         "; Watching routine ", (InfixPrintRoutine) infix_parsed_lvalue, ".";
     }
-    if (metaclass(uno) == Object) {
-        give uno infix__watching;
-        "; Watching object ~", (name) uno, "~ (", uno, ").";
+    if (metaclass(noun) == Object) {
+        give noun infix__watching;
+        "; Watching object ~", (name) noun, "~ (", noun, ").";
     }
     InfixDescribeWatchSub();
   ];
 
 [ InfixWatchOffSub i j k l t;
     t=0; ! Skip the warning
-    if (uno == 0) return InfixDescribeWatchSub();
+    if (noun == 0) return InfixDescribeWatchSub();
     if (infix_term_type == INFIXTT_ROUTINE) {
         i = infix_parsed_lvalue/8;
         for (j = 0, k = 1 : j < infix_parsed_lvalue % 8 : j++) k = k * 2;
@@ -1082,14 +1082,14 @@ Array InfixRV_commas --> 32;
         #endif;
         "; Not watching ", (InfixPrintRoutine) infix_parsed_lvalue, ".";
     }
-    if (metaclass(uno) == Object) {
+    if (metaclass(noun) == Object) {
         #ifdef TARGET_ZCODE;
-        @clear_attr uno infix__watching;
+        @clear_attr noun infix__watching;
         #ifnot;
         t = infix__watching+8;
-        @astorebit uno t 0; ! give uno ~otro; 
+        @astorebit noun t 0; ! give uno ~otro; 
         #endif;
-        "; Not watching object ~", (name) uno, "~ (", uno, ").";
+        "; Not watching object ~", (name) noun, "~ (", noun, ").";
     }
     InfixDescribeWatchSub();
 ];
@@ -1141,7 +1141,7 @@ Array InfixRV_commas --> 32;
 !];
 
 [ InfixInvSub i;
-    print (string) Historia, (string) Titular;
+    print (string) Story, (string) Headline;
     style bold;
     print "^- ", (number) #highest_object_number - #lowest_object_number + 1,
         " objetos;^";
@@ -1250,12 +1250,12 @@ Verb meta ';remove'
     * InfixRvalue                               -> InfixRemove;
 Verb meta ";watch" ";w" ";observa" ";o"
     *                                           -> InfixWatchOn
-    * "relojes"/"daemons"/"timers"              -> ActivarRelojes
-    * "relojes"/"daemons"/"timers" "off"        -> DesactivarRelojes
-    * "actions"/"acciones"                      -> ActivarAcciones
-    * "actions"/"acciones" "off"                -> DesactivarAcciones
-    * "messages"/"mensajes"                     -> ActivarRutinas
-    * "messages"/"mensajes" "off"               -> DesactivarRutinas
+    * "relojes"/"daemons"/"timers"              -> TimersOn
+    * "relojes"/"daemons"/"timers" "off"        -> TimersOff
+    * "actions"/"acciones"                      -> ActionsOn
+    * "actions"/"acciones" "off"                -> ActionsOff
+    * "messages"/"mensajes"                     -> RoutinesOn
+    * "messages"/"mensajes" "off"               -> RoutinesOff
     * "objects"/"objetos"                       -> CambiosOn
     * "objects"/"objetos" "off"                 -> CambiosOff
     * InfixRvalueTerm                           -> InfixWatchOn
@@ -1263,4 +1263,4 @@ Verb meta ";watch" ";w" ";observa" ";o"
 
 #Endif; ! DEBUG
 
-! ==============================================================================
+! ==============================================================================

@@ -22,13 +22,13 @@ Constant TARGET_ZCODE;
 !================================================================
 ! Clases
 !
-Class ZIPI_Menu
+class ZIPI_Menu
 	with ZIPI_titulo, ZIPI_item;
 
-Class ZIPI_Pista
+class ZIPI_Pista
 	with ZIPI_titulo, ZIPI_pistas;
 
-Class ZIPI_Otro
+class ZIPI_Otro
 	with ZIPI_titulo, ZIPI_ejecutar;
 
 ZIPI_Otro ZIPI_Separador

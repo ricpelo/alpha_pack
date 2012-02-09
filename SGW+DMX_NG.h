@@ -1297,7 +1297,7 @@ Default WIN_MAIN    = 2;
             evtype_Redraw, evtype_Arrange: ! cambios en las Ventanas Graficas?
               viewImageSGW();       ! repintamos ventana grande
               drawImageSlide(pos);  ! repintamos ventana chica (slide)
-              DibujarLineaEstado(); ! repintamos barra de estado (por si acaso)
+              DrawStatusLine(); ! repintamos barra de estado (por si acaso)
           }
         }
         .FinSlideViewPausa; ! etiqueta para salir del bucle
@@ -1642,12 +1642,12 @@ Default WIN_MAIN    = 2;
            silenceAll(); ! se detienen canales 'music', 'chan1', 'chan2'
            #ifndef SGW_SIN_MARCO_DE_TRABAJO;
              ! este codigo corrige Bug si se hace UNDO y localidad tiene propiedad 'sgw_mus'
-             if (localizacion_real provides sgw_mus) {
-               if (localizacion_real provides sgw_vol) {
-                 playSound(music,localizacion_real.sgw_mus,-1,localizacion_real.sgw_vol);
+             if (real_location provides sgw_mus) {
+               if (real_location provides sgw_vol) {
+                 playSound(music,real_location.sgw_mus,-1,real_location.sgw_vol);
                }
                else {
-                 playSound(music,localizacion_real.sgw_mus,-1,VOLUMEN_ALTO);
+                 playSound(music,real_location.sgw_mus,-1,VOLUMEN_ALTO);
                }
              }
            #endif; ! SGW_SIN_MARCO_DE_TRABAJO
@@ -1748,22 +1748,22 @@ Default WIN_MAIN    = 2;
     Object with sgw_img, sgw_mus, sgw_vol; ! objeto 'tonto' para evitar warnings
   !-------------------------------------------------------------------------------
 
-  #ifdef TrasElPrompt; ! el programador a definido su propia rutina TrasElPrompt()
+  #ifdef AfterPrompt; ! el programador a definido su propia rutina TrasElPrompt()
     Message "[SGW+DMX: Usando rutina TrasElPrompt() proporcionada por el juego......]";
     Message "[SGW+DMX: -> SI QUIERES IMAGEN Y MUSICA AUTOMATICAS PARA CADA LOCALIDAD]";
     Message "[SGW+DMX: -> NO OLVIDES LLAMAR EN TU RUTINA A < SGW_MarcoDeTrabajo(1) >]";
   #ifnot; ! si no, la implementa el propio Marco de Trabajo
-    [ TrasElPrompt ;
+    [ AfterPrompt ;
         SGW_MarcoDeTrabajo(1);
     ];
   #endif; ! TrasElPrompt
 
-  #ifdef RutinaPostJuego; ! el programador a definido su propia rutina RutinaPostJuego()
+  #ifdef GamePostRoutine; ! el programador a definido su propia rutina RutinaPostJuego()
     Message "[SGW+DMX: Usando rutina RutinaPostJuego() proporcionada por el juego...]";
     Message "[SGW+DMX: -> SI QUIERES MOSTRAR AUTOMATICAMENTE IMAGENES DE LOS OBJETOS]";
     Message "[SGW+DMX: -> NO OLVIDES LLAMAR EN TU RUTINA A < SGW_MarcoDeTrabajo(2) >]";
   #ifnot; ! si no, la implementa el propio Marco de Trabajo
-    [ RutinaPostJuego ;
+    [ GamePostRoutine ;
         SGW_MarcoDeTrabajo(2);
         rfalse; ! MUY IMPORTANTE: SIN ESTO NO SE MUESTRA NINGUN TEXTO
     ];
@@ -1777,11 +1777,11 @@ Default WIN_MAIN    = 2;
         ! ACTIVIDAD 1: Imagenes y Musica de Fondo automaticas para cada Localidad
         !------------------------------------------------------------------------
         1:
-          if (current_loc == localizacion_real) { return; }
+          if (current_loc == real_location) { return; }
           else {
-            current_loc = localizacion_real;
+            current_loc = real_location;
             #ifndef SGW_SIN_GRAFICOS;
-              if (localizacion == laoscuridad) {
+              if (location == thedark) {
                 #ifdef SGW_IMAGEN_OSCURIDAD;
                   viewImageCenter(SGW_IMAGEN_OSCURIDAD);
                 #ifnot;
@@ -1790,8 +1790,8 @@ Default WIN_MAIN    = 2;
                 #endif; ! SGW_IMAGEN_OSCURIDAD
               }
               else {
-                if (localizacion provides sgw_img) {
-                  viewImageCenter(localizacion.sgw_img);
+                if (location provides sgw_img) {
+                  viewImageCenter(location.sgw_img);
                 }
                 else {
                   glk_window_set_background_color(gg_bigwin,SCBACK);
@@ -1800,27 +1800,27 @@ Default WIN_MAIN    = 2;
               }
             #endif; ! SGW_SIN_GRAFICOS
 
-            if (localizacion_real provides sgw_mus) {
-              if (localizacion_real provides sgw_vol) {
+            if (real_location provides sgw_mus) {
+              if (real_location provides sgw_vol) {
                 #ifndef SGW_CON_DAMUSIX;
-                  playSound(music,localizacion_real.sgw_mus,-1,localizacion_real.sgw_vol);
+                  playSound(music,real_location.sgw_mus,-1,real_location.sgw_vol);
                 #ifnot;
-                  if (Damusix.SonandoDeFondo(localizacion_real.sgw_mus) == 0) {
-                    Damusix.AsignarCanal(localizacion_real.sgw_mus,DAMUSIX_NCANALMAX-1,CalcVol(localizacion_real.sgw_vol),-1);
+                  if (Damusix.SonandoDeFondo(real_location.sgw_mus) == 0) {
+                    Damusix.AsignarCanal(real_location.sgw_mus,DAMUSIX_NCANALMAX-1,CalcVol(real_location.sgw_vol),-1);
                     Damusix.TocarCanal(DAMUSIX_NCANALMAX-1);
                   }
-                  else { Damusix.Volumen(localizacion_real.sgw_mus,CalcVol(localizacion_real.sgw_vol)); }
+                  else { Damusix.Volumen(real_location.sgw_mus,CalcVol(real_location.sgw_vol)); }
                 #endif; ! SGW_CON_DAMUSIX
               }
               else {
                 #ifndef SGW_CON_DAMUSIX;
-                  playSound(music,localizacion_real.sgw_mus,-1,VOLUMEN_ALTO);
+                  playSound(music,real_location.sgw_mus,-1,VOLUMEN_ALTO);
                 #ifnot;
-                  if (Damusix.SonandoDeFondo(localizacion_real.sgw_mus) == 0) {
-                    Damusix.AsignarCanal(localizacion_real.sgw_mus,DAMUSIX_NCANALMAX-1,CalcVol(VOLUMEN_ALTO),-1);
+                  if (Damusix.SonandoDeFondo(real_location.sgw_mus) == 0) {
+                    Damusix.AsignarCanal(real_location.sgw_mus,DAMUSIX_NCANALMAX-1,CalcVol(VOLUMEN_ALTO),-1);
                     Damusix.TocarCanal(DAMUSIX_NCANALMAX-1);
                   }
-                  else { Damusix.Volumen(localizacion_real.sgw_mus,CalcVol(VOLUMEN_ALTO)); }
+                  else { Damusix.Volumen(real_location.sgw_mus,CalcVol(VOLUMEN_ALTO)); }
                 #endif; ! SGW_CON_DAMUSIX
               }
             }
@@ -1840,8 +1840,8 @@ Default WIN_MAIN    = 2;
         ! ACTIVIDAD 2: Imagenes automaticas al EXAMINAR cada Objeto
         !-----------------------------------------------------------------------
         2:
-          if(accion == ##Examinar && uno provides sgw_img) {
-            viewImageSlide(uno.sgw_img);
+          if(action == ##Examine && noun provides sgw_img) {
+            viewImageSlide(noun.sgw_img);
           }
           else {
             closeImageSlide();
@@ -1859,4 +1859,4 @@ Default WIN_MAIN    = 2;
 
 #endif; ! TARGET_GLULX
 
-#endif; ! fin de _SGWDMX_H_
+#endif; ! fin de _SGWDMX_H_

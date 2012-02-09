@@ -55,7 +55,7 @@ Message "|__________________________________________________________________|";
 #endif;
 
 
-Class GestorTimer
+class GestorTimer
   with
     condicion true,          ! Si es false, no se ejecutará el evento
     duracion 0,              ! Número de ticks necesarios para ejecutarse
@@ -90,13 +90,13 @@ Object ControlTimer
     ha_imprimido_algo true,               ! Para saber si hay que restaurar la línea de órdenes
     contexto_handle_glk false,            ! Estamos en un evento
     RestaurarLineaOrdenes [ buffer;       ! Restaura la línea de órdenes
-      if (banderafin == 1) {
+      if (deadflag == 1) {
         print "^^";
-        M__L(##Miscelanea, 3);
-        ActualizarEstatus();
+        L__M(##Miscellany, 3);
+        DisplayStatus();
         AfterGameOver();
       }
-      M__L(##Prompt);
+      L__M(##Prompt);
       buffer-->0 = gg_event-->2;
       glk($00D0, gg_mainwin, buffer + WORDSIZE,  ! glk_request_line_event
           INPUT_BUFFER_LEN - WORDSIZE, buffer-->0);
@@ -296,7 +296,7 @@ Object ControlTimer
     DesactivarMutex [;                    ! Desactiva el mutex si lo hubiera
       self.mutex = 0;
     ],
-    Reiniciar [ i;                        ! Pone todas las propiedades a sus valores por defecto
+    Restart [ i;                        ! Pone todas las propiedades a sus valores por defecto
       self.DesactivarTick();
       self.tick = 0;
       self.tick_pausado = -1;

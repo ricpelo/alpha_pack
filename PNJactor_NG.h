@@ -39,8 +39,8 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
 [ RutinasAntesPNJ
   o r;
   
-  sw__var = accion;
-  o = TopeAlcanzable(actor);
+  sw__var = action;
+  o = ScopeCeiling(actor);
   
   if (RecursivamenteEjecuta(o, reaccionar_antesPNJ)) {
     RazonErrorPNJ = PNJ_IMPIDE_ANTES;
@@ -53,10 +53,10 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
     #ifdef CAPTURAR_SALIDA_PNJ;
       CapturarSalida();
     #endif;
-    r = ImprimirOEjecutar(actor, antesPNJ);
+    r = PrintOrRun(actor, antesPNJ);
     #ifdef CAPTURAR_SALIDA_PNJ;
       FinCapturarSalida();
-      if (longitudCaptura > 0 && SeVen(actor, jugador))
+      if (longitudCaptura > 0 && SeVen(actor, player))
         MostrarSalidaCapturada();
     #endif;
 
@@ -66,14 +66,14 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
     }
   }
 
-  if (uno provides antesPNJ) {
+  if (noun provides antesPNJ) {
     #ifdef CAPTURAR_SALIDA_PNJ;
       CapturarSalida();
     #endif;
-    r = ImprimirOEjecutar(uno, antesPNJ);
+    r = PrintOrRun(noun, antesPNJ);
     #ifdef CAPTURAR_SALIDA_PNJ;
       FinCapturarSalida();
-      if (longitudCaptura > 0 && SeVen(actor, jugador))
+      if (longitudCaptura > 0 && SeVen(actor, player))
         MostrarSalidaCapturada();
     #endif;
 
@@ -89,16 +89,16 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
 [ RutinasDespuesPNJ
   o r;
 
-  sw__var = accion;
+  sw__var = action;
 
-  if (uno provides despuesPNJ) {
+  if (noun provides despuesPNJ) {
     #ifdef CAPTURAR_SALIDA_PNJ;
       CapturarSalida();
     #endif;
-    r = ImprimirOEjecutar(uno, despuesPNJ);
+    r = PrintOrRun(noun, despuesPNJ);
     #ifdef CAPTURAR_SALIDA_PNJ;
       FinCapturarSalida();
-      if (longitudCaptura > 0 && SeVen(actor, jugador))
+      if (longitudCaptura > 0 && SeVen(actor, player))
         MostrarSalidaCapturada();
     #endif;
 
@@ -106,12 +106,12 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
       rtrue;
   }
   
-  o = TopeAlcanzable(actor);
+  o = ScopeCeiling(actor);
 
   ! Esto es por si el propio actor tiene su rutina despuesPNJ, para cambiar el mensaje por defecto:
   ! (c) Alpha
   if (actor provides despuesPNJ)
-    if (ImprimirOEjecutar(actor, despuesPNJ))
+    if (PrintOrRun(actor, despuesPNJ))
       rtrue;
   
   if (RecursivamenteEjecuta(o, reaccionar_despuesPNJ))
@@ -128,10 +128,10 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
     #ifdef CAPTURAR_SALIDA_PNJ;
       CapturarSalida();
     #endif;
-    r = ImprimirOEjecutar(obj, rutina);
+    r = PrintOrRun(obj, rutina);
     #ifdef CAPTURAR_SALIDA_PNJ;
       FinCapturarSalida();
-      if (longitudCaptura > 0 && SeVen(actor, jugador))
+      if (longitudCaptura > 0 && SeVen(actor, player))
         MostrarSalidaCapturada();
 		#endif;
 
@@ -147,7 +147,7 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
 ];
 
 [ SeVen quien1 quien2;
-  return TopeAlcanzable(quien1) == TopeAlcanzable(quien2);
+  return ScopeCeiling(quien1) == ScopeCeiling(quien2);
 ];
 
 
@@ -183,19 +183,19 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
       rfalse;
     }
     ! Ahora si quiere coger al jugador:
-    if (item == objjugador) {
+    if (item == selfobj) {
       RazonErrorPNJ = PNJ_INTENTA_COGER_AL_JUGADOR;
       rfalse;
     }
     ! Comprobamos si el objeto es escenario o estático
-    if (item has escenario || item has estatico) {
+    if (item has scenery || item has static) {
       RazonErrorPNJ = PNJ_OBJETO_ESCENARIO_O_ESTATICO;
       rfalse;
     }
   }
     
   ! De modo que empezamos por averiguar el antepasado común
-  ancestro = AntepasadoComun(quien, item);
+  ancestro = CommonAncestor(quien, item);
 
   ! Si no hay antepasado comun, es que objeto y PNJ están en
   ! diferentes habitaciones
@@ -214,7 +214,7 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
     ! ancestro común, sólo atravesamos recipientes abiertos
     i = parent(quien); 
     while (i ~= ancestro) {
-      if (i has recipiente && i hasnt abierto)  {
+      if (i has container && i hasnt open)  {
         ! Si encontramos un recipiente cerrado, el PNJ no
         ! puede acceder al item, porque ni siquiera puede
         ! acceder al ancestro común
@@ -240,12 +240,12 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
       ! Si hay que aplicar las restricciones especiales de
       ! COGER, estas son: no se puede coger algo que pertenezca
       ! a un ser animado, ni algo que sea parte de otra cosa.
-      if (flag && i hasnt recipiente && i hasnt soporte) {
-        if (i has animado) {
+      if (flag && i hasnt container && i hasnt supporter) {
+        if (i has animate) {
           RazonErrorPNJ = PNJ_INTENTA_COGER_CRIATURA;
           rfalse;
         }
-        if (i has transparente) {
+        if (i has transparent) {
           RazonErrorPNJ = PNJ_INTENTA_COGER_SUBOBJETO;
           rfalse;
         }
@@ -260,7 +260,7 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
       ! simplemente comprobar si se puede tocar o no, basta
       ! verificar que la cadena de contenedores no tenga un
       ! recipiente cerrado.
-      if (i has recipiente && i hasnt abierto) {
+      if (i has container && i hasnt open) {
         RazonErrorPNJ = PNJ_OBJETO_EN_RECIPIENTE_CERRADO;
       	rfalse;
       }
@@ -277,7 +277,7 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
   ancestro i;
 
   ! Determinar si el PNJ "quien" puede ver el objeto "item"
-  ancestro = AntepasadoComun(quien, item);
+  ancestro = CommonAncestor(quien, item);
 
   ! Si no hay antepasado comun, es que objeto y PNJ están en
   ! diferentes habitaciones
@@ -297,7 +297,7 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
     ! opaco.
     i = parent(quien); 
     while (i ~= ancestro) {
-      if (i has recipiente && i hasnt abierto && i hasnt transparente) {
+      if (i has container && i hasnt open && i hasnt transparent) {
         RazonErrorPNJ = PNJ_EN_RECIPIENTE_CERRADO;
         rfalse;
       }
@@ -319,7 +319,7 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
     while (i ~= ancestro) {
       ! verificar que la cadena de contenedores no tenga un
       ! recipiente cerrado opaco.
-      if (i has recipiente && i hasnt abierto && i hasnt transparente) {
+      if (i has container && i hasnt open && i hasnt transparent) {
         RazonErrorPNJ = PNJ_OBJETO_EN_RECIPIENTE_CERRADO;
         rfalse;
       }
