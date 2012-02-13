@@ -9,18 +9,10 @@ Constant COLOR_LOCAL_MAP  = $ffffff;
 Constant COLOR_CURSOR_MAP = $00ff00;
 Constant COLOR_ACTUAL_MAP = $aaaaaa;
 Constant COLOR_PUERTA_MAP = $ff0000;
+Constant COLOR_UPDOWN_MAP = $0000ff;
 
 Verb meta 'mapa'
   *                 -> Mapa;
-
-![ DestinoSalida sitio dir
-!  destino;
-!  if (sitio provides dir) {
-!    destino = sitio.dir;
-!    if (ZRegion(destino) == 2) destino = destino();
-!    return destino;
-!  }
-!];
 
 [ DibujaPuerta cenx ceny;
   glk_window_fill_rect(gg_mapa_win, COLOR_PUERTA_MAP,
@@ -114,15 +106,74 @@ Verb meta 'mapa'
         DibujarMapa(sitio.se_to, posx + sep, posy + sep, 0);
       }
     }
+    ck = ComprobarSalida(sitio, u_to);
+    if (ck == 1) {
+      glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
+                                                          posy - mitad / 2,
+                                                          1,
+                                                          mitad);
+      for (x = 1 : x <= mitad / 4 : x++) {
+        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 + x,
+                                                            posy - mitad / 2 + x,
+                                                            1, 1);
+        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 - x,
+                                                            posy - mitad / 2 + x,
+                                                            1, 1);
+      }
+    }
+    ck = ComprobarSalida(sitio, d_to);
+    if (ck == 1) {
+      glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
+                                                          posy - mitad / 2,
+                                                          1, mitad);
+      for (x = 1 : x <= mitad / 4 : x++) {
+        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 + x,
+                                                            posy + mitad / 2 - x,
+                                                            1, 1);
+        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 - x,
+                                                            posy + mitad / 2 - x,
+                                                            1, 1);
+      }
+    }
+    ck = ComprobarSalida(sitio, in_to);
+    posx = posx - mitad / 3;
+    if (ck) {
+      glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx - mitad / 2,
+                                                          posy,
+                                                          mitad, 1);
+      for (x = 1 : x <= mitad / 4 : x++) {
+        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 - x,
+                                                            posy - x,
+                                                            1, 1);
+        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 - x,
+                                                            posy + x,
+                                                            1, 1);
+      }
+    }
+    ck = ComprobarSalida(sitio, out_to);
+    if (ck) {
+      glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx - mitad / 2,
+                                                          posy,
+                                                          mitad, 1);
+      for (x = 1 : x <= mitad / 4 : x++) {
+        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx - mitad / 2 + x,
+                                                            posy + x,
+                                                            1, 1);
+        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx - mitad / 2 + x,
+                                                            posy - x,
+                                                            1, 1);
+      }
+    }    
   }
 ];
 
 [ RefrescarMapa sitio cenx ceny
   o;
-  clearMainWindow();
+!  clearMainWindow();
+  clearGraphicWindow();
   DibujarMapa(sitio, cenx, ceny, 1);
   objectloop (o ofclass Lugar) o.dibujado = false;
-  print (name) sitio;
+!  print (name) sitio;
 ];
 
 [ EsMapeable sitio;
@@ -133,6 +184,7 @@ Verb meta 'mapa'
   destino;
   if (sitio provides dir) {
     destino = sitio.dir;
+    if (ZRegion(destino) == 3) return 3;
     if (ZRegion(destino) == 2) destino = destino();
     if (destino && destino has door) return 2;
     return EsMapeable(sitio.dir);
@@ -140,9 +192,23 @@ Verb meta 'mapa'
   rfalse;
 ];
 
+[ DestinoSalida sitio dir
+  destino;
+  if (sitio provides dir) {
+    destino = sitio.dir;
+    if (ZRegion(destino) == 2) destino = destino();
+    if (destino has door) {
+      if (sitio == destino.ladoa) destino = destino.ladob;
+      else                        destino = destino.ladoa;
+    }
+    return destino;
+  }
+];
+
 [ ValidarYRefrescar sitio dir cenx ceny;
-  if (ComprobarSalida(sitio, dir) == 1) {
-    sitio = sitio.dir;
+  if (ComprobarSalida(sitio, dir) == 1 or 2) {
+    sitio = DestinoSalida(sitio, dir);
+!    sitio = sitio.dir;
     RefrescarMapa(sitio, cenx, ceny);
   }
   return sitio;
@@ -167,7 +233,7 @@ Verb meta 'mapa'
     switch (tecla) {
       'q', 'Q': jump Salir;
       'z', 'Z': ladoCuadrado = ladoCuadrado + 20;
-                 RefrescarMapa(sitio, cenx, ceny);
+                RefrescarMapa(sitio, cenx, ceny);
       'x', 'X': if (ladoCuadrado > 21) {
                   ladoCuadrado = ladoCuadrado - 20;
                   RefrescarMapa(sitio, cenx, ceny);
@@ -180,6 +246,10 @@ Verb meta 'mapa'
       '9':     sitio = ValidarYRefrescar(sitio, ne_to, cenx, ceny);
       '1':     sitio = ValidarYRefrescar(sitio, sw_to, cenx, ceny);
       '3':     sitio = ValidarYRefrescar(sitio, se_to, cenx, ceny);
+      '-':     sitio = ValidarYRefrescar(sitio, u_to, cenx, ceny);
+      '+':     sitio = ValidarYRefrescar(sitio, d_to, cenx, ceny);
+      '*':     sitio = ValidarYRefrescar(sitio, in_to, cenx, ceny);
+      '/':     sitio = ValidarYRefrescar(sitio, out_to, cenx, ceny);
     }
   }
 .Salir;
