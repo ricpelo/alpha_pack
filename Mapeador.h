@@ -10,6 +10,9 @@ Constant COLOR_CURSOR_MAP = $00ff00;
 Constant COLOR_ACTUAL_MAP = $aaaaaa;
 Constant COLOR_PUERTA_MAP = $ff0000;
 Constant COLOR_UPDOWN_MAP = $0000ff;
+Constant COLOR_INOUT_MAP  = $0000ff;
+
+Constant ALTO_VENTANA_MAPA = 700;
 
 Verb meta 'mapa'
   *                 -> Mapa;
@@ -138,30 +141,30 @@ Verb meta 'mapa'
     ck = ComprobarSalida(sitio, in_to);
     posx = posx - mitad / 3;
     if (ck) {
-      glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx - mitad / 2,
-                                                          posy,
-                                                          mitad, 1);
+      glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
+                                                         posy,
+                                                         mitad, 1);
       for (x = 1 : x <= mitad / 4 : x++) {
-        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 - x,
-                                                            posy - x,
-                                                            1, 1);
-        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 - x,
-                                                            posy + x,
-                                                            1, 1);
+        glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx + mitad / 2 - x,
+                                                           posy - x,
+                                                           1, 1);
+        glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx + mitad / 2 - x,
+                                                           posy + x,
+                                                           1, 1);
       }
     }
     ck = ComprobarSalida(sitio, out_to);
     if (ck) {
-      glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx - mitad / 2,
-                                                          posy,
-                                                          mitad, 1);
+      glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
+                                                         posy,
+                                                         mitad, 1);
       for (x = 1 : x <= mitad / 4 : x++) {
-        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx - mitad / 2 + x,
-                                                            posy + x,
-                                                            1, 1);
-        glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx - mitad / 2 + x,
-                                                            posy - x,
-                                                            1, 1);
+        glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2 + x,
+                                                           posy + x,
+                                                           1, 1);
+        glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2 + x,
+                                                           posy - x,
+                                                           1, 1);
       }
     }    
   }
@@ -169,11 +172,10 @@ Verb meta 'mapa'
 
 [ RefrescarMapa sitio cenx ceny
   o;
-!  clearMainWindow();
-  clearGraphicWindow();
+  clearMainWindow();
   DibujarMapa(sitio, cenx, ceny, 1);
   objectloop (o ofclass Lugar) o.dibujado = false;
-!  print (name) sitio;
+  print (name) sitio;
 ];
 
 [ EsMapeable sitio;
@@ -208,7 +210,6 @@ Verb meta 'mapa'
 [ ValidarYRefrescar sitio dir cenx ceny;
   if (ComprobarSalida(sitio, dir) == 1 or 2) {
     sitio = DestinoSalida(sitio, dir);
-!    sitio = sitio.dir;
     RefrescarMapa(sitio, cenx, ceny);
   }
   return sitio;
@@ -219,7 +220,7 @@ Verb meta 'mapa'
   #ifdef ControlTimer;
   ControlTimer.PausarTick();
   #endif;
-  openGraphicWindow(700);
+  openGraphicWindow(ALTO_VENTANA_MAPA);
   gg_mapa_win = gg_bigwin;
   glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
   ancho = (gg_arguments-->0); ! -(px*2); ! ancho vent. (RESTA pixels_borde*2)
