@@ -1,16 +1,34 @@
 ! Mapeador.h
 
+System_file;
+
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
 
 Constant COLOR_LOCAL_MAP  = $ffffff;
 Constant COLOR_CURSOR_MAP = $00ff00;
 Constant COLOR_ACTUAL_MAP = $aaaaaa;
+Constant COLOR_PUERTA_MAP = $ff0000;
 
-Verb meta 'mapea'
+Verb meta 'mapa'
   *                 -> Mapa;
 
-[ DibujarMapa sitio posx posy central color sep mitad x y;
+![ DestinoSalida sitio dir
+!  destino;
+!  if (sitio provides dir) {
+!    destino = sitio.dir;
+!    if (ZRegion(destino) == 2) destino = destino();
+!    return destino;
+!  }
+!];
+
+[ DibujaPuerta cenx ceny;
+  glk_window_fill_rect(gg_mapa_win, COLOR_PUERTA_MAP,
+                       cenx - 5, ceny - 5, 10, 10);
+];
+
+[ DibujarMapa sitio posx posy central
+  color sep mitad x y ck;
   if (~~sitio.dibujado) {
     sitio.dibujado = true;
     if (sitio == location) color = COLOR_ACTUAL_MAP;
@@ -20,54 +38,87 @@ Verb meta 'mapea'
     glk_window_fill_rect(gg_mapa_win, color, posx - mitad, posy - mitad,
                                              ladoCuadrado, ladoCuadrado);
     sep = ladoCuadrado + mitad;
-    if (sitio provides e_to && EsMapeable(sitio.e_to)) {
-      glk_window_fill_rect(gg_mapa_win, $ffffff, posx + mitad, posy,
+    ck = ComprobarSalida(sitio, e_to); 
+    if (ck) {
+      if (ck == 2) DibujaPuerta(posx + mitad, posy);
+      else {
+        glk_window_fill_rect(gg_mapa_win, $ffffff, posx + mitad, posy,
+                                                   sep - ladoCuadrado + 1, 1);
+        DibujarMapa(sitio.e_to, posx + sep, posy, 0);
+      }
+    }
+    ck = ComprobarSalida(sitio, w_to); 
+    if (ck) {
+      if (ck == 2) DibujaPuerta(posx - mitad, posy);
+      else {
+        glk_window_fill_rect(gg_mapa_win, $ffffff, posx - sep + mitad, posy,
                                                  sep - ladoCuadrado + 1, 1);
-      DibujarMapa(sitio.e_to, posx + sep, posy, 0);
-    }
-    if (sitio provides w_to && EsMapeable(sitio.w_to)) {
-      glk_window_fill_rect(gg_mapa_win, $ffffff, posx - sep + mitad, posy,
-                                                 sep - ladoCuadrado + 1, 1);
-      DibujarMapa(sitio.w_to, posx - sep, posy, 0);
-    }
-    if (sitio provides n_to && EsMapeable(sitio.n_to)) {
-      glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy - sep + mitad, 1,
-                                                 sep - ladoCuadrado + 1);
-      DibujarMapa(sitio.n_to, posx, posy - sep, 0);
-    }
-    if (sitio provides s_to && EsMapeable(sitio.s_to)) {
-      glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy + mitad, 1,
-                                                 sep - ladoCuadrado + 1);
-      DibujarMapa(sitio.s_to, posx, posy + sep, 0);
-    }
-    if (sitio provides nw_to && EsMapeable(sitio.nw_to)) {
-      for (x = posx - sep + mitad, y = posy - sep + mitad : x <= posx - mitad : x++, y++) {
-        glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
+        DibujarMapa(sitio.w_to, posx - sep, posy, 0);
       }
-      DibujarMapa(sitio.nw_to, posx - sep, posy - sep, 0);
     }
-    if (sitio provides ne_to && EsMapeable(sitio.ne_to)) {
-      for (x = posx + mitad, y = posy - mitad : x <= posx + sep - mitad : x++, y--) {
-        glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
+    ck = ComprobarSalida(sitio, n_to); 
+    if (ck) {
+      if (ck == 2) DibujaPuerta(posx, posy - mitad);
+      else {
+        glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy - sep + mitad, 1,
+                                                   sep - ladoCuadrado + 1);
+        DibujarMapa(sitio.n_to, posx, posy - sep, 0);
       }
-      DibujarMapa(sitio.ne_to, posx + sep, posy - sep, 0);
     }
-    if (sitio provides sw_to && EsMapeable(sitio.sw_to)) {
-      for (x = posx - sep + mitad, y = posy + sep - mitad : x <= posx - mitad : x++, y--) {
-        glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
+    ck = ComprobarSalida(sitio, s_to);
+    if (ck) {
+      if (ck == 2) DibujaPuerta(posx, posy + mitad);
+      else {
+        glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy + mitad, 1,
+                                                   sep - ladoCuadrado + 1);
+        DibujarMapa(sitio.s_to, posx, posy + sep, 0);
       }
-      DibujarMapa(sitio.sw_to, posx - sep, posy + sep, 0);
     }
-    if (sitio provides se_to && EsMapeable(sitio.se_to)) {
-      for (x = posx + mitad, y = posy + mitad : x <= posx + sep - mitad : x++, y++) {
-        glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
+    ck = ComprobarSalida(sitio, nw_to);
+    if (ck) {
+      if (ck == 2) DibujaPuerta(posx - mitad, posy - mitad);
+      else {
+        for (x = posx - sep + mitad, y = posy - sep + mitad : x <= posx - mitad : x++, y++) {
+          glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
+        }
+        DibujarMapa(sitio.nw_to, posx - sep, posy - sep, 0);
       }
-      DibujarMapa(sitio.se_to, posx + sep, posy + sep, 0);
+    }
+    ck = ComprobarSalida(sitio, ne_to);
+    if (ck) {
+      if (ck == 2) DibujaPuerta(posx + mitad, posy - mitad);
+      else {
+        for (x = posx + mitad, y = posy - mitad : x <= posx + sep - mitad : x++, y--) {
+          glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
+        }
+        DibujarMapa(sitio.ne_to, posx + sep, posy - sep, 0);
+      }
+    }
+    ck = ComprobarSalida(sitio, sw_to);
+    if (ck) {
+      if (ck == 2) DibujaPuerta(posx - mitad, posy + mitad);
+      else {
+        for (x = posx - sep + mitad, y = posy + sep - mitad : x <= posx - mitad : x++, y--) {
+          glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
+        }
+        DibujarMapa(sitio.sw_to, posx - sep, posy + sep, 0);
+      }
+    }
+    ck = ComprobarSalida(sitio, se_to);
+    if (ck) {
+      if (ck == 2) DibujaPuerta(posx + mitad, posy + mitad);
+      else {
+        for (x = posx + mitad, y = posy + mitad : x <= posx + sep - mitad : x++, y++) {
+          glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
+        }
+        DibujarMapa(sitio.se_to, posx + sep, posy + sep, 0);
+      }
     }
   }
 ];
 
-[ RefrescarMapa sitio cenx ceny o;
+[ RefrescarMapa sitio cenx ceny
+  o;
   clearMainWindow();
   DibujarMapa(sitio, cenx, ceny, 1);
   objectloop (o ofclass Lugar) o.dibujado = false;
@@ -78,8 +129,30 @@ Verb meta 'mapea'
   return sitio ofclass Lugar && sitio has visited;
 ];
 
-[ MapaSub ancho alto cenx ceny sitio tecla;
-!  ControlTimer.PausarTimer();
+[ ComprobarSalida sitio dir
+  destino;
+  if (sitio provides dir) {
+    destino = sitio.dir;
+    if (ZRegion(destino) == 2) destino = destino();
+    if (destino && destino has door) return 2;
+    return EsMapeable(sitio.dir);
+  }
+  rfalse;
+];
+
+[ ValidarYRefrescar sitio dir cenx ceny;
+  if (ComprobarSalida(sitio, dir) == 1) {
+    sitio = sitio.dir;
+    RefrescarMapa(sitio, cenx, ceny);
+  }
+  return sitio;
+];
+
+[ MapaSub
+  ancho alto cenx ceny sitio tecla;
+  #ifdef ControlTimer;
+  ControlTimer.PausarTick();
+  #endif;
   openGraphicWindow(700);
   gg_mapa_win = gg_bigwin;
   glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
@@ -99,28 +172,22 @@ Verb meta 'mapea'
                   ladoCuadrado = ladoCuadrado - 20;
                   RefrescarMapa(sitio, cenx, ceny);
                 }
-      -5, '2': if (sitio provides s_to && EsMapeable(sitio.s_to)) {
-            sitio = sitio.s_to;
-            RefrescarMapa(sitio, cenx, ceny);
-          }
-      -4, '8': if (sitio provides n_to && EsMapeable(sitio.n_to)) {
-           sitio = sitio.n_to;
-           RefrescarMapa(sitio, cenx, ceny);
-          }
-      -2, '4': if (sitio provides w_to && EsMapeable(sitio.w_to)) {
-            sitio = sitio.w_to;
-            RefrescarMapa(sitio, cenx, ceny);
-          }
-      -3, '6': if (sitio provides e_to && EsMapeable(sitio.e_to)) {
-            sitio = sitio.e_to;
-            RefrescarMapa(sitio, cenx, ceny);
-          }
+      -5, '2': sitio = ValidarYRefrescar(sitio, s_to,  cenx, ceny);
+      -4, '8': sitio = ValidarYRefrescar(sitio, n_to,  cenx, ceny);
+      -2, '4': sitio = ValidarYRefrescar(sitio, w_to,  cenx, ceny);
+      -3, '6': sitio = ValidarYRefrescar(sitio, e_to,  cenx, ceny);
+      '7':     sitio = ValidarYRefrescar(sitio, nw_to, cenx, ceny);
+      '9':     sitio = ValidarYRefrescar(sitio, ne_to, cenx, ceny);
+      '1':     sitio = ValidarYRefrescar(sitio, sw_to, cenx, ceny);
+      '3':     sitio = ValidarYRefrescar(sitio, se_to, cenx, ceny);
     }
   }
 .Salir;
   clearMainWindow();
   EncenderGraficosSub(true);
-!  ControlTimer.ReanudarTimer();
+  #ifdef ControlTimer;
+  ControlTimer.ReanudarTick();
+  #endif;
   <<Look>>;
 ];
 
