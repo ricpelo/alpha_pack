@@ -143,7 +143,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, d_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx + mitad / 2, posy + mitad / 2);
+      if (ck == 2) DibujarPuerta(posx + mitad / 2, posy - mitad / 2);
 
       glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
                            posy - mitad / 2, 1, mitad);
@@ -157,7 +157,7 @@ Verb meta 'mapa'
     ck = ComprobarSalida(sitio, in_to);
     posx = posx - mitad / 3;
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx, posy - mitad / 2);
+      if (ck == 2) DibujarPuerta(posx + mitad / 2, posy);
 
       glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
                            posy, mitad, 1);
@@ -170,7 +170,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, out_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx, posy - mitad / 2 + mitad); 
+      if (ck == 2) DibujarPuerta(posx - mitad / 2 + mitad / 4, posy); 
  
       glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
                            posy, mitad, 1);
