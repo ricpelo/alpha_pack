@@ -1,4 +1,22 @@
-! Mapeador.h
+!
+! Mapeador.h - Una librería para generar el mapa de la aventura automáticamente
+!
+! Copyright (c) 2012 Ricardo Pérez López (Alpha Aventuras)
+!
+
+! This program is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! This program is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 System_file;
 
@@ -17,9 +35,10 @@ Constant ALTO_VENTANA_MAPA = 700;
 Verb meta 'mapa'
   *                 -> Mapa;
 
-[ DibujaPuerta cenx ceny;
+[ DibujarPuerta cenx ceny;
   glk_window_fill_rect(gg_mapa_win, COLOR_PUERTA_MAP,
-                       cenx - 5, ceny - 5, 10, 10);
+                       cenx - ladoCuadrado / 8, ceny - ladoCuadrado / 8,
+                       ladoCuadrado / 4, ladoCuadrado / 4);
 ];
 
 [ DibujarMapa sitio posx posy central
@@ -31,47 +50,47 @@ Verb meta 'mapa'
     else                   color = COLOR_LOCAL_MAP;
     mitad = ladoCuadrado / 2;
     glk_window_fill_rect(gg_mapa_win, color, posx - mitad, posy - mitad,
-                                             ladoCuadrado, ladoCuadrado);
+                         ladoCuadrado, ladoCuadrado);
     sep = ladoCuadrado + mitad;
     ck = ComprobarSalida(sitio, e_to); 
     if (ck) {
-      if (ck == 2) DibujaPuerta(posx + mitad, posy);
+      if (ck == 2) DibujarPuerta(posx + mitad, posy);
       else {
         glk_window_fill_rect(gg_mapa_win, $ffffff, posx + mitad, posy,
-                                                   sep - ladoCuadrado + 1, 1);
+                             sep - ladoCuadrado + 1, 1);
         DibujarMapa(sitio.e_to, posx + sep, posy, 0);
       }
     }
     ck = ComprobarSalida(sitio, w_to); 
     if (ck) {
-      if (ck == 2) DibujaPuerta(posx - mitad, posy);
+      if (ck == 2) DibujarPuerta(posx - mitad, posy);
       else {
         glk_window_fill_rect(gg_mapa_win, $ffffff, posx - sep + mitad, posy,
-                                                 sep - ladoCuadrado + 1, 1);
+                             sep - ladoCuadrado + 1, 1);
         DibujarMapa(sitio.w_to, posx - sep, posy, 0);
       }
     }
     ck = ComprobarSalida(sitio, n_to); 
     if (ck) {
-      if (ck == 2) DibujaPuerta(posx, posy - mitad);
+      if (ck == 2) DibujarPuerta(posx, posy - mitad);
       else {
         glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy - sep + mitad, 1,
-                                                   sep - ladoCuadrado + 1);
+                             sep - ladoCuadrado + 1);
         DibujarMapa(sitio.n_to, posx, posy - sep, 0);
       }
     }
     ck = ComprobarSalida(sitio, s_to);
     if (ck) {
-      if (ck == 2) DibujaPuerta(posx, posy + mitad);
+      if (ck == 2) DibujarPuerta(posx, posy + mitad);
       else {
         glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy + mitad, 1,
-                                                   sep - ladoCuadrado + 1);
+                             sep - ladoCuadrado + 1);
         DibujarMapa(sitio.s_to, posx, posy + sep, 0);
       }
     }
     ck = ComprobarSalida(sitio, nw_to);
     if (ck) {
-      if (ck == 2) DibujaPuerta(posx - mitad, posy - mitad);
+      if (ck == 2) DibujarPuerta(posx - mitad, posy - mitad);
       else {
         for (x = posx - sep + mitad, y = posy - sep + mitad : x <= posx - mitad : x++, y++) {
           glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
@@ -81,7 +100,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, ne_to);
     if (ck) {
-      if (ck == 2) DibujaPuerta(posx + mitad, posy - mitad);
+      if (ck == 2) DibujarPuerta(posx + mitad, posy - mitad);
       else {
         for (x = posx + mitad, y = posy - mitad : x <= posx + sep - mitad : x++, y--) {
           glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
@@ -91,7 +110,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, sw_to);
     if (ck) {
-      if (ck == 2) DibujaPuerta(posx - mitad, posy + mitad);
+      if (ck == 2) DibujarPuerta(posx - mitad, posy + mitad);
       else {
         for (x = posx - sep + mitad, y = posy + sep - mitad : x <= posx - mitad : x++, y--) {
           glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
@@ -101,7 +120,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, se_to);
     if (ck) {
-      if (ck == 2) DibujaPuerta(posx + mitad, posy + mitad);
+      if (ck == 2) DibujarPuerta(posx + mitad, posy + mitad);
       else {
         for (x = posx + mitad, y = posy + mitad : x <= posx + sep - mitad : x++, y++) {
           glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
@@ -110,61 +129,56 @@ Verb meta 'mapa'
       }
     }
     ck = ComprobarSalida(sitio, u_to);
-    if (ck == 1) {
+    if (ck) {
+      if (ck == 2) DibujarPuerta(posx + mitad / 2, posy - mitad / 2);
+                                        
       glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
-                                                          posy - mitad / 2,
-                                                          1,
-                                                          mitad);
+                           posy - mitad / 2, 1, mitad);
       for (x = 1 : x <= mitad / 4 : x++) {
         glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 + x,
-                                                            posy - mitad / 2 + x,
-                                                            1, 1);
+                             posy - mitad / 2 + x, 1, 1);
         glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 - x,
-                                                            posy - mitad / 2 + x,
-                                                            1, 1);
+                             posy - mitad / 2 + x, 1, 1);
       }
     }
     ck = ComprobarSalida(sitio, d_to);
-    if (ck == 1) {
+    if (ck) {
+      if (ck == 2) DibujarPuerta(posx + mitad / 2, posy + mitad / 2);
+
       glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
-                                                          posy - mitad / 2,
-                                                          1, mitad);
+                           posy - mitad / 2, 1, mitad);
       for (x = 1 : x <= mitad / 4 : x++) {
         glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 + x,
-                                                            posy + mitad / 2 - x,
-                                                            1, 1);
+                             posy + mitad / 2 - x, 1, 1);
         glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2 - x,
-                                                            posy + mitad / 2 - x,
-                                                            1, 1);
+                             posy + mitad / 2 - x, 1, 1);
       }
     }
     ck = ComprobarSalida(sitio, in_to);
     posx = posx - mitad / 3;
     if (ck) {
+      if (ck == 2) DibujarPuerta(posx, posy - mitad / 2);
+
       glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
-                                                         posy,
-                                                         mitad, 1);
+                           posy, mitad, 1);
       for (x = 1 : x <= mitad / 4 : x++) {
         glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx + mitad / 2 - x,
-                                                           posy - x,
-                                                           1, 1);
+                             posy - x, 1, 1);
         glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx + mitad / 2 - x,
-                                                           posy + x,
-                                                           1, 1);
+                             posy + x, 1, 1);
       }
     }
     ck = ComprobarSalida(sitio, out_to);
     if (ck) {
+      if (ck == 2) DibujarPuerta(posx, posy - mitad / 2 + mitad); 
+ 
       glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
-                                                         posy,
-                                                         mitad, 1);
+                           posy, mitad, 1);
       for (x = 1 : x <= mitad / 4 : x++) {
         glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2 + x,
-                                                           posy + x,
-                                                           1, 1);
+                             posy + x, 1, 1);
         glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2 + x,
-                                                           posy - x,
-                                                           1, 1);
+                             posy - x, 1, 1);
       }
     }    
   }
@@ -239,18 +253,18 @@ Verb meta 'mapa'
                   ladoCuadrado = ladoCuadrado - 20;
                   RefrescarMapa(sitio, cenx, ceny);
                 }
-      -5, '2': sitio = ValidarYRefrescar(sitio, s_to,  cenx, ceny);
-      -4, '8': sitio = ValidarYRefrescar(sitio, n_to,  cenx, ceny);
-      -2, '4': sitio = ValidarYRefrescar(sitio, w_to,  cenx, ceny);
-      -3, '6': sitio = ValidarYRefrescar(sitio, e_to,  cenx, ceny);
-      '7':     sitio = ValidarYRefrescar(sitio, nw_to, cenx, ceny);
-      '9':     sitio = ValidarYRefrescar(sitio, ne_to, cenx, ceny);
-      '1':     sitio = ValidarYRefrescar(sitio, sw_to, cenx, ceny);
-      '3':     sitio = ValidarYRefrescar(sitio, se_to, cenx, ceny);
-      '-':     sitio = ValidarYRefrescar(sitio, u_to, cenx, ceny);
-      '+':     sitio = ValidarYRefrescar(sitio, d_to, cenx, ceny);
-      '*':     sitio = ValidarYRefrescar(sitio, in_to, cenx, ceny);
-      '/':     sitio = ValidarYRefrescar(sitio, out_to, cenx, ceny);
+      -5, '2':  sitio = ValidarYRefrescar(sitio, s_to,   cenx, ceny);
+      -4, '8':  sitio = ValidarYRefrescar(sitio, n_to,   cenx, ceny);
+      -2, '4':  sitio = ValidarYRefrescar(sitio, w_to,   cenx, ceny);
+      -3, '6':  sitio = ValidarYRefrescar(sitio, e_to,   cenx, ceny);
+      '7':      sitio = ValidarYRefrescar(sitio, nw_to,  cenx, ceny);
+      '9':      sitio = ValidarYRefrescar(sitio, ne_to,  cenx, ceny);
+      '1':      sitio = ValidarYRefrescar(sitio, sw_to,  cenx, ceny);
+      '3':      sitio = ValidarYRefrescar(sitio, se_to,  cenx, ceny);
+      '-', -12: sitio = ValidarYRefrescar(sitio, u_to,   cenx, ceny); ! Inicio
+      '+', -13: sitio = ValidarYRefrescar(sitio, d_to,   cenx, ceny); ! Fin
+      '*', -6:  sitio = ValidarYRefrescar(sitio, in_to,  cenx, ceny); ! Enter
+      '/', -7:  sitio = ValidarYRefrescar(sitio, out_to, cenx, ceny); ! Retroceso
     }
   }
 .Salir;
