@@ -41,13 +41,20 @@ Verb meta 'mapa'
                        ladoCuadrado / 4, ladoCuadrado / 4);
 ];
 
+#ifndef LugarReal;
+[ LugarReal;
+  if (location == thedark) return real_location;
+  else                     return location;
+];
+#endif;
+
 [ DibujarMapa sitio posx posy central
   color sep mitad x y ck;
   if (~~sitio.dibujado) {
     sitio.dibujado = true;
-    if (sitio == location) color = COLOR_ACTUAL_MAP;
-    else if (central == 1) color = COLOR_CURSOR_MAP;
-    else                   color = COLOR_LOCAL_MAP;
+    if (sitio == LugarReal()) color = COLOR_ACTUAL_MAP;
+    else if (central == 1)    color = COLOR_CURSOR_MAP;
+    else                      color = COLOR_LOCAL_MAP;
     mitad = ladoCuadrado / 2;
     glk_window_fill_rect(gg_mapa_win, color, posx - mitad, posy - mitad,
                          ladoCuadrado, ladoCuadrado);
@@ -241,7 +248,7 @@ Verb meta 'mapa'
   alto  = (gg_arguments-->1); ! -(py*2); ! alto vent. (RESTA pixels_borde*2)
   cenx = ancho / 2;
   ceny = alto / 2;
-  sitio = location;
+  sitio = LugarReal();
   RefrescarMapa(sitio, cenx, ceny);
   while (true) {
     tecla = KeyDelay();
