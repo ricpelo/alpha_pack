@@ -274,6 +274,9 @@ Verb meta 'mapa'
       '+', -13: sitio = ValidarYRefrescar(sitio, d_to,   cenx, ceny); ! Fin
       '*', -6:  sitio = ValidarYRefrescar(sitio, in_to,  cenx, ceny); ! Enter
       '/', -7:  sitio = ValidarYRefrescar(sitio, out_to, cenx, ceny); ! Retroceso
+      #ifdef DEBUG;
+      ' ':      playerTo(sitio); jump Salir;
+      #endif;
     }
   }
 .Salir;
