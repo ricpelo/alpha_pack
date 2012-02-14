@@ -20,6 +20,8 @@
 
 System_file;
 
+Include "infglk";
+
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
 
