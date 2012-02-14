@@ -202,7 +202,11 @@ Verb meta 'mapa'
 ];
 
 [ EsMapeable sitio;
+  #ifdef DEBUG;
+  return sitio ofclass Lugar;
+  #ifnot;
   return sitio ofclass Lugar && sitio has visited;
+  #endif;
 ];
 
 [ ComprobarSalida sitio dir
