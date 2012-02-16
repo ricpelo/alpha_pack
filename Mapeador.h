@@ -22,6 +22,8 @@ System_file;
 
 Include "infglk";
 
+Message "[ Incluyendo Mapeador.h ]";
+
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
 
@@ -242,18 +244,31 @@ Verb meta 'mapa'
   return sitio;
 ];
 
-[ MapaSub
-  ancho alto cenx ceny sitio tecla;
+[ AbrirVentanaMapa;
   #ifdef ControlTimer;
   ControlTimer.PausarTick();
   #endif;
   openGraphicWindow(ALTO_VENTANA_MAPA);
   gg_mapa_win = gg_bigwin;
+];
+
+[ CerrarVentanaMapa;
+  clearMainWindow();
+  #ifdef EncenderGraficos;
+  EncenderGraficos();
+  #endif;
+  #ifdef ControlTimer;
+  ControlTimer.ReanudarTick();
+  #endif;
+  <<Look>>;
+];
+
+[ MapaSub
+  cenx ceny sitio tecla;
+  AbrirVentanaMapa();
   glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
-  ancho = (gg_arguments-->0); ! -(px*2); ! ancho vent. (RESTA pixels_borde*2)
-  alto  = (gg_arguments-->1); ! -(py*2); ! alto vent. (RESTA pixels_borde*2)
-  cenx = ancho / 2;
-  ceny = alto / 2;
+  cenx = (gg_arguments-->0) / 2; ! ancho / 2
+  ceny = (gg_arguments-->1) / 2; ! alto / 2
   sitio = LugarReal();
   RefrescarMapa(sitio, cenx, ceny);
   while (true) {
@@ -284,11 +299,6 @@ Verb meta 'mapa'
     }
   }
 .Salir;
-  clearMainWindow();
-  EncenderGraficosSub(true);
-  #ifdef ControlTimer;
-  ControlTimer.ReanudarTick();
-  #endif;
-  <<Look>>;
+  CerrarVentanaMapa();
 ];
 
