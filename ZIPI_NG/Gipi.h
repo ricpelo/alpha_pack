@@ -314,7 +314,7 @@ ZIPI_Otro Otro_vacio;
 	 'p', 'P':
 	    cur++;
 	    print "(", cur, "/", count, ") ";
-            print (string) (_h.&ZIPI_pistas-->(cur-1))
+            print (string) (_h.&ZIPI_pistas-->(cur-1));
             print "^^";
 	    break;
 	 'q', 'Q', 27, 131, 10, 8:

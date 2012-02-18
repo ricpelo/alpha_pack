@@ -21,7 +21,7 @@
 Message " __________________________________________________________________";
 Message "|                  * TIMER:  I M P O R T A N T E *                 |";
 Message "|                  ===============================                 |";
-Message "| 1. Pon 'Replace KeyDelay;' justo antes de 'Include ~EParser.h~;' |";
+Message "| 1. Pon 'Replace KeyDelay;' justo antes de 'Include ~Parser.h~;'  |";
 Message "| 2. Si usas tu propia rutina HandleGlkEvent(),                    |";
 Message "|    no olvides llamar desde esa rutina a:                         |";
 Message "|    ControlTimer.CT_HandleGlkEvent(ev, context, buffer)           |";
@@ -40,18 +40,16 @@ Message "|__________________________________________________________________|";
 
 
 ! Nuestra particular versión de WaitDelay:
-[ WaitDelay delay;
-  return ControlTimer.CT_WaitDelay(delay);
-];
+![ WaitDelay delay;
+!  return ControlTimer.CT_WaitDelay(delay);
+!];
 
 
 #ifndef VR;
-  [ VR valor;
-    if (ZRegion(valor) == 2)
-      return valor();
-    else
-      return valor;
-  ];
+[ VR valor;
+  if (ZRegion(valor) == 2) return valor();
+  else                     return valor;
+];
 #endif;
 
 
@@ -124,27 +122,33 @@ Object ControlTimer
       }
     ],
     ! Nuestra propia versión de KeyDelay:
-    CT_KeyDelay [ delay;
-      glk($00D6, delay * 5);              ! glk_request_timer_events
-      glk($00D2, gg_mainwin);             ! glk_request_char_event(gg_mainwin);
-      while (1) {
-        glk($00C0, gg_arguments);         ! glk_select(gg_arguments);
-        if ((gg_arguments-->0) == 2)      ! 2 = evType_CharInput
-          break;
-        if ((gg_arguments-->0) == 1) {
-          glk($00D3, gg_mainwin);         ! glk_cancel_char_event
-          glk($00D6, self.tick);          ! glk_request_timer_events
-          return 0;
+    CT_KeyDelay [ delay
+      key done ix;
+      glk($00D2, gg_mainwin); ! request_char_event
+      glk($00D6, delay * 5);  ! request_timer_events
+      while (~~done) {
+        glk($00C0, gg_event); ! select
+        ix = HandleGlkEvent(gg_event, 1, gg_arguments);
+        if (ix == 2) {
+          key = gg_arguments-->0;
+          done = true;
+        }
+        else if (ix >= 0 && gg_event-->0 == 1 or 2) {
+          key = gg_event-->2;
+          done = true;
         }
       }
-      glk($00D6, self.tick);
-      return gg_arguments-->2;
+      glk($00D3, gg_mainwin); ! cancel_char_event
+      glk($00D6, self.tick);  ! request_timer_events
+      return key;
     ],
     ! Nuestra versión de HandleGlkEvent:
-    CT_HandleGlkEvent [ev context buffer i t;
+    CT_HandleGlkEvent [ev context buffer
+      i t;
       context = context;
       switch (ev-->0) {
         1: ! evtype_Timer == 1
+           if (context == 1) return 1;  ! character input request
            self.contexto_handle_glk = true;
            if (self.condicion) {  ! Ver PausarTimers() y ReanudarTimers()
              self.ReiniciarImpresion();
