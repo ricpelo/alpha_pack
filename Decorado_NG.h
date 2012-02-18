@@ -151,7 +151,7 @@ class Decorado
     description 0,  ! La descripción del objeto
     palabra_real 0, ! La palabra exacta que ha usado el jugador
     gender 0,       ! El género del objeto
-    describe 0,    ! El array de descripciones
+    describe 0,     ! El array de descripciones
     sinonimos 0,    ! El array de sinónimos
     palabra 0,      ! Si es un sinónimo, la palabra correspondiente en 'describir'.
                     ! Si no lo es, vale lo mismo que 'palabra_real'
@@ -166,6 +166,7 @@ class Decorado
           self.gender = (self.&describe)-->(i * 3 + 2);
           self.palabra = x;
           self.palabra_real = x;
+          PronounNotice(self);
           rtrue;
         }
       }
@@ -181,6 +182,7 @@ class Decorado
               if (self.gender == -1) {
                 self.gender = (self.&describe)-->(i * 3 + 2);
               }
+              PronounNotice(self);
               rtrue;
             }
           }
@@ -225,6 +227,7 @@ class Decorado
               self.palabra = w;
               self.palabra_real = w;
               self.gender = (self.&describe)-->(i * 3 + 2);
+              PronounNotice(self);
             }
             c++;
             if (r > 0) {
@@ -270,6 +273,7 @@ class Decorado
                 }
                 break;
               } else {
+                PronounNotice(self);
                 return c;
               }
             }
