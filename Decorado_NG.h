@@ -113,17 +113,13 @@ Message "Incluyendo Decorado_NG, por Zak y Sothoth";
 !
 ! Rutina que ejecuta rutinas si las encuentra
 !
-Ifndef VR;
+#ifndef VR;
 [ VR valor;
-
-!print "[VR: ", valor, " --> ", ZRegion( valor ), " ]^";
-
- if ( ZRegion( valor ) == 2 )
-  return valor();
- else
-  return valor;
+! print "[VR: ", valor, " --> ", ZRegion(valor), " ]^";
+  if (ZRegion(valor) == 2) return valor();
+  else                     return valor;
 ];
-EndIf;
+#endif;
 
 !
 ! CLASE DECORADO
@@ -284,14 +280,14 @@ class Decorado
     before [;
       Examine: rfalse;
       Take:    "No puedes hacerlo, ya que está", (n) self, " fij", (o) self,
-                " en su sitio.";
-      Push:  print_ret (The) self, " no parece que pueda", (n) self,
-                " ser empujad", (o) self, ".";
-      Smell:     "No parece que huela", (n) self, " a nada especial.";
-      Listen: "No produce", (n) self, " ningún sonido.";
-      Search: "No hay nada que buscar en eso.";
-      Touch:    "No notas nada especial al tacto.";
-      default:  "No hay ninguna razón para hacer eso.";
+               " en su sitio.";
+      Push:    print_ret (The) self, " no parece que pueda", (n) self,
+               " ser empujad", (o) self, ".";
+      Smell:   "No parece que huela", (n) self, " a nada especial.";
+      Listen:  "No produce", (n) self, " ningún sonido.";
+      Search:  "No hay nada que buscar en eso.";
+      Touch:   "No notas nada especial al tacto.";
+      default: "No hay ninguna razón para hacer eso.";
     ],
   has
     scenery concealed;

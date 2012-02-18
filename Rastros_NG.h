@@ -629,37 +629,34 @@ Endif;
 !
 ! Rutina que ejecuta rutinas si las encuentra
 !
-Ifndef VR;
+#ifndef VR;
 [ VR valor;
-  !print "[VR: ", valor, " --> ", ZRegion( valor ), " ]^";
-
-  if (ZRegion(valor) == 2)
-    return valor();
-  else
-    return valor;
+! print "[VR: ", valor, " --> ", ZRegion(valor), " ]^";
+  if (ZRegion(valor) == 2) return valor();
+  else                     return valor;
 ];
-EndIf;
+#endif;
 
 !
 ! Rutina de decir direcciones
 !
-Ifndef DirDada;
+#ifndef DirDada;
 [ DirDada i;
-  switch(i) {
-    n_obj:       print "hacia el norte";
-    s_obj:       print "hacia el sur";
-    e_obj:       print "hacia el este";
-    w_obj:       print "hacia el oeste";
-    ne_obj:      print "hacia el noreste";
-    nw_obj:      print "hacia el noroeste";
-    se_obj:      print "hacia el sureste";
-    sw_obj:      print "hacia el suroeste";
-    u_obj:  print "hacia arriba";
+  switch (i) {
+    n_obj:   print "hacia el norte";
+    s_obj:   print "hacia el sur";
+    e_obj:   print "hacia el este";
+    w_obj:   print "hacia el oeste";
+    ne_obj:  print "hacia el noreste";
+    nw_obj:  print "hacia el noroeste";
+    se_obj:  print "hacia el sureste";
+    sw_obj:  print "hacia el suroeste";
+    u_obj:   print "hacia arriba";
     d_obj:   print "hacia abajo";
-    in_obj: print "hacia el interior";
-    out_obj:  print "hacia el exterior";
-    default:     print "hacia ", (the) i;           ! (c) Alpha
+    in_obj:  print "hacia el interior";
+    out_obj: print "hacia el exterior";
+    default: print "hacia ", (the) i;           ! (c) Alpha
   }
 ];
-Endif;
+#endif;
 
