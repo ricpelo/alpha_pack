@@ -82,6 +82,7 @@ Object ControlTimer
     longitud 0,                           ! Longitud del buffer a restaurar
     RestaurarLineaOrdenes [ buffer;       ! Restaura la línea de órdenes
       if (deadflag == 1) {
+        self.DesactivarTick();
         print "^^";
         L__M(##Miscellany, 3);
         DisplayStatus();
