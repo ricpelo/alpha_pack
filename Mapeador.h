@@ -54,7 +54,7 @@ Verb meta 'mapa'
 
 [ DibujarMapa sitio posx posy central
   color sep mitad x y ck;
-  if (~~sitio.dibujado) {
+  if (~~(sitio.dibujado)) {
     sitio.dibujado = true;
     if (sitio == LugarReal()) color = COLOR_ACTUAL_MAP;
     else if (central == 1)    color = COLOR_CURSOR_MAP;
@@ -274,27 +274,27 @@ Verb meta 'mapa'
   while (true) {
     tecla = KeyDelay();
     switch (tecla) {
-      'q', 'Q': jump Salir;
-      'z', 'Z': ladoCuadrado = ladoCuadrado + 20;
-                RefrescarMapa(sitio, cenx, ceny);
-      'x', 'X': if (ladoCuadrado > 21) {
-                  ladoCuadrado = ladoCuadrado - 20;
-                  RefrescarMapa(sitio, cenx, ceny);
-                }
-      -5, '2':  sitio = ValidarYRefrescar(sitio, s_to,   cenx, ceny);
-      -4, '8':  sitio = ValidarYRefrescar(sitio, n_to,   cenx, ceny);
-      -2, '4':  sitio = ValidarYRefrescar(sitio, w_to,   cenx, ceny);
-      -3, '6':  sitio = ValidarYRefrescar(sitio, e_to,   cenx, ceny);
-      '7':      sitio = ValidarYRefrescar(sitio, nw_to,  cenx, ceny);
-      '9':      sitio = ValidarYRefrescar(sitio, ne_to,  cenx, ceny);
-      '1':      sitio = ValidarYRefrescar(sitio, sw_to,  cenx, ceny);
-      '3':      sitio = ValidarYRefrescar(sitio, se_to,  cenx, ceny);
-      '-', -12: sitio = ValidarYRefrescar(sitio, u_to,   cenx, ceny); ! Inicio
-      '+', -13: sitio = ValidarYRefrescar(sitio, d_to,   cenx, ceny); ! Fin
-      '*', -6:  sitio = ValidarYRefrescar(sitio, in_to,  cenx, ceny); ! Enter
-      '/', -7:  sitio = ValidarYRefrescar(sitio, out_to, cenx, ceny); ! Retroceso
+      'q', 'Q':           jump Salir;
+      'z', 'Z', '+':      ladoCuadrado = ladoCuadrado + 20;
+                          RefrescarMapa(sitio, cenx, ceny);
+      'x', 'X', '-':      if (ladoCuadrado > 21) {
+                            ladoCuadrado = ladoCuadrado - 20;
+                            RefrescarMapa(sitio, cenx, ceny);
+                          }
+      -5, '2', 'n', 'N':  sitio = ValidarYRefrescar(sitio, s_to,   cenx, ceny);
+      -4, '8', 'y', 'Y':  sitio = ValidarYRefrescar(sitio, n_to,   cenx, ceny);
+      -2, '4', 'g', 'G':  sitio = ValidarYRefrescar(sitio, w_to,   cenx, ceny);
+      -3, '6', 'j', 'J':  sitio = ValidarYRefrescar(sitio, e_to,   cenx, ceny);
+      '7', 't', 'T':      sitio = ValidarYRefrescar(sitio, nw_to,  cenx, ceny);
+      '9', 'u', 'U':      sitio = ValidarYRefrescar(sitio, ne_to,  cenx, ceny);
+      '1', 'b', 'B':      sitio = ValidarYRefrescar(sitio, sw_to,  cenx, ceny);
+      '3', 'm', 'M':      sitio = ValidarYRefrescar(sitio, se_to,  cenx, ceny);
+      -12, 'a', 'A', '5': sitio = ValidarYRefrescar(sitio, u_to,   cenx, ceny); ! Inicio
+      -13, 'z', 'Z', '0': sitio = ValidarYRefrescar(sitio, d_to,   cenx, ceny); ! Fin
+      -6, '*':            sitio = ValidarYRefrescar(sitio, in_to,  cenx, ceny); ! Enter
+      -7, '.', '/':       sitio = ValidarYRefrescar(sitio, out_to, cenx, ceny); ! Retroceso
       #ifdef DEBUG;
-      ' ':      playerTo(sitio); jump Salir;
+      ' ':                playerTo(sitio); jump Salir;
       #endif;
     }
   }
