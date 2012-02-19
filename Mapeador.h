@@ -27,22 +27,26 @@ Message "[ Incluyendo Mapeador.h ]";
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
 
-Constant COLOR_LOCAL_MAP  = $ffffff;
-Constant COLOR_CURSOR_MAP = $00ff00;
-Constant COLOR_ACTUAL_MAP = $aaaaaa;
-Constant COLOR_PUERTA_MAP = $ff0000;
-Constant COLOR_UPDOWN_MAP = $0000ff;
-Constant COLOR_INOUT_MAP  = $0000ff;
+Default COLOR_LOCAL_MAP          = $ffffff;
+Default COLOR_CURSOR_MAP         = $00aaaa;
+Default COLOR_ACTUAL_MAP         = $aaaaaa;
+Default COLOR_PUERTA_ABIERTA_MAP = $00ff00;
+Default COLOR_PUERTA_CERRADA_MAP = $ff0000;
+Default COLOR_UPDOWN_MAP         = $0000ff;
+Default COLOR_INOUT_MAP          = $0000ff;
 
-Constant ALTO_VENTANA_MAPA = 700;
+Default ALTO_VENTANA_MAPA        = 700;
 
 Verb meta 'mapa'
   *                 -> Mapa;
 
-[ DibujarPuerta cenx ceny;
-  glk_window_fill_rect(gg_mapa_win, COLOR_PUERTA_MAP,
+[ DibujarPuerta cenx ceny ck
+  color;
+  if (ck == 2) color = COLOR_PUERTA_ABIERTA_MAP;
+  else         color = COLOR_PUERTA_CERRADA_MAP;
+  glk_window_fill_rect(gg_mapa_win, color,
                        cenx - ladoCuadrado / 8, ceny - ladoCuadrado / 8,
-                       ladoCuadrado / 4, ladoCuadrado / 4);
+                       ladoCuadrado / 4 + 1, ladoCuadrado / 4 + 1);
 ];
 
 #ifndef LugarReal;
@@ -65,7 +69,7 @@ Verb meta 'mapa'
     sep = ladoCuadrado + mitad;
     ck = ComprobarSalida(sitio, e_to); 
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx + mitad, posy);
+      if (ck == 2 or 3) DibujarPuerta(posx + mitad, posy, ck);
       else {
         glk_window_fill_rect(gg_mapa_win, $ffffff, posx + mitad, posy,
                              sep - ladoCuadrado + 1, 1);
@@ -74,7 +78,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, w_to); 
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx - mitad, posy);
+      if (ck == 2 or 3) DibujarPuerta(posx - mitad, posy, ck);
       else {
         glk_window_fill_rect(gg_mapa_win, $ffffff, posx - sep + mitad, posy,
                              sep - ladoCuadrado + 1, 1);
@@ -83,7 +87,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, n_to); 
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx, posy - mitad);
+      if (ck == 2 or 3) DibujarPuerta(posx, posy - mitad, ck);
       else {
         glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy - sep + mitad, 1,
                              sep - ladoCuadrado + 1);
@@ -92,7 +96,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, s_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx, posy + mitad);
+      if (ck == 2 or 3) DibujarPuerta(posx, posy + mitad, ck);
       else {
         glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy + mitad, 1,
                              sep - ladoCuadrado + 1);
@@ -101,7 +105,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, nw_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx - mitad, posy - mitad);
+      if (ck == 2 or 3) DibujarPuerta(posx - mitad, posy - mitad, ck);
       else {
         for (x = posx - sep + mitad, y = posy - sep + mitad : x <= posx - mitad : x++, y++) {
           glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
@@ -111,7 +115,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, ne_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx + mitad, posy - mitad);
+      if (ck == 2 or 3) DibujarPuerta(posx + mitad, posy - mitad, ck);
       else {
         for (x = posx + mitad, y = posy - mitad : x <= posx + sep - mitad : x++, y--) {
           glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
@@ -121,7 +125,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, sw_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx - mitad, posy + mitad);
+      if (ck == 2 or 3) DibujarPuerta(posx - mitad, posy + mitad, ck);
       else {
         for (x = posx - sep + mitad, y = posy + sep - mitad : x <= posx - mitad : x++, y--) {
           glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
@@ -131,7 +135,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, se_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx + mitad, posy + mitad);
+      if (ck == 2 or 3) DibujarPuerta(posx + mitad, posy + mitad, ck);
       else {
         for (x = posx + mitad, y = posy + mitad : x <= posx + sep - mitad : x++, y++) {
           glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
@@ -141,7 +145,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, u_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx + mitad / 2, posy - mitad / 2);
+      if (ck == 2 or 3) DibujarPuerta(posx + mitad / 2, posy - mitad / 2 + mitad / 4, ck);
                                         
       glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
                            posy - mitad / 2, 1, mitad);
@@ -154,7 +158,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, d_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx + mitad / 2, posy - mitad / 2);
+      if (ck == 2 or 3) DibujarPuerta(posx + mitad / 2, posy + mitad / 2 - mitad / 4, ck);
 
       glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
                            posy - mitad / 2, 1, mitad);
@@ -168,7 +172,7 @@ Verb meta 'mapa'
     ck = ComprobarSalida(sitio, in_to);
     posx = posx - mitad / 3;
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx + mitad / 2, posy);
+      if (ck == 2 or 3) DibujarPuerta(posx + mitad / 2 - mitad / 4, posy, ck);
 
       glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
                            posy, mitad, 1);
@@ -181,7 +185,7 @@ Verb meta 'mapa'
     }
     ck = ComprobarSalida(sitio, out_to);
     if (ck) {
-      if (ck == 2) DibujarPuerta(posx - mitad / 2 + mitad / 4, posy); 
+      if (ck == 2 or 3) DibujarPuerta(posx - mitad / 2 + mitad / 4, posy, ck);
  
       glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
                            posy, mitad, 1);
@@ -215,9 +219,12 @@ Verb meta 'mapa'
   destino;
   if (sitio provides dir) {
     destino = sitio.dir;
-    if (ZRegion(destino) == 3) return 3;
+    if (ZRegion(destino) == 3) return 4;
     if (ZRegion(destino) == 2) destino = destino();
-    if (destino && destino has door) return 2;
+    if (destino && destino has door) {
+      if (destino has open) return 2;
+      else                  return 3;
+    }
     return EsMapeable(sitio.dir);
   }
   rfalse;
@@ -237,7 +244,7 @@ Verb meta 'mapa'
 ];
 
 [ ValidarYRefrescar sitio dir cenx ceny;
-  if (ComprobarSalida(sitio, dir) == 1 or 2) {
+  if (ComprobarSalida(sitio, dir) == 1 or 2 or 3) {
     sitio = DestinoSalida(sitio, dir);
     RefrescarMapa(sitio, cenx, ceny);
   }
