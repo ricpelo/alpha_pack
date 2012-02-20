@@ -46,7 +46,7 @@ Message "|__________________________________________________________________|";
 !];
 
 
-class GestorTimer
+Class GestorTimer
   with
     condicion true,          ! Si es false, no se ejecutará el evento
     duracion 0,              ! Número de ticks necesarios para ejecutarse
@@ -128,7 +128,8 @@ Object ControlTimer
           INPUT_BUFFER_LEN - WORDSIZE, buffer-->0);
       return 1;
     ],
-    RecalcularMaximo [ i max;             ! Vuelve a calcular la duración máxima
+    RecalcularMaximo [                    ! Vuelve a calcular la duración máxima
+      i max;
       max = -1;
       for (i = 0: i < self.#gestores / WORDSIZE: i++) {
         if (self.&gestores-->i > max) {
@@ -171,7 +172,7 @@ Object ControlTimer
       return key;
     ],
     ! Nuestra versión de HandleGlkEvent:
-    CT_HandleGlkEvent [ev context buffer
+    CT_HandleGlkEvent [ ev context buffer
       i t;
       switch (ev-->0) {
         1: ! evtype_Timer == 1
@@ -206,6 +207,7 @@ Object ControlTimer
            if (self.tick_pospuesto ~= -1) {
              self.ActivarTick(self.tick_pospuesto);
              self.tick_pospuesto = -1;
+             self.contador_ticks = 1;
            }
            ! Si se ha imprimido algo en algún gestor, restauramos:
            if (self.ha_imprimido_algo) {
@@ -215,7 +217,8 @@ Object ControlTimer
            }
       }
     ],
-    BuscarPosicion [ g i pos;             ! Da la posición de un gestor en el array
+    BuscarPosicion [ g                    ! Da la posición de un gestor en el array
+      i pos;
       pos = -1;
       for (i = 0: i < self.#gestores / WORDSIZE: i++) {
         if (self.&gestores-->i == g) {
@@ -225,29 +228,34 @@ Object ControlTimer
       }
       return pos;                         ! Devuelve -1 si no se encuentra
     ],
-    SustituirGestor [ viejo nuevo pos;    ! Cambia un gestor por otro
+    SustituirGestor [ viejo nuevo         ! Cambia un gestor por otro
+      pos;
       pos = self.BuscarPosicion(viejo);
       if (pos ~= -1) {
         self.AsignarGestor(nuevo, pos);
       }
     ],
-    AsignarGestor [ g pos;                ! Asigna un gestor a una posición del array
-      if (pos ~= 0) {
-        if (pos < 0 || pos >= self.#gestores / WORDSIZE) {
-          #ifdef DEBUG;
-            print "ERROR: La posición para el gestor de timer sobrepasa los límites.^";
-          #endif;
-          return -1;
-        }
-      } else {
-        ! Si no se indica posición, buscamos el siguiente hueco vacío:
-        pos = self.BuscarPosicion(0);
-        if (pos < 0) {
-          #ifdef DEBUG;
-            print "ERROR: Superado número máximo de gestores de timer.^";
-          #endif;
-          return -1;
-        }
+    AgregarGestor [ g                     ! Agrega un nuevo gestor en un hueco libre
+      pos;
+      self.BuscarPosicion(0);
+      if (pos < -1) {
+        #ifdef DEBUG;
+          print "ERROR: Superado número máximo de gestores de timer.^";
+        #endif;
+        return -1;
+      }
+      self.AsignarGestor(g, pos);
+    ],
+    AsignarGestor [ g pos                 ! Asigna un gestor a una posición del array
+      i;
+      if (pos < 0 || pos >= self.#gestores / WORDSIZE) {
+        #ifdef DEBUG;
+          print "ERROR: La posición para el gestor de timer sobrepasa los límites.^";
+        #endif;
+        return -1;
+      }
+      for (i = self.#gestores / WORDSIZE - 2: i >= pos: i--) {
+        self.&gestores-->(i + 1) = self.&gestores-->i;
       }
       self.&gestores-->pos = g;
       if (g.duracion > self.duracion_maxima) {
@@ -255,7 +263,8 @@ Object ControlTimer
       }
       return pos;
     ],
-    EliminarGestor [ g pos d;             ! Elimina un gestor dados él o su posición en el array
+    EliminarGestor [ g pos                ! Elimina un gestor dados él o su posición en el array
+      d i;
       if (g ~= 0) {
         pos = self.BuscarPosicion(g);
         if (pos == -1) {
@@ -265,7 +274,10 @@ Object ControlTimer
         rfalse;
       }
       d = (self.&gestores-->pos).duracion;
-      self.&gestores-->pos = 0;
+      for (i = pos: i < self.#gestores / WORDSIZE - 1: i++) {
+        self.&gestores-->i = self.&gestores-->(i + 1);
+      }
+      self.&gestores-->i = 0;
       if (d == self.duracion_maxima) {
         self.RecalcularMaximo();
       }
@@ -318,7 +330,8 @@ Object ControlTimer
       self.tick = 0;
       glk($00D6, 0);
     ],
-    ReactivarTick [ t;                    ! Reactiva el tick (útil en algunos casos)
+    ReactivarTick [                       ! Reactiva el tick (útil en algunos casos)
+      t;
       t = self.tick;
       glk($00D6, t);                      ! glk_request_timer_events
     ],
@@ -328,7 +341,8 @@ Object ControlTimer
     DesactivarMutex [;                    ! Desactiva el mutex si lo hubiera
       self.mutex = 0;
     ],
-    Reiniciar [ i;                        ! Pone todas las propiedades a sus valores por defecto
+    Reiniciar [                           ! Pone todas las propiedades a sus valores por defecto
+      i;
       self.DesactivarTick();
       self.tick = 0;
       self.tick_pausado = -1;
