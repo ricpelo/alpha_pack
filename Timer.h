@@ -51,7 +51,13 @@ Class GestorTimer
     condicion true,          ! Si es false, no se ejecutará el evento
     duracion 0,              ! Número de ticks necesarios para ejecutarse
     evento 0,                ! El evento a ejecutar
-    AsignarGestor [ pos;     ! Añade este gestor a la lista de gestores
+    AgregarGestor [;         ! Agrega este gestor en un hueco de la lista
+      return ControlTimer.AgregarGestor(self);
+    ],
+    InsertarGestor [ pos;    ! Inserta este gestor empujando los demás
+      return ControlTimer.InsertarGestor(self, pos);
+    ],
+    AsignarGestor [ pos;     ! Coloca este gestor en una posición de la lista
       return ControlTimer.AsignarGestor(self, pos);
     ],
     EliminarGestor [;        ! Elimina este gestor de la lista de gestores
@@ -64,7 +70,7 @@ Class GestorTimer
       return ControlTimer.BuscarPosicion(self);
     ],
     SustituirGestor [ nuevo;
-      return ControlTimer.SustituirGestor(self.PosicionDelGestor(), nuevo);
+      return ControlTimer.SustituirGestor(self, nuevo);
     ];
 
 
@@ -232,21 +238,22 @@ Object ControlTimer
       pos;
       pos = self.BuscarPosicion(viejo);
       if (pos ~= -1) {
-        self.AsignarGestor(nuevo, pos);
+        return self.AsignarGestor(nuevo, pos);
       }
+      return -1;
     ],
     AgregarGestor [ g                     ! Agrega un nuevo gestor en un hueco libre
       pos;
-      self.BuscarPosicion(0);
+      pos = self.BuscarPosicion(0);
       if (pos < -1) {
         #ifdef DEBUG;
           print "ERROR: Superado número máximo de gestores de timer.^";
         #endif;
         return -1;
       }
-      self.AsignarGestor(g, pos);
+      return self.AsignarGestor(g, pos);
     ],
-    AsignarGestor [ g pos                 ! Asigna un gestor a una posición del array
+    InsertarGestor [ g pos                ! Inserta un gestor en una posición, empujando
       i;
       if (pos < 0 || pos >= self.#gestores / WORDSIZE) {
         #ifdef DEBUG;
@@ -256,6 +263,15 @@ Object ControlTimer
       }
       for (i = self.#gestores / WORDSIZE - 2: i >= pos: i--) {
         self.&gestores-->(i + 1) = self.&gestores-->i;
+      }
+      self.AsignarGestor(g, pos);
+    ],
+    AsignarGestor [ g pos;                ! Asigna un gestor a una posición del array
+      if (pos < 0 || pos >= self.#gestores / WORDSIZE) {
+        #ifdef DEBUG;
+          print "ERROR: La posición para el gestor de timer sobrepasa los límites.^";
+        #endif;
+        return -1;
       }
       self.&gestores-->pos = g;
       if (g.duracion > self.duracion_maxima) {
