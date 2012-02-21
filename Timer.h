@@ -346,10 +346,10 @@ Object ControlTimer
       self.ActivarTick(self.tick_pausado);
       self.tick_pausado = 0;
     ],
-    PausarTimers [;                       ! Detiene los timers pero el tiempo sigue corriendo
+    PausarGestores [;                     ! No ejecuta los eventos, pero el tiempo sigue corriendo
       self.condicion = false;
     ],
-    ReanudarTimers [;                     ! Reanuda los timers
+    ReanudarGestores [;                   ! Reanuda la ejecución de los eventos
       self.condicion = true;
     ],
     ActivarMutex [ g;                     ! Activa el mutex sobre un gestor
