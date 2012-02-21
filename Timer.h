@@ -79,7 +79,8 @@ Class GestorTimer
 
 Object ControlTimer
   private
-    gestores 0 0 0 0 0 0 0 0 0 0,         ! Array de gestores de eventos
+    gestores 0 0 0 0 0 0 0 0 0 0          ! Array de gestores de eventos
+             0 0 0 0 0 0 0 0 0 0,
     duracion_maxima 0,                    ! Duración máxima entre los gestores (en nº de ticks) 
     tick 0,                               ! Duración del tick (en milisegundos)
     tick_pausado -1,                      ! Aquí se guarda el tick cuando se pausa
