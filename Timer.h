@@ -48,29 +48,32 @@ Message "|__________________________________________________________________|";
 
 Class GestorTimer
   with
-    condicion true,          ! Si es false, no se ejecutará el evento
-    duracion 0,              ! Número de ticks necesarios para ejecutarse
-    evento 0,                ! El evento a ejecutar
-    AgregarGestor [;         ! Agrega este gestor en un hueco de la lista
+    condicion true,             ! Si es false, no se ejecutará el evento
+    duracion 0,                 ! Número de ticks necesarios para ejecutarse
+    evento 0,                   ! El evento a ejecutar
+    AgregarGestor [;            ! Agrega este gestor en un hueco de la lista
       return ControlTimer.AgregarGestor(self);
     ],
-    InsertarGestor [ pos;    ! Inserta este gestor empujando los demás
+    InsertarGestor [ pos;       ! Inserta este gestor empujando los demás
       return ControlTimer.InsertarGestor(self, pos);
     ],
-    AsignarGestor [ pos;     ! Coloca este gestor en una posición de la lista
+    AsignarGestor [ pos;        ! Coloca este gestor en una posición de la lista
       return ControlTimer.AsignarGestor(self, pos);
     ],
-    EliminarGestor [;        ! Elimina este gestor de la lista de gestores
+    EliminarGestor [;           ! Elimina este gestor de la lista de gestores
       return ControlTimer.EliminarGestor(self, 0);
     ],
-    ActivarMutex [;          ! Activa el mutex sobre este gestor
+    ActivarMutex [;             ! Activa el mutex sobre este gestor
       ControlTimer.ActivarMutex(self);
     ],
-    PosicionDelGestor [;     ! En qué posición está dentro del array
+    PosicionDelGestor [;        ! En qué posición está dentro del array
       return ControlTimer.BuscarPosicion(self);
     ],
-    SustituirGestor [ nuevo; ! Sustituye este gestor por el nuevo
+    SustituirGestor [ nuevo;    ! Sustituye este gestor por el nuevo
       return ControlTimer.SustituirGestor(self, nuevo);
+    ],
+    IntercambiarConGestor [ g;  ! Intercambia este gestor con otro
+      return ControlTimer.IntercambiarGestores(self, g);
     ];
 
 
@@ -253,6 +256,15 @@ Object ControlTimer
         return self.AsignarGestor(nuevo, pos);
       }
       return -1;
+    ],
+    IntercambiarGestores [ g1 g2          ! Intercambia la posición de dos gestores
+      pos1 pos2;
+      pos1 = self.BuscarPosicion(g1);
+      pos2 = self.BuscarPosicion(g2);
+      if (pos1 == -1 || pos2 == -1) return -1;
+      self.&gestores-->pos1 = g2;
+      self.&gestores-->pos2 = g1;
+      rtrue;
     ],
     AgregarGestor [ g                     ! Agrega un nuevo gestor en un hueco libre
       pos;
