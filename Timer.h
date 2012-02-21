@@ -161,6 +161,9 @@ Object ControlTimer
       }
     ],
   with
+    DentroDeEvento [;                     ! Si se está ejecutando un evento desde el timer
+      return self.contexto_handle_glk;
+    ],
     ! Nuestra propia versión de WaitDelay:
     CT_WaitDelay [ delay;
       glk($00D6, delay * 5) ;             ! request_timer_events
