@@ -133,7 +133,7 @@ Constant PNJ_OBJETO_ESCENARIO_O_ESTATICO = 9;
       FinCapturarSalida();
       if (longitudCaptura > 0 && SeVen(actor, player))
         MostrarSalidaCapturada();
-		#endif;
+    #endif;
 
     if (r)
       rtrue;
