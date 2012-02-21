@@ -69,7 +69,7 @@ Class GestorTimer
     PosicionDelGestor [;     ! En qué posición está dentro del array
       return ControlTimer.BuscarPosicion(self);
     ],
-    SustituirGestor [ nuevo;
+    SustituirGestor [ nuevo; ! Sustituye este gestor por el nuevo
       return ControlTimer.SustituirGestor(self, nuevo);
     ];
 
@@ -321,7 +321,7 @@ Object ControlTimer
     ReiniciarImpresion [;                 ! Reinicia el indicador de 'imprimido algo'
       self.ha_imprimido_algo = false;
     ],
-    ActivarTick [ t;                      ! Activa el timer (opcionalmente, asignando el tick antes)
+    ActivarTick [ t;                      ! Activa el tick (opcionalmente, asignando el tick antes)
       if (t ~= 0) {
         self.AsignarTick(t);
       } else {
