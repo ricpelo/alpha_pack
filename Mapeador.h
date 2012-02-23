@@ -314,8 +314,6 @@ Verb meta 'mapa'
   buffer = buffer;
   switch (ev-->0) {
     evtype_Redraw, evtype_Arrange:
-      if (gg_objwin ~= 0) glk_window_close(gg_objwin, 0);
-      gg_objwin = 0;
       AbrirVentanaMapa();
       glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
       cenx = (gg_arguments-->0) / 2; ! ancho / 2
