@@ -35,7 +35,7 @@ Message "|__________________________________________________________________|";
 
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
-Global g_sitio;              ! El sitio actual (se usa en Mapa_HandleGlkEvent)
+Global g_sitio = 0;              ! El sitio actual (se usa en Mapa_HandleGlkEvent)
 
 Default COLOR_LOCAL_MAP          = $ffffff;
 Default COLOR_CURSOR_MAP         = $00aaaa;
@@ -312,12 +312,26 @@ Verb meta 'mapa'
   buffer = buffer;
   switch (ev-->0) {
     evtype_Redraw, evtype_Arrange:
-      AbrirVentanaMapa();
-      glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
-      cenx = (gg_arguments-->0) / 2; ! ancho / 2
-      ceny = (gg_arguments-->1) / 2; ! alto / 2
-      RefrescarMapa(g_sitio, cenx, ceny);
+      if (g_sitio ~= 0) {
+        AbrirVentanaMapa();
+        glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
+        cenx = (gg_arguments-->0) / 2; ! ancho / 2
+        ceny = (gg_arguments-->1) / 2; ! alto / 2
+        RefrescarMapa(g_sitio, cenx, ceny);
+      }
   }
+];
+
+[ AyudaMapa;
+  StatusLineHeight(15);
+  glk($002F, gg_statuswin); ! select
+  glk($002A, gg_statuswin); ! clear
+!  glk($0025, gg_statuswin, gg_arguments, gg_arguments + WORDSIZE); ! window_get_size
+!  glk($002B, gg_statuswin, gg_arguments-->0 - 11, 0); ! locate
+  print "lksdjflsdlfksdfkl^slkdjfskdljfskljf^klsdfkljsdfklsjdf^sldjlsjkdsklf";
+  glk($002F, gg_mainwin);   ! select
+
+  StatusLineHeight(1);
 ];
 
 [ MapaSub
@@ -354,6 +368,7 @@ Verb meta 'mapa'
       -13, 'z', 'Z', '0': sitio = ValidarYRefrescarMapa(sitio, d_to,   cenx, ceny); ! Fin
       -6, '*':            sitio = ValidarYRefrescarMapa(sitio, in_to,  cenx, ceny); ! Enter
       -7, '.', '/':       sitio = ValidarYRefrescarMapa(sitio, out_to, cenx, ceny); ! Retroceso
+      'h', 'H':           AyudaMapa();
       #ifdef DEBUG;
       ' ':                playerTo(sitio); jump Salir;
       #endif;
@@ -361,5 +376,6 @@ Verb meta 'mapa'
   }
 .Salir;
   CerrarVentanaMapa();
+  g_sitio = 0;
 ];
 
