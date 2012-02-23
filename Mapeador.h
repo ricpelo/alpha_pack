@@ -22,7 +22,15 @@ System_file;
 
 Include "infglk";
 
-Message "[ Incluyendo Mapeador.h ]";
+Message " _________________________________________________________________";
+Message "|                                                                 |";
+Message "|                * MAPEADOR:  I M P O R T A N T E *               |";
+Message "|                ==================================               |";
+Message "| 1. Pon 'Include ~Mapeador.h~;' después de 'Include ~Parser.h~;' |";
+Message "| 2. Si usas tu propia rutina HandleGlkEvent(),                   |";
+Message "|    no olvides llamar desde esa rutina a:                        |";
+Message "|    Map_HandleGlkEvent(ev, context, buffer)                      |";
+Message "|_________________________________________________________________|";
 
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
@@ -131,7 +139,6 @@ Verb meta 'mapa'
     ck = ComprobarSalidaMapa(sitio, u_to);
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx + mitad / 2, posy - mitad / 2 + mitad / 4, ck);
-                                        
       glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
                            posy - mitad / 2, 1, mitad);
       for (x = 1 : x <= mitad / 4 : x++) {
@@ -144,7 +151,6 @@ Verb meta 'mapa'
     ck = ComprobarSalidaMapa(sitio, d_to);
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx + mitad / 2, posy + mitad / 2 - mitad / 4, ck);
-
       glk_window_fill_rect(gg_mapa_win, COLOR_UPDOWN_MAP, posx + mitad / 2,
                            posy - mitad / 2, 1, mitad);
       for (x = 1 : x <= mitad / 4 : x++) {
@@ -158,7 +164,6 @@ Verb meta 'mapa'
     posx = posx - mitad / 3;
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx + mitad / 2 - mitad / 4, posy, ck);
-
       glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
                            posy, mitad, 1);
       for (x = 1 : x <= mitad / 4 : x++) {
@@ -171,7 +176,6 @@ Verb meta 'mapa'
     ck = ComprobarSalidaMapa(sitio, out_to);
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx - mitad / 2 + mitad / 4, posy, ck);
- 
       glk_window_fill_rect(gg_mapa_win, COLOR_INOUT_MAP, posx - mitad / 2,
                            posy, mitad, 1);
       for (x = 1 : x <= mitad / 4 : x++) {
@@ -187,24 +191,24 @@ Verb meta 'mapa'
 [ RefrescarMapa sitio cenx ceny
   o;
   clearMainWindow();
-  if (sitio provides sgw_img) {
-    glk_window_close(gg_objwin, 0);
-    gg_objwin = 0;
-    gg_objwin = glk_window_open(gg_mapa_win, winmethod_Above + winmethod_Proportional,
-                                30, wintype_Graphics, GG_OBJWIN_ROCK);
-    if (gg_objwin == 0) return;
-    drawImageSGW(gg_objwin, sitio.sgw_img, POS_CENTRADO);
-  }
+  if (sitio provides sgw_img) drawImageSGW(gg_objwin, sitio.sgw_img, POS_CENTRADO);
   DibujarMapa(sitio, cenx, ceny, 1);
   objectloop (o ofclass Lugar) o.dibujado = false;
+  ImprimirBarraEstadoMapa(sitio);
+];
+
+[ ImprimirBarraEstadoMapa sitio;
+  glk($002F, gg_statuswin); ! select
+  glk($002A, gg_statuswin); ! clear
   ImprimirNombreSitioMapa(sitio);
+  glk($0025, gg_statuswin, gg_arguments, gg_arguments + WORDSIZE); ! window_get_size
+  glk($002B, gg_statuswin, gg_arguments-->0 - 11, 0); ! locate
+  print "| H = Ayuda";
+  glk($002F, gg_mainwin);   ! select
 ];
 
 [ ImprimirNombreSitioMapa sitio;
-  glk($002F, gg_statuswin); ! select
-  glk($002A, gg_statuswin); ! clear
   print (name) sitio;
-  glk($002F, gg_mainwin);   ! select
 ];
 
 [ EsMapeable sitio;
@@ -257,6 +261,12 @@ Verb meta 'mapa'
   #endif;
   openGraphicWindow(ALTO_VENTANA_MAPA);
   gg_mapa_win = gg_bigwin;
+  AbrirLocalidadMapa();
+];
+
+[ AbrirLocalidadMapa;
+  gg_objwin = glk_window_open(gg_mapa_win, winmethod_Above + winmethod_Proportional,
+                              30, wintype_Graphics, GG_OBJWIN_ROCK);
 ];
 
 [ CerrarVentanaMapa;
@@ -270,20 +280,33 @@ Verb meta 'mapa'
   <<Look>>;
 ];
 
+[ Map_HandleGlkEvent ev context buffer
+  cenx ceny;
+  context = context;
+  buffer = buffer;
+  switch (ev-->0) {
+    evtype_Redraw, evtype_Arrange:
+      if (gg_objwin ~= 0) glk_window_close(gg_objwin, 0);
+      gg_objwin = 0;
+      AbrirLocalidadMapa();
+      glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
+      cenx = (gg_arguments-->0) / 2; ! ancho / 2
+      ceny = (gg_arguments-->1) / 2; ! alto / 2
+      RefrescarMapa(g_sitio, cenx, ceny);
+  }
+];
+
 [ MapaSub
   cenx ceny sitio tecla;
   AbrirVentanaMapa();
-  glk_window_close(gg_objwin, 0);
-  gg_objwin = 0;
-  gg_objwin = glk_window_open(gg_mapa_win, winmethod_Below + winmethod_Proportional,
-                              30, wintype_Graphics, GG_OBJWIN_ROCK);
   glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
   cenx = (gg_arguments-->0) / 2; ! ancho / 2
   ceny = (gg_arguments-->1) / 2; ! alto / 2
   sitio = LugarReal();
   RefrescarMapa(sitio, cenx, ceny);
   while (true) {
-    tecla = KeyCharPrimitive(); ! KeyDelay();
+    g_sitio = sitio;
+    tecla = KeyCharPrimitive(); ! Con KeyDelay() no se activan los eventos HandleGlkEvent
     glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
     cenx = (gg_arguments-->0) / 2; ! ancho / 2
     ceny = (gg_arguments-->1) / 2; ! alto / 2
@@ -311,7 +334,6 @@ Verb meta 'mapa'
       ' ':                playerTo(sitio); jump Salir;
       #endif;
     }
-    g_sitio = sitio;
   }
 .Salir;
   CerrarVentanaMapa();
