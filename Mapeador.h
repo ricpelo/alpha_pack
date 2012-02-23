@@ -26,6 +26,7 @@ Message "[ Incluyendo Mapeador.h ]";
 
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
+Global g_sitio;
 
 Default COLOR_LOCAL_MAP          = $ffffff;
 Default COLOR_CURSOR_MAP         = $00aaaa;
@@ -186,13 +187,24 @@ Verb meta 'mapa'
 [ RefrescarMapa sitio cenx ceny
   o;
   clearMainWindow();
+  if (sitio provides sgw_img) {
+    glk_window_close(gg_objwin, 0);
+    gg_objwin = 0;
+    gg_objwin = glk_window_open(gg_mapa_win, winmethod_Above + winmethod_Proportional,
+                                30, wintype_Graphics, GG_OBJWIN_ROCK);
+    if (gg_objwin == 0) return;
+    drawImageSGW(gg_objwin, sitio.sgw_img, POS_CENTRADO);
+  }
   DibujarMapa(sitio, cenx, ceny, 1);
   objectloop (o ofclass Lugar) o.dibujado = false;
   ImprimirNombreSitioMapa(sitio);
 ];
 
 [ ImprimirNombreSitioMapa sitio;
+  glk($002F, gg_statuswin); ! select
+  glk($002A, gg_statuswin); ! clear
   print (name) sitio;
+  glk($002F, gg_mainwin);   ! select
 ];
 
 [ EsMapeable sitio;
@@ -261,13 +273,20 @@ Verb meta 'mapa'
 [ MapaSub
   cenx ceny sitio tecla;
   AbrirVentanaMapa();
+  glk_window_close(gg_objwin, 0);
+  gg_objwin = 0;
+  gg_objwin = glk_window_open(gg_mapa_win, winmethod_Below + winmethod_Proportional,
+                              30, wintype_Graphics, GG_OBJWIN_ROCK);
   glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
   cenx = (gg_arguments-->0) / 2; ! ancho / 2
   ceny = (gg_arguments-->1) / 2; ! alto / 2
   sitio = LugarReal();
   RefrescarMapa(sitio, cenx, ceny);
   while (true) {
-    tecla = KeyDelay();
+    tecla = KeyCharPrimitive(); ! KeyDelay();
+    glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
+    cenx = (gg_arguments-->0) / 2; ! ancho / 2
+    ceny = (gg_arguments-->1) / 2; ! alto / 2
     switch (tecla) {
       'q', 'Q':           jump Salir;
       'z', 'Z', '+':      ladoCuadrado = ladoCuadrado + 20;
@@ -292,6 +311,7 @@ Verb meta 'mapa'
       ' ':                playerTo(sitio); jump Salir;
       #endif;
     }
+    g_sitio = sitio;
   }
 .Salir;
   CerrarVentanaMapa();
