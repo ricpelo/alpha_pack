@@ -22,15 +22,15 @@ System_file;
 
 Include "infglk";
 
-Message " _________________________________________________________________";
-Message "|                                                                 |";
-Message "|                * MAPEADOR:  I M P O R T A N T E *               |";
-Message "|                ==================================               |";
-Message "| 1. Pon 'Include ~Mapeador.h~;' después de 'Include ~Parser.h~;' |";
-Message "| 2. Si usas tu propia rutina HandleGlkEvent(),                   |";
-Message "|    no olvides llamar desde esa rutina a:                        |";
-Message "|    Map_HandleGlkEvent(ev, context, buffer)                      |";
-Message "|_________________________________________________________________|";
+Message " __________________________________________________________________";
+Message "|                                                                  |";
+Message "|                 * MAPEADOR:  I M P O R T A N T E *               |";
+Message "|                 ==================================               |";
+Message "| 1. Pon 'Include ~Mapeador.h~;' después de 'Include ~SGW+DMX.h~;' |";
+Message "| 2. Si usas tu propia rutina HandleGlkEvent(),                    |";
+Message "|    no olvides llamar desde esa rutina a:                         |";
+Message "|    Map_HandleGlkEvent(ev, context, buffer)                       |";
+Message "|__________________________________________________________________|";
 
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
@@ -191,7 +191,8 @@ Verb meta 'mapa'
 [ RefrescarMapa sitio cenx ceny
   o;
   clearMainWindow();
-  if (sitio provides sgw_img) drawImageSGW(gg_objwin, sitio.sgw_img, POS_CENTRADO);
+  if (sitio provides sgw_img) drawImageSGW(gg_objwin, sitio.sgw_img, POS_CENTRADO,
+                                           BORDEWIN, BORDEWIN);
   DibujarMapa(sitio, cenx, ceny, 1);
   objectloop (o ofclass Lugar) o.dibujado = false;
   ImprimirBarraEstadoMapa(sitio);
