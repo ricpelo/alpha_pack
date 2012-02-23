@@ -35,7 +35,7 @@ Message "|__________________________________________________________________|";
 
 Global gg_mapa_win;
 Global ladoCuadrado = 41;
-Global g_sitio;
+Global g_sitio;              ! El sitio actual (se usa en Mapa_HandleGlkEvent)
 
 Default COLOR_LOCAL_MAP          = $ffffff;
 Default COLOR_CURSOR_MAP         = $00aaaa;
@@ -44,8 +44,6 @@ Default COLOR_PUERTA_ABIERTA_MAP = $00ff00;
 Default COLOR_PUERTA_CERRADA_MAP = $ff0000;
 Default COLOR_UPDOWN_MAP         = $0000ff;
 Default COLOR_INOUT_MAP          = $0000ff;
-
-Default ALTO_VENTANA_MAPA        = 700;
 
 Verb meta 'mapa'
   *                 -> Mapa;
