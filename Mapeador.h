@@ -322,16 +322,21 @@ Verb meta 'mapa'
   }
 ];
 
-[ AyudaMapa;
-  StatusLineHeight(15);
-  glk($002F, gg_statuswin); ! select
-  glk($002A, gg_statuswin); ! clear
-!  glk($0025, gg_statuswin, gg_arguments, gg_arguments + WORDSIZE); ! window_get_size
-!  glk($002B, gg_statuswin, gg_arguments-->0 - 11, 0); ! locate
+[ AyudaMapa sitio cenx ceny;
+  glk_window_clear(gg_mainwin);
+  glk_window_clear(gg_mapa_win);
+  glk_window_clear(gg_objwin);
+  glk_window_clear(gg_statuswin);
+  glk($002F, gg_statuswin);
+  StatusLineHeight(20);
+  glk($0086, style_SubHeader);
+  glk($002B, gg_statuswin, 0, 0); ! locate
   print "lksdjflsdlfksdfkl^slkdjfskdljfskljf^klsdfkljsdfklsjdf^sldjlsjkdsklf";
-  glk($002F, gg_mainwin);   ! select
-
+  KeyDelay();
   StatusLineHeight(1);
+  glk($0086, style_SubHeader);
+  glk($002F, gg_mainwin);   ! select
+  RefrescarMapa(sitio, cenx, ceny);
 ];
 
 [ MapaSub
@@ -368,7 +373,7 @@ Verb meta 'mapa'
       -13, 'z', 'Z', '0': sitio = ValidarYRefrescarMapa(sitio, d_to,   cenx, ceny); ! Fin
       -6, '*':            sitio = ValidarYRefrescarMapa(sitio, in_to,  cenx, ceny); ! Enter
       -7, '.', '/':       sitio = ValidarYRefrescarMapa(sitio, out_to, cenx, ceny); ! Retroceso
-      'h', 'H':           AyudaMapa();
+      'h', 'H':           AyudaMapa(sitio, cenx, ceny);
       #ifdef DEBUG;
       ' ':                playerTo(sitio); jump Salir;
       #endif;
