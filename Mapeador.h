@@ -70,78 +70,62 @@ Verb meta 'mapa'
     ck = ComprobarSalidaMapa(sitio, e_to); 
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx + mitad, posy, ck);
-      else {
-        glk_window_fill_rect(gg_mapa_win, $ffffff, posx + mitad, posy,
-                             sep - ladoCuadrado + 1, 1);
-        DibujarMapa(sitio.e_to, posx + sep, posy, 0);
-      }
+      glk_window_fill_rect(gg_mapa_win, $ffffff, posx + mitad, posy,
+                           sep - ladoCuadrado + 1, 1);
+      DibujarMapa(DestinoSalidaMapa(sitio, e_to), posx + sep, posy, 0);
     }
     ck = ComprobarSalidaMapa(sitio, w_to); 
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx - mitad, posy, ck);
-      else {
-        glk_window_fill_rect(gg_mapa_win, $ffffff, posx - sep + mitad, posy,
-                             sep - ladoCuadrado + 1, 1);
-        DibujarMapa(sitio.w_to, posx - sep, posy, 0);
-      }
+      glk_window_fill_rect(gg_mapa_win, $ffffff, posx - sep + mitad, posy,
+                           sep - ladoCuadrado + 1, 1);
+      DibujarMapa(DestinoSalidaMapa(sitio, w_to), posx - sep, posy, 0);
     }
     ck = ComprobarSalidaMapa(sitio, n_to); 
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx, posy - mitad, ck);
-      else {
-        glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy - sep + mitad, 1,
-                             sep - ladoCuadrado + 1);
-        DibujarMapa(sitio.n_to, posx, posy - sep, 0);
-      }
+      glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy - sep + mitad, 1,
+                           sep - ladoCuadrado + 1);
+      DibujarMapa(sitio.n_to, posx, posy - sep, 0);
     }
     ck = ComprobarSalidaMapa(sitio, s_to);
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx, posy + mitad, ck);
-      else {
-        glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy + mitad, 1,
-                             sep - ladoCuadrado + 1);
-        DibujarMapa(sitio.s_to, posx, posy + sep, 0);
-      }
+      glk_window_fill_rect(gg_mapa_win, $ffffff, posx, posy + mitad, 1,
+                           sep - ladoCuadrado + 1);
+      DibujarMapa(sitio.s_to, posx, posy + sep, 0);
     }
     ck = ComprobarSalidaMapa(sitio, nw_to);
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx - mitad, posy - mitad, ck);
-      else {
-        for (x = posx - sep + mitad, y = posy - sep + mitad : x <= posx - mitad : x++, y++) {
-          glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
-        }
-        DibujarMapa(sitio.nw_to, posx - sep, posy - sep, 0);
+      for (x = posx - sep + mitad, y = posy - sep + mitad : x <= posx - mitad : x++, y++) {
+        glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
       }
+      DibujarMapa(sitio.nw_to, posx - sep, posy - sep, 0);
     }
     ck = ComprobarSalidaMapa(sitio, ne_to);
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx + mitad, posy - mitad, ck);
-      else {
-        for (x = posx + mitad, y = posy - mitad : x <= posx + sep - mitad : x++, y--) {
-          glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
-        }
-        DibujarMapa(sitio.ne_to, posx + sep, posy - sep, 0);
+      for (x = posx + mitad, y = posy - mitad : x <= posx + sep - mitad : x++, y--) {
+        glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
       }
+      DibujarMapa(sitio.ne_to, posx + sep, posy - sep, 0);
     }
     ck = ComprobarSalidaMapa(sitio, sw_to);
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx - mitad, posy + mitad, ck);
-      else {
-        for (x = posx - sep + mitad, y = posy + sep - mitad : x <= posx - mitad : x++, y--) {
-          glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
-        }
-        DibujarMapa(sitio.sw_to, posx - sep, posy + sep, 0);
+      for (x = posx - sep + mitad, y = posy + sep - mitad : x <= posx - mitad : x++, y--) {
+        glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
       }
+      DibujarMapa(sitio.sw_to, posx - sep, posy + sep, 0);
     }
     ck = ComprobarSalidaMapa(sitio, se_to);
     if (ck) {
       if (ck == 2 or 3) DibujarPuertaMapa(posx + mitad, posy + mitad, ck);
-      else {
-        for (x = posx + mitad, y = posy + mitad : x <= posx + sep - mitad : x++, y++) {
-          glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
-        }
-        DibujarMapa(sitio.se_to, posx + sep, posy + sep, 0);
+      for (x = posx + mitad, y = posy + mitad : x <= posx + sep - mitad : x++, y++) {
+        glk_window_fill_rect(gg_mapa_win, $ffffff, x, y, 1, 1);
       }
+      DibujarMapa(sitio.se_to, posx + sep, posy + sep, 0);
     }
     ck = ComprobarSalidaMapa(sitio, u_to);
     if (ck) {
