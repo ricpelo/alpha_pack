@@ -206,7 +206,9 @@ Verb meta 'mapa'
   glk($002B, gg_statuswin, gg_arguments-->0 - 11, 0); ! locate
   print "| H = Ayuda";
   glk($002F, gg_mainwin);   ! select
+  #ifdef IMPRIMIR_DESCRIPCION_MAPA;
   PrintOrRun(sitio, description);
+  #endif;
 ];
 
 [ ImprimirNombreSitioMapa sitio;
@@ -262,22 +264,36 @@ Verb meta 'mapa'
   ControlTimer.PausarTick();
   #endif;
 
-! openGraphicWindow(ALTO_VENTANA_MAPA);
-
   closeGraphicWindow();
-  if (gg_bigwin == 0) gg_bigwin = glk_window_open(gg_mainwin, winmethod_Above +
-                                                  winmethod_Proportional, 75,
-                                                  wintype_Graphics, GG_BIGWIN_ROCK);
+  #ifdef IMPRIMIR_DESCRIPCION_MAPA;
+  AbrirLocalidadMapa();
+  #endif;
+  if (gg_bigwin == 0) {
+    #ifdef IMPRIMIR_DESCRIPCION_MAPA;
+    gg_bigwin = glk_window_open(gg_mainwin, winmethod_Below + winmethod_Proportional,
+                                70, wintype_Graphics, GG_BIGWIN_ROCK);
+    #ifnot;
+    gg_bigwin = glk_window_open(gg_mainwin, winmethod_Above + winmethod_Proportional,
+                                75, wintype_Graphics, GG_BIGWIN_ROCK);
+    #endif;
+  }
   if (gg_bigwin == 0) return;
   glk_window_set_background_color(gg_bigwin,SCBACK);
   glk_window_clear(gg_bigwin);
   gg_mapa_win = gg_bigwin;
+  #ifndef IMPRIMIR_DESCRIPCION_MAPA;
   AbrirLocalidadMapa();
+  #endif;
 ];
 
 [ AbrirLocalidadMapa;
+  #ifdef IMPRIMIR_DESCRIPCION_MAPA;
+  gg_objwin = glk_window_open(gg_mainwin, winmethod_Above + winmethod_Proportional,
+                              25, wintype_Graphics, GG_OBJWIN_ROCK);
+  #ifnot;
   gg_objwin = glk_window_open(gg_mapa_win, winmethod_Above + winmethod_Proportional,
                               30, wintype_Graphics, GG_OBJWIN_ROCK);
+  #endif;
 ];
 
 [ CerrarVentanaMapa;
