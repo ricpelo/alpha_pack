@@ -29,7 +29,7 @@ Message "|                 ==================================               |";
 Message "| 1. Pon 'Include ~Mapeador.h~;' después de 'Include ~SGW+DMX.h~;' |";
 Message "| 2. Si usas tu propia rutina HandleGlkEvent(),                    |";
 Message "|    no olvides llamar desde esa rutina a:                         |";
-Message "|    Map_HandleGlkEvent(ev, context, buffer)                       |";
+Message "|    Mapa_HandleGlkEvent(ev, context, buffer)                      |";
 Message "|__________________________________________________________________|";
 
 Global gg_mapa_win;
@@ -206,6 +206,7 @@ Verb meta 'mapa'
   glk($002B, gg_statuswin, gg_arguments-->0 - 11, 0); ! locate
   print "| H = Ayuda";
   glk($002F, gg_mainwin);   ! select
+  PrintOrRun(sitio, description);
 ];
 
 [ ImprimirNombreSitioMapa sitio;
@@ -260,7 +261,16 @@ Verb meta 'mapa'
   #ifdef ControlTimer;
   ControlTimer.PausarTick();
   #endif;
-  openGraphicWindow(ALTO_VENTANA_MAPA);
+
+! openGraphicWindow(ALTO_VENTANA_MAPA);
+
+  closeGraphicWindow();
+  if (gg_bigwin == 0) gg_bigwin = glk_window_open(gg_mainwin, winmethod_Above +
+                                                  winmethod_Proportional, 75,
+                                                  wintype_Graphics, GG_BIGWIN_ROCK);
+  if (gg_bigwin == 0) return;
+  glk_window_set_background_color(gg_bigwin,SCBACK);
+  glk_window_clear(gg_bigwin);
   gg_mapa_win = gg_bigwin;
   AbrirLocalidadMapa();
 ];
@@ -271,6 +281,7 @@ Verb meta 'mapa'
 ];
 
 [ CerrarVentanaMapa;
+  closeAllWindows();
   clearMainWindow();
   #ifdef EncenderGraficos;
   EncenderGraficos();
@@ -281,7 +292,7 @@ Verb meta 'mapa'
   <<Look>>;
 ];
 
-[ Map_HandleGlkEvent ev context buffer
+[ Mapa_HandleGlkEvent ev context buffer
   cenx ceny;
   context = context;
   buffer = buffer;
