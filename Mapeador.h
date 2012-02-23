@@ -263,7 +263,6 @@ Verb meta 'mapa'
   #ifdef ControlTimer;
   ControlTimer.PausarTick();
   #endif;
-
   closeGraphicWindow();
   #ifdef IMPRIMIR_DESCRIPCION_MAPA;
   AbrirLocalidadMapa();
