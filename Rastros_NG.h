@@ -12,11 +12,9 @@
 ! VERSION:   1.0
 ! PARA:   Ser usada sobre InformATE en su version 6-10
 ! URLs:   http://www.arrakis.es/~meliton/
-!        http://www.geocities.com/TimesSquare/Fortress/9939/
-!    http://www.geocities.com/jsjlogin/equipate/
-! USO:    'include "Rastros"' tras el 'include "Gramatica"' y
-!               antes del 'include "Moviles"' o 'include "Automata"'
-!               si es que alguno de estos está siendo incluído
+!         http://www.geocities.com/TimesSquare/Fortress/9939/
+!         http://www.geocities.com/jsjlogin/equipate/
+! USO:    'Include "Rastros"' tras el 'Include "Gramatica"'.
 !
 !----------------------------------------------------------------------------
 
@@ -73,7 +71,7 @@ Global indiceConRastro = 0;
 !  rastreado, por ejemplo, mediante diversos sentidos
 !
 Ifndef TipoRastro;
-class TipoRastro
+Class TipoRastro
   with
     name 'rastro' 'rastros' 'olor',
     !
@@ -141,10 +139,10 @@ class TipoRastro
           if (self.nombre_plural ~= 0)
             print (string) VR(self.nombre_plural);
           else
-            print (Object) self;
+            print (object) self;
         } else {
           give self ~pluralname;
-          print (Object) self;
+          print (object) self;
         }
 
         rtrue;
@@ -251,7 +249,7 @@ class TipoRastro
           if (self.nombre_plural ~= 0)
             print (string) self.nombre_plural;
           else
-            print (Object) self;
+            print (object) self;
           print ":^";
 
           for (contador = 0 : contador < 8 : contador++) {
