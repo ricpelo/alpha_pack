@@ -326,12 +326,15 @@ Verb meta 'mapa'
   }
 ];
 
-[ AyudaMapa sitio cenx ceny;
+[ AyudaMapa sitio cenx ceny
+  altura;
   glk_window_clear(gg_mainwin);
   glk_window_clear(gg_mapa_win);
   glk_window_clear(gg_objwin);
   glk_window_clear(gg_statuswin);
-  glk($002F, gg_statuswin);
+  glk($002F, gg_statuswin); ! select
+  glk_window_get_size(gg_statuswin, gg_arguments, gg_arguments + WORDSIZE);
+  altura = gg_arguments-->1;
   StatusLineHeight(12);
   glk($0086, style_SubHeader);
   glk($002B, gg_statuswin, 0, 0); ! locate
@@ -356,7 +359,7 @@ Verb meta 'mapa'
         "^ ", (s_em) "X", ", ", (s_em) "-", ": ", (s_b) "Alejar";
   print "^^ [ Pulsa una tecla para continuar ]";
   KeyDelay();
-  StatusLineHeight(1);
+  StatusLineHeight(altura);
   glk($0086, style_SubHeader);
   glk($002F, gg_mainwin);   ! select
   RefrescarMapa(sitio, cenx, ceny);
