@@ -1,7 +1,7 @@
 !
-! Mapeador.h - Una librer√≠a para generar el mapa de la aventura autom√°ticamente
+! Mapeador.h - Una librerÌa para generar el mapa de la aventura autom·ticamente
 !
-! Copyright (c) 2012 Ricardo P√©rez L√≥pez (Alpha Aventuras)
+! Copyright (c) 2012 Ricardo PÈrez LÛpez (Alpha Aventuras)
 !
 
 ! This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ Message " __________________________________________________________________";
 Message "|                                                                  |";
 Message "|                 * MAPEADOR:  I M P O R T A N T E *               |";
 Message "|                 ==================================               |";
-Message "| 1. Pon 'Include ~Mapeador.h~;' despu√©s de 'Include ~SGW+DMX.h~;' |";
+Message "| 1. Pon 'Include ~Mapeador.h~;' despues de 'Include ~SGW+DMX.h~;' |";
 Message "| 2. Define la rutina EncenderGraficos() antes, si la necesitas.   |";
 Message "| 3. Si usas tu propia rutina HandleGlkEvent(),                    |";
 Message "|    no olvides llamar desde esa rutina a:                         |";
