@@ -342,21 +342,21 @@ Verb meta 'mapa'
   glk($0086, style_Normal);
 
   print "^
-         ^ ", (s_em) "Cursor arriba", ", ", (s_em) "8", ", ", (s_em) "Y", ": ", (s_b) "Norte",
-           "       ", (s_em) "7", ", ", (s_em) "T", ": ", (s_b) "Noroeste",
-        "^ ", (s_em) "Cursor abajo", ", ", (s_em) "2", ", ", (s_em) "N", ": ", (s_b) "Sur",
-           "          ", (s_em) "9", ", ", (s_em) "U", ": ", (s_b) "Noreste",
-        "^ ", (s_em) "Cursor izquierda", ", ", (s_em) "4", ", ", (s_em) "G", ": ", (s_b) "Oeste",
-           "    ", (s_em) "1", ", ", (s_em) "B", ": ", (s_b) "Suroeste",
-        "^ ", (s_em) "Cursor derecha", ", ", (s_em) "6", ", ", (s_em) "J", ": ", (s_b) "Este",
-           "       ", (s_em) "3", ", ", (s_em) "M", ": ", (s_b) "Sureste",
-        "^ ", (s_em) "Inicio", ", ", (s_em) "5", ": ", (s_b) "Arriba",
-           "                ", (s_em) "Enter", ", ", (s_em) "*", ": ", (s_b) "Entrar",
-        "^ ", (s_em) "Fin", ", ", (s_em) "0", ": ", (s_b) "Abajo",
-           "                    ", (s_em) "Retroceso", ", ", (s_em) "/", ", ", (s_em) ".", ": ", (s_b) "Salir",
-        "^ ", (s_em) "Z", ", ", (s_em) "+", ": ", (s_b) "Acercar",
-           "                    ", (s_em) "Q", ": ", (s_b) "Salir",
-        "^ ", (s_em) "X", ", ", (s_em) "-", ": ", (s_b) "Alejar";
+         ^ ", (s_emph) "Cursor arriba", ", ", (s_emph) "8", ", ", (s_emph) "Y", ": ", (s_bold) "Norte",
+           "       ", (s_emph) "7", ", ", (s_emph) "T", ": ", (s_bold) "Noroeste",
+        "^ ", (s_emph) "Cursor abajo", ", ", (s_emph) "2", ", ", (s_emph) "N", ": ", (s_bold) "Sur",
+           "          ", (s_emph) "9", ", ", (s_emph) "U", ": ", (s_bold) "Noreste",
+        "^ ", (s_emph) "Cursor izquierda", ", ", (s_emph) "4", ", ", (s_emph) "G", ": ", (s_bold) "Oeste",
+           "    ", (s_emph) "1", ", ", (s_emph) "B", ": ", (s_bold) "Suroeste",
+        "^ ", (s_emph) "Cursor derecha", ", ", (s_emph) "6", ", ", (s_emph) "J", ": ", (s_bold) "Este",
+           "       ", (s_emph) "3", ", ", (s_emph) "M", ": ", (s_bold) "Sureste",
+        "^ ", (s_emph) "Inicio", ", ", (s_emph) "5", ": ", (s_bold) "Arriba",
+           "                ", (s_emph) "Enter", ", ", (s_emph) "*", ": ", (s_bold) "Entrar",
+        "^ ", (s_emph) "Fin", ", ", (s_emph) "0", ": ", (s_bold) "Abajo",
+           "                    ", (s_emph) "Retroceso", ", ", (s_emph) "/", ", ", (s_emph) ".", ": ", (s_bold) "Salir",
+        "^ ", (s_emph) "Z", ", ", (s_emph) "+", ": ", (s_bold) "Acercar",
+           "                    ", (s_emph) "Q", ": ", (s_bold) "Salir",
+        "^ ", (s_emph) "X", ", ", (s_emph) "-", ": ", (s_bold) "Alejar";
   print "^^ [ Pulsa una tecla para continuar ]";
   KeyDelay();
   StatusLineHeight(altura);
