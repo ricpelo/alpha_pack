@@ -349,7 +349,8 @@ Verb meta 'mapa'
         "^ ", (s_em) "Fin", ", ", (s_em) "0", ": ", (s_b) "Abajo",
            "                    ", (s_em) "Retroceso", ", ", (s_em) "/", ", ", (s_em) ".", ": ", (s_b) "Salir",
         "^ ", (s_em) "Z", ", ", (s_em) "+", ": ", (s_b) "Acercar",
-           "                    ", (s_em) "X", ", ", (s_em) "-", ": ", (s_b) "Alejar";
+           "                    ", (s_em) "Q", ": ", (s_b) "Salir",
+        "^ ", (s_em) "X", ", ", (s_em) "-", ": ", (s_b) "Alejar";
 
   KeyDelay();
   StatusLineHeight(1);
