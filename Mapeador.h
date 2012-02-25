@@ -332,7 +332,7 @@ Verb meta 'mapa'
   glk_window_clear(gg_objwin);
   glk_window_clear(gg_statuswin);
   glk($002F, gg_statuswin);
-  StatusLineHeight(20);
+  StatusLineHeight(12);
   glk($0086, style_SubHeader);
   glk($002B, gg_statuswin, 0, 0); ! locate
   print "Ayuda del mapa";
@@ -354,7 +354,7 @@ Verb meta 'mapa'
         "^ ", (s_em) "Z", ", ", (s_em) "+", ": ", (s_b) "Acercar",
            "                    ", (s_em) "Q", ": ", (s_b) "Salir",
         "^ ", (s_em) "X", ", ", (s_em) "-", ": ", (s_b) "Alejar";
-
+  print "^^ [ Pulsa una tecla para continuar ]";
   KeyDelay();
   StatusLineHeight(1);
   glk($0086, style_SubHeader);
