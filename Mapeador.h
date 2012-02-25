@@ -192,6 +192,9 @@ Verb meta 'mapa'
   clearMainWindow();
   if (sitio provides sgw_img) drawImageSGW(gg_objwin, sitio.sgw_img, POS_CENTRADO,
                                            BORDEWIN, BORDEWIN);
+  glk_window_get_size(gg_mapa_win, gg_arguments, gg_arguments + WORDSIZE);
+  glk_window_fill_rect(gg_mapa_win, $ffffff, 0, 0, gg_arguments-->0, gg_arguments-->1);
+  glk_window_fill_rect(gg_mapa_win, $000000, 2, 2, gg_arguments-->0 - 4, gg_arguments-->1 - 4);
   DibujarMapa(sitio, cenx, ceny, 1);
   objectloop (o ofclass Lugar) o.dibujado = false;
   ImprimirBarraEstadoMapa(sitio);
@@ -273,7 +276,7 @@ Verb meta 'mapa'
                                 70, wintype_Graphics, GG_BIGWIN_ROCK);
     #ifnot;
     gg_bigwin = glk_window_open(gg_mainwin, winmethod_Above + winmethod_Proportional,
-                                75, wintype_Graphics, GG_BIGWIN_ROCK);
+                                100, wintype_Graphics, GG_BIGWIN_ROCK);
     #endif;
   }
   if (gg_bigwin == 0) return;
