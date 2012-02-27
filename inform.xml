@@ -30,7 +30,7 @@
     <RULES
             IGNORE_CASE="FALSE"
             HIGHLIGHT_DIGITS="TRUE"
-            DIGIT_RE="(\$[\p{XDigit}]|[\p{Digit}])">
+            DIGIT_RE="[0-9a-fA-F]+">
         <EOL_SPAN TYPE="COMMENT1">!</EOL_SPAN>
 
         <!-- strings can span lines -->
@@ -46,6 +46,8 @@
         <!-- preprocessor statements -->
         <EOL_SPAN TYPE="KEYWORD2" AT_WHITESPACE_END="TRUE">#</EOL_SPAN>
         <EOL_SPAN TYPE="COMMENT1">!</EOL_SPAN>
+
+        <MARK_FOLLOWING TYPE="DIGIT" MATCH_TYPE="OPERATOR">$</MARK_FOLLOWING>
 
         <!-- special sequences that require special highlighting -->
         <SEQ TYPE="OPERATOR">=</SEQ>
