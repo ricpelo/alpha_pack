@@ -17,6 +17,11 @@ class EscenarioAbrible
     ! se muestre cuando está abierto, usando la propiedad si_abierto. En realidad, la
     ! propiedad si_cerrado no se usa, porque cuando está cerrado es un escenario, y por
     ! tanto no se describe.
+    describe [;
+      if (self has open) PrintOrRun(self, when_open);
+      else               PrintOrRun(self, when_closed);
+      rtrue;
+    ],
     abrir [;
       give self open;
       give self ~scenery;
