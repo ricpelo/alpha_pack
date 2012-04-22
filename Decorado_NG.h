@@ -163,7 +163,7 @@ class Decorado
       for (i = 0: i < (self.#describe) / (3 * WORDSIZE): i++) {
         if ((self.&describe)-->(i * 3) == x) {
           self.description   = VR((self.&describe)-->(i * 3 + 1));
-          self.gender        = (self.&describe)-->(i * 3 + 2);
+          self.actualizar_genero((self.&describe)-->(i * 3 + 2));
           self.palabra       = x;
           self.palabra_usada = x;
           PronounNotice(self);
@@ -178,10 +178,11 @@ class Decorado
               self.description   = VR((self.&describe)-->(i * 3 + 1));
               self.palabra       = (self.&describe)-->(i * 3);
               self.palabra_usada = (self.&sinonimos)-->(j * 3);
-              self.gender        = (self.&sinonimos)-->(j * 3 + 2);
+              self.gender = (self.&sinonimos)-->(j * 3 + 2);
               if (self.gender == -1) {
-                self.gender      = (self.&describe)-->(i * 3 + 2);
+                self.gender = (self.&describe)-->(i * 3 + 2);
               }
+              self.actualizar_genero(self.gender);
               PronounNotice(self);
               rtrue;
             }
@@ -226,7 +227,7 @@ class Decorado
               self.description   = VR((self.&describe)-->(i * 3 + 1));
               self.palabra       = w;
               self.palabra_usada = w;
-              self.gender        = (self.&describe)-->(i * 3 + 2);
+              self.actualizar_genero((self.&describe)-->(i * 3 + 2));
               PronounNotice(self);
             }
             c++;
@@ -260,6 +261,7 @@ class Decorado
                     if (self.gender == -1) {
                       self.gender      = (self.&describe)-->(i * 3 + 2);
                     }
+                    self.actualizar_genero(self.gender);
                   }
                   f = true;
                   break;
@@ -280,6 +282,11 @@ class Decorado
           }
         }
       }
+    ],
+    actualizar_genero [ g;
+      self.gender = g;
+      if (self.gender == G_FEMENINO) give self female;
+      if (self.gender == G_PLURAL)   give self pluralname;
     ],
     before [;
       Examine: rfalse;
