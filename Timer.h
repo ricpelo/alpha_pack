@@ -49,8 +49,15 @@ Message "|_________________________________________________________________|";
 Class GestorTimer
   with
     condicion true,             ! Si es false, no se ejecutará el evento
+    activado true,              ! Si es false, el gestor está desactivado
     duracion 0,                 ! Número de ticks necesarios para ejecutarse
     evento 0,                   ! El evento a ejecutar
+    ActivarGestor [;            ! Activa el gestor
+      self.activado = true;
+    ],
+    DesactivarGestor [;         ! Desactiva el gestor
+      self.activado = false;
+    ],
     AgregarGestor [;            ! Agrega este gestor en un hueco de la lista
       return ControlTimer.AgregarGestor(self);
     ],
@@ -210,13 +217,16 @@ Object ControlTimer
                t = self.&gestores-->i;
                ! Si hay gestor y su duración es múltiplo del tick:
                if (t ~= 0 && self.contador_ticks % t.duracion == 0) {
-                 ! Si no hay mutex o lo tiene asignado el gestor t:
-                 if (self.mutex == 0 or t) {
-                   ! Si la condición del gestor se cumple:
-                   if (ValueOrRun(t, condicion)) {
-                     ! Si el evento retorna true:
-                     if (t.evento ~= 0 && t.evento()) {
-                       break;
+                 ! Si el gestor está activado:
+                 if (ValueOrRun(t, activado)) {
+                   ! Si no hay mutex o lo tiene asignado el gestor t:
+                   if (self.mutex == 0 or t) {
+                     ! Si la condición del gestor se cumple:
+                     if (ValueOrRun(t, condicion)) {
+                       ! Si el evento retorna true:
+                       if (t.evento ~= 0 && t.evento()) {
+                         break;
+                       }
                      }
                    }
                  }
