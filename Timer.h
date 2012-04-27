@@ -384,7 +384,7 @@ Object ControlTimer
     DesactivarMutex [;                    ! Desactiva el mutex si lo hubiera
       self.mutex = 0;
     ],
-    Reiniciar [                           ! Pone todas las propiedades a sus valores por defecto
+    Resetear [                            ! Pone todas las propiedades a sus valores por defecto
       i;
       self.DesactivarTick();
       self.tick = 0;
