@@ -22,7 +22,7 @@
 ! Modificaciones siguientes:
 ! - Modificada para que la rutina hackeada sea KeyboardPrimitive en lugar de
 !   Parser__parse. KeyboardPrimitive es mucho más corta y sencilla que
-!   Parser__parse, y además ahora ya no hace alta hackear la librería gtalk.h
+!   Parser__parse, y además ahora ya no hace falta hackear la librería gtalk.h
 ! - Modificada para permitir la ejecución "paso a paso" del test (run_once)
 !
 ! Sistema automático de testeo para inform
