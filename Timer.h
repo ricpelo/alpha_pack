@@ -35,9 +35,11 @@ Message "|_________________________________________________________________|";
 
 
 ! Nuestra particular versión de WaitDelay:
-![ WaitDelay delay;
-!  return ControlTimer.CT_WaitDelay(delay);
-!];
+#ifndef WaitDelay;
+[ WaitDelay delay;
+  return ControlTimer.CT_WaitDelay(delay);
+];
+#endif;
 
 
 ! Nuestra particular versión de KeyDelay:
