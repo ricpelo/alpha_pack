@@ -449,11 +449,12 @@ Object test_machine
   ! Comienzo del hackeo (c) Alpha
   if (parse_input_externo > 0) {
     if (test_machine.get_input() ~= 0) {
-      if (parse_input_externo == 2) parse_input_externo = 0;
+      if (parse_input_externo == 2) parse_input_externo = -1; ! Para gtalk
       Tokenise__(buffer, parse);
       rfalse;
     }
   }
+  if (parse_input_externo == -1) parse_input_externo = 0;
   ! Fin del hackeo (c) Alpha
 
   if (gg_commandstr ~= 0 && gg_command_reading ~= false) {
