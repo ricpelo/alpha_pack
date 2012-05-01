@@ -97,17 +97,22 @@
 ! prand(). (Note that prand_options is reset to 0 after calling any
 ! wrapper function.) You can also define your own wrappers. But you
 ! knew that already.
+!
+! Modificaciones (c) 2012 Ricardo Pérez (Sothoth) - Alpha Aventuras
 
 System_file;
 
-Default PS_TAB_SIZE = 1000;  ! NÃºmero de cadenas DIFERENTES que se han impreso
-Array printed_strings --> PS_TAB_SIZE;
-Default PS_TEMP_SIZE = 50;   ! NÃºmero de cadenas en cada llamada a prand
-Array ps_temp -> PS_TEMP_SIZE;
-Array str_temp --> PS_TEMP_SIZE;
-Global ps_tab_entries;
-Global ps_tab_index = -1;
-Global prand_options;
+Default PS_TAB_SIZE  = 1000; ! Número máx. de cadenas DIFERENTES a imprimir
+Default PS_TEMP_SIZE = 50;   ! Número máx. de cadenas en cada llamada a prand
+
+Array printed_strings --> PS_TAB_SIZE;   ! Cadenas que se han impreso
+Array ps_temp          -> PS_TEMP_SIZE;  ! Posiciones de cadenas en llamadas  
+Array str_temp        --> PS_TEMP_SIZE;  ! Cadenas en una llamada a prand
+
+Global ps_tab_entries;         ! Número de cadenas impresas hasta ahora
+Global ps_tab_index = -1;      ! Índice del array printed_strings
+Global prand_options;          ! Opciones (ver constantes siguientes)
+
 Constant PRAND_SEQUENTIAL_FIRST   = $1;
 Constant PRAND_HOLD_ON_LAST       = $2;
 Constant PRAND_RETURN_STRING      = $4;
@@ -215,11 +220,13 @@ Constant PRAND_NEW_ONLY           = $10;
     printed_strings-->i = str;
   }
   print (string) str;
+
 .prandlab04;
   if (prand_options & PRAND_RETURN_STRING) return str;
   return a;
 ];
 
+! Esta rutina proviene originalmente de la librería Platypus:
 [ FindByWord v arr words fln
   idx;
   if (fln == 0) fln = 1;
@@ -228,3 +235,4 @@ Constant PRAND_NEW_ONLY           = $10;
   @linearsearch v WORDSIZE arr fln words 0 4 idx;
   return idx;
 ];
+
