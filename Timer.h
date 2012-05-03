@@ -155,9 +155,11 @@ Object ControlTimer
       i max d;
       max = -1;
       for (i = 0: i < self.#gestores / WORDSIZE: i++) {
-        d = (self.&gestores-->i).duracion;
-        if (d > max) {
-          max = d;
+        if (self.&gestores-->i ~= 0) {
+          d = (self.&gestores-->i).duracion;
+          if (d > max) {
+            max = d;
+          }
         }
       }
       self.duracion_maxima = max;
