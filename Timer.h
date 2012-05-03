@@ -171,6 +171,9 @@ Object ControlTimer
       }
     ],
   with
+    numero_ticks [;                       ! Devuelve el valor de contador_ticks
+      return self.contador_ticks;
+    ],
     DentroDeEvento [;                     ! Si se está ejecutando un evento desde el timer
       return self.contexto_handle_glk;
     ],
