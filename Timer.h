@@ -53,6 +53,7 @@ Class GestorTimer
     condicion true,             ! Si es false, no se ejecutará el evento
     activado true,              ! Si es false, el gestor está desactivado
     duracion 0,                 ! Número de ticks necesarios para ejecutarse
+    compensacion 0,             ! Ticks que se suman en el primer ciclo
     evento 0,                   ! El evento a ejecutar
     ActivarGestor [;            ! Activa el gestor
       self.activado = true;
@@ -87,7 +88,7 @@ Class GestorTimer
 
 
 Object ControlTimer
-  private
+with
     gestores 0 0 0 0 0 0 0 0 0 0          ! Array de gestores de eventos
              0 0 0 0 0 0 0 0 0 0,
     duracion_maxima 0,                    ! Duración máxima entre los gestores (en nº de ticks) 
@@ -157,9 +158,7 @@ Object ControlTimer
       for (i = 0: i < self.#gestores / WORDSIZE: i++) {
         if (self.&gestores-->i ~= 0) {
           d = (self.&gestores-->i).duracion;
-          if (d > max) {
-            max = d;
-          }
+          if (d > max) max = d;
         }
       }
       self.duracion_maxima = max;
@@ -167,11 +166,8 @@ Object ControlTimer
     AsignarTick [ t;                      ! Asigna la duración del tick
       ! Durante la ejecución de un evento, no se cambia el tick,
       ! sino que se retrasa el cambio hasta terminar con el ciclo actual:
-      if (self.contexto_handle_glk) {
-        self.tick_pospuesto = t;
-      } else {
-        self.tick = t;
-      }
+      if (self.contexto_handle_glk) self.tick_pospuesto = t;
+      else                          self.tick = t;
     ],
   with
     numero_ticks [;                       ! Devuelve el valor de contador_ticks
@@ -182,7 +178,7 @@ Object ControlTimer
     ],
     ! Nuestra propia versión de WaitDelay:
     CT_WaitDelay [ delay;
-      glk($00D6, delay * 5) ;             ! request_timer_events
+      glk($00D6, delay * 5);              ! request_timer_events
       while (1) {
         glk($00C0, gg_arguments);         ! glk_select(gg_arguments);
         if ((gg_arguments-->0) == 1) {
@@ -214,7 +210,7 @@ Object ControlTimer
     ],
     ! Nuestra versión de HandleGlkEvent:
     CT_HandleGlkEvent [ ev context buffer
-      i t;
+      i t re d;
       switch (ev-->0) {
         1: ! evtype_Timer == 1
            if (context == 1) return 1;  ! character input request
@@ -223,17 +219,23 @@ Object ControlTimer
              self.ReiniciarImpresion();
              for (i = 0: i < self.#gestores / WORDSIZE: i++) {
                t = self.&gestores-->i;
-               ! Si hay gestor y su duración es múltiplo del tick:
-               if (t ~= 0 && self.contador_ticks % t.duracion == 0) {
-                 ! Si el gestor está activado:
-                 if (ValueOrRun(t, activado)) {
-                   ! Si no hay mutex o lo tiene asignado el gestor t:
-                   if (self.mutex == 0 or t) {
-                     ! Si la condición del gestor se cumple:
-                     if (ValueOrRun(t, condicion)) {
-                       ! Si el evento retorna true:
-                       if (t.evento ~= 0 && t.evento()) {
-                         break;
+               ! Si hay gestor:
+               if (t ~= 0) {
+                 d = t.duracion + t.compensacion;
+                 if (t.compensacion ~= 0) re = true;
+                 ! Si su duración es múltiplo del tick:
+                 if (self.contador_ticks % d == 0) {
+                   ! Si el gestor está activado:
+                   if (ValueOrRun(t, activado)) {
+                     ! Si no hay mutex o lo tiene asignado el gestor t:
+                     if (self.mutex == 0 or t) {
+                       ! Si la condición del gestor se cumple:
+                       if (ValueOrRun(t, condicion)) {
+                         ! Si el evento retorna true:
+                         if (t.evento ~= 0 && t.evento()) {
+                           t.compensacion = 0;
+                           break;
+                         }
                        }
                      }
                    }
@@ -244,6 +246,7 @@ Object ControlTimer
            ! Contador cíclico entre 1 y duracion_maxima:
            if (self.contador_ticks >= self.duracion_maxima) {
              self.contador_ticks = 1;
+             if (re) self.RecalcularMaximo();
            } else {
              self.contador_ticks++;
            }
@@ -274,9 +277,7 @@ Object ControlTimer
     SustituirGestor [ viejo nuevo         ! Cambia un gestor por otro
       pos;
       pos = self.BuscarPosicion(viejo);
-      if (pos ~= -1) {
-        return self.AsignarGestor(nuevo, pos);
-      }
+      if (pos ~= -1) return self.AsignarGestor(nuevo, pos);
       return -1;
     ],
     IntercambiarGestores [ g1 g2          ! Intercambia la posición de dos gestores
@@ -312,7 +313,8 @@ Object ControlTimer
       }
       self.AsignarGestor(g, pos);
     ],
-    AsignarGestor [ g pos;                ! Asigna un gestor a una posición del array
+    AsignarGestor [ g pos                 ! Asigna un gestor a una posición del array
+      d;
       if (pos < 0 || pos >= self.#gestores / WORDSIZE) {
         #ifdef DEBUG;
           print "ERROR: La posición para el gestor de timer sobrepasa los límites.^";
@@ -320,8 +322,10 @@ Object ControlTimer
         return -1;
       }
       self.&gestores-->pos = g;
-      if (g.duracion > self.duracion_maxima) {
-        self.duracion_maxima = g.duracion;
+      g.compensacion = self.contador_ticks - 1;
+      d = g.duracion + g.compensacion;
+      if (d > self.duracion_maxima) {
+        self.duracion_maxima = d;
       }
       return pos;
     ],
@@ -329,9 +333,7 @@ Object ControlTimer
       d i;
       if (g ~= 0) {
         pos = self.BuscarPosicion(g);
-        if (pos == -1) {
-          rfalse;
-        }
+        if (pos == -1) rfalse;
       } else if (pos < 0 || pos >= self.#gestores / WORDSIZE) {
         rfalse;
       }
@@ -340,9 +342,7 @@ Object ControlTimer
         self.&gestores-->i = self.&gestores-->(i + 1);
       }
       self.&gestores-->i = 0;
-      if (d == self.duracion_maxima) {
-        self.RecalcularMaximo();
-      }
+      if (d == self.duracion_maxima) self.RecalcularMaximo();
       return pos;
     ],
     PrepararImpresion [;                  ! Llamada por los gestores antes de imprimir algo
@@ -356,14 +356,9 @@ Object ControlTimer
       self.ha_imprimido_algo = false;
     ],
     ActivarTick [ t;                      ! Activa el tick (opcionalmente, asignando el tick antes)
-      if (t ~= 0) {
-        self.AsignarTick(t);
-      } else {
-        t = self.tick;
-      }
-      if (~~(self.contexto_handle_glk)) {
-        self.MiGlkRequestTimerEvents(t);
-      }
+      if (t ~= 0) self.AsignarTick(t);
+      else        t = self.tick;
+      if (~~(self.contexto_handle_glk)) self.MiGlkRequestTimerEvents(t);
     ],
     DesactivarTick [;                     ! Desactiva el tick
       self.tick = 0;
@@ -405,8 +400,6 @@ Object ControlTimer
       self.ha_imprimido_algo = true;
       self.contexto_handle_glk = false;
       self.longitud = 0;
-      for (i = 0: i < self.#gestores / WORDSIZE: i++) {
-        self.&gestores-->i = 0;
-      }
+      for (i = 0: i < self.#gestores / WORDSIZE: i++) self.&gestores-->i = 0;
     ];
 
