@@ -1658,26 +1658,30 @@ Default LITEXT  = SCBACK; ! se invierte el color
         !------------------------------------------------------------------------
         ! ACTIVIDAD 1: Imagenes y Musica de Fondo automaticas para cada Localidad
         !------------------------------------------------------------------------
-        1:
+        ! ACTIVIDAD 3: Sólo Musica de Fondo automatica para cada Localidad
+        !------------------------------------------------------------------------
+        1, 3:
           if (current_loc == real_location) { return; }
           else {
             current_loc = real_location;
             #ifndef SGW_SIN_GRAFICOS;
-              if (location == thedark) {
-                #ifdef SGW_IMAGEN_OSCURIDAD;
-                  viewImageCenter(SGW_IMAGEN_OSCURIDAD);
-                #ifnot;
-                  glk_window_set_background_color(gg_bigwin,SCBACK);
-                  glk_window_clear(gg_bigwin);
-                #endif; ! SGW_IMAGEN_OSCURIDAD
-              }
-              else {
-                if (location provides sgw_img) {
-                  viewImageCenter(location.sgw_img);
+              if (aux == 1) {
+                if (location == thedark) {
+                  #ifdef SGW_IMAGEN_OSCURIDAD;
+                    viewImageCenter(SGW_IMAGEN_OSCURIDAD);
+                  #ifnot;
+                    glk_window_set_background_color(gg_bigwin,SCBACK);
+                    glk_window_clear(gg_bigwin);
+                  #endif; ! SGW_IMAGEN_OSCURIDAD
                 }
                 else {
-                  glk_window_set_background_color(gg_bigwin,SCBACK);
-                  glk_window_clear(gg_bigwin);
+                  if (location provides sgw_img) {
+                    viewImageCenter(location.sgw_img);
+                  }
+                  else {
+                    glk_window_set_background_color(gg_bigwin,SCBACK);
+                    glk_window_clear(gg_bigwin);
+                  }
                 }
               }
             #endif; ! SGW_SIN_GRAFICOS
