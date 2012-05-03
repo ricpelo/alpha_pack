@@ -152,11 +152,12 @@ Object ControlTimer
       return 1;
     ],
     RecalcularMaximo [                    ! Vuelve a calcular la duración máxima
-      i max;
+      i max d;
       max = -1;
       for (i = 0: i < self.#gestores / WORDSIZE: i++) {
-        if (self.&gestores-->i > max) {
-          max = self.&gestores-->i;
+        d = (self.&gestores-->i).duracion;
+        if (d > max) {
+          max = d;
         }
       }
       self.duracion_maxima = max;
