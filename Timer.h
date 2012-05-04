@@ -64,6 +64,9 @@ Class GestorTimer
     AgregarGestor [;            ! Agrega este gestor en un hueco de la lista
       return ControlTimer.AgregarGestor(self);
     ],
+    AgregarGestorAlFinal [;
+      return ControlTimer.AgregarGestorAlFinal(self);
+    ],
     InsertarGestor [ pos;       ! Inserta este gestor empujando los demás
       return ControlTimer.InsertarGestor(self, pos);
     ],
@@ -299,6 +302,22 @@ with
         return -1;
       }
       return self.AsignarGestor(g, pos);
+    ],
+    AgregarGestorAlFinal [ g
+      max i pos;
+      max = self.#gestores / WORDSIZE - 1;
+      for (i = max: i >= 0: i--) {
+        if (self.&gestores-->i ~= 0) break; 
+      }
+      pos = i + 1;
+      if (pos >= 0 && pos < max && self.&gestores-->pos == 0) {
+        self.AsignarGestor(g, pos);
+      } else {
+        #ifdef DEBUG;
+          print "ERROR: Superado número máximo de gestores de timer.^";
+        #endif;
+        return -1;
+      }
     ],
     InsertarGestor [ g pos                ! Inserta un gestor en una posición, empujando
       i;
