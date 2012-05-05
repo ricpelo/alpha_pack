@@ -13,7 +13,8 @@ class Contenedor
   with
     descripcion_real "",
     description [;
-      print (string) self.descripcion_real, " ";
+      PrintOrRun(self, descripcion_real, 1);
+      print " ";
       if (self has open) {
         if (children(self) == 0) {
           "Está abiert", (o) self, ", pero vací", (o) self, ".";
