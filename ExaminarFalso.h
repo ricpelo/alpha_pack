@@ -33,7 +33,7 @@ System_file;
 Message " ___________________________________________________________ ";
 Message "|                                                           |";
 Message "|           * ExaminarFalso: I M P O R T A N T E *          |";
-Mensaje "|           ======================================          |";
+Message "|           ======================================          |";
 Message "|  Usando rutina UnknownVerb() proporcionada por el juego.  |";
 Message "|      NO OLVIDES USAR EN ESA RUTINA EL RESULTADO DE:       |";
 Message "|      ExaminarFalso: ExaminarFalso.EF_UnknownVerb(x)       |";
@@ -56,17 +56,20 @@ Object ExaminarFalso
         #ifdef Decorado;
         if (obj ofclass Decorado && obj.buscar_nombre(x)) {
           jump PalabraEncontrada;
-        } else
+        } else {
         #endif;
           if (obj ~= player) {
             if (WordInProperty(x, obj, name) ||
-              WordInProperty(x, obj, name_m) ||
-              WordInProperty(x, obj, name_f) ||
-              WordInProperty(x, obj, name_mp) ||
-              WordInProperty(x, obj, name_fp)) {
-            jump PalabraEncontrada;
+                WordInProperty(x, obj, name_m) ||
+                WordInProperty(x, obj, name_f) ||
+                WordInProperty(x, obj, name_mp) ||
+                WordInProperty(x, obj, name_fp)) {
+              jump PalabraEncontrada;
+            }
           }
+        #ifdef Decorado;
         }
+        #endif;
       }
       rfalse;
     .PalabraEncontrada;
