@@ -84,7 +84,7 @@ Verb meta 'mapa'
   buffer = buffer;
   switch (ev-->0) {
     evtype_Redraw, evtype_Arrange:
-      if (g_sitio ~= 0) {
+      if (gg_mapawin ~= 0 && g_sitio ~= 0) {
 !        AbrirVentanaMapa();
         glk_window_get_size(gg_mapawin, gg_arguments, gg_arguments + WORDSIZE);
         cenx = (gg_arguments-->0) / 2; ! ancho / 2
