@@ -71,10 +71,12 @@ Verb meta 'mapa'
       return;
    }       
    if (fase == 2) { ! Actualizar nuestras ventanas
-      glk_window_get_size(gg_mapawin, gg_arguments, gg_arguments + WORDSIZE);
-      cenx = (gg_arguments-->0) / 2; ! ancho / 2
-      ceny = (gg_arguments-->1) / 2; ! alto / 2
-      RefrescarMapa(g_sitio, cenx, ceny);
+     if (gg_mapawin ~= 0) {
+       glk_window_get_size(gg_mapawin, gg_arguments, gg_arguments + WORDSIZE);
+       cenx = (gg_arguments-->0) / 2; ! ancho / 2
+       ceny = (gg_arguments-->1) / 2; ! alto / 2
+       RefrescarMapa(g_sitio, cenx, ceny);
+     }
    }
 ];
 
