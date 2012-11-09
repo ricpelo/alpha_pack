@@ -53,31 +53,31 @@ Verb meta 'mapa'
 
 [ Mapa_IdentifyGlkObject fase tipo ref rock
   cenx ceny;
-   if (fase == 0) { ! Poner cero en todos nuestros objetos glk
-      gg_mapawin = 0;
-      return;
-   }       
-   if (fase == 1) { ! Reiniciar correctamente las variables glk
-      switch (tipo) {
-         0: ! es una ventana
-            switch (rock) {
-               GG_MAPAWIN_ROCK: gg_mapawin = ref;
-            }
-         1: ! es un flujo
-            ! pero no hay flujos en este ejemplo
-         2: ! es una referencia a fichero
-            ! pero no hay ficheros en este ejemplo
-      }
-      return;
-   }       
-   if (fase == 2) { ! Actualizar nuestras ventanas
-     if (gg_mapawin ~= 0) {
-       glk_window_get_size(gg_mapawin, gg_arguments, gg_arguments + WORDSIZE);
-       cenx = (gg_arguments-->0) / 2; ! ancho / 2
-       ceny = (gg_arguments-->1) / 2; ! alto / 2
-       RefrescarMapa(g_sitio, cenx, ceny);
-     }
-   }
+  if (fase == 0) { ! Poner cero en todos nuestros objetos glk
+    gg_mapawin = 0;
+    return;
+  }       
+  if (fase == 1) { ! Reiniciar correctamente las variables glk
+    switch (tipo) {
+      0: ! es una ventana
+         switch (rock) {
+           GG_MAPAWIN_ROCK: gg_mapawin = ref;
+         }
+      1: ! es un flujo
+         ! pero no hay flujos en este ejemplo
+      2: ! es una referencia a fichero
+         ! pero no hay ficheros en este ejemplo
+    }
+    return;
+  }       
+  if (fase == 2) { ! Actualizar nuestras ventanas
+    if (gg_mapawin ~= 0) {
+      glk_window_get_size(gg_mapawin, gg_arguments, gg_arguments + WORDSIZE);
+      cenx = (gg_arguments-->0) / 2; ! ancho / 2
+      ceny = (gg_arguments-->1) / 2; ! alto / 2
+      RefrescarMapa(g_sitio, cenx, ceny);
+    }
+  }
 ];
 
 [ Mapa_HandleGlkEvent ev context buffer
