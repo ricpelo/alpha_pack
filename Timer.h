@@ -91,7 +91,7 @@ Class GestorTimer
 
 
 Object ControlTimer
-with
+  private
     gestores 0 0 0 0 0 0 0 0 0 0          ! Array de gestores de eventos
              0 0 0 0 0 0 0 0 0 0,
     duracion_maxima 0,                    ! Duración máxima entre los gestores (en nº de ticks) 
@@ -181,10 +181,10 @@ with
     ],
     ! Nuestra propia versión de WaitDelay:
     CT_WaitDelay [ delay;
-      glk($00D6, delay * 5);              ! request_timer_events
+      glk($00D6, delay);                  ! request_timer_events
       while (1) {
-        glk($00C0, gg_arguments);         ! glk_select(gg_arguments);
-        if ((gg_arguments-->0) == 1) {
+        glk($00C0, gg_arguments);         ! glk_select
+        if ((gg_arguments-->0) == 1) {    ! evtype_Timer
           glk($00D6, self.tick);
           break;
         }
@@ -194,15 +194,14 @@ with
     CT_KeyDelay [ delay
       key done ix;
       glk($00D2, gg_mainwin); ! request_char_event
-      glk($00D6, delay * 5);  ! request_timer_events
+      glk($00D6, delay);      ! request_timer_events
       while (~~done) {
         glk($00C0, gg_event); ! select
         ix = HandleGlkEvent(gg_event, 1, gg_arguments);
         if (ix == 2) {
           key = gg_arguments-->0;
           done = true;
-        }
-        else if (ix >= 0 && gg_event-->0 == 1 or 2) {
+        } else if (ix >= 0 && gg_event-->0 == 1 or 2) { ! Timer or CharInput
           key = gg_event-->2;
           done = true;
         }
@@ -369,6 +368,9 @@ with
         self.ha_imprimido_algo = true;
         glk($00D1, gg_mainwin, gg_event); ! glk_cancel_line_event(gg_mainwin, gg_event);
         self.longitud = gg_event-->2;
+        ! Esta línea sólo debe ejecutarse cuando se use
+        ! el intérprete de Gargoyle modificado por mí:
+        if (self.contexto_handle_glk) new_line;
       }
     ],
     ReiniciarImpresion [;                 ! Reinicia el indicador de 'imprimido algo'
