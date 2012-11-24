@@ -1015,6 +1015,25 @@ Constant imagealign_MarginRight $05;
   return ret;
 ];
 
+Constant config_LinkColor   0;
+Constant config_BorderColor 1;
+Constant config_WBorderX    2;
+Constant config_WBorderY    3;
+
+[ glk_set_config _vararg_count ret;
+! glk_set_config (param value)
+  ! And now the @glk call
+  @glk $FFFB _vararg_count ret;
+  return ret;
+];
+
+[ glk_get_config _vararg_count ret;
+! value = glk_get_config (param)
+  ! And now the @glk call
+  @glk $FFFA _vararg_count ret;
+  return ret;
+];
+
 ! ====================================================================
 ! FIN DE LAS EXTENSIONES DE ALPHA AVENTURAS
 ! ====================================================================
