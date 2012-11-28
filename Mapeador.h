@@ -318,7 +318,7 @@ Verb meta 'mapa'
   #ifdef ControlTimer;
   ControlTimer.PausarTick();
   #endif;
-  if (gg_mapawin == 0) glk_window_close(gg_mapawin, 0);
+  if (gg_mapawin ~= 0) glk_window_close(gg_mapawin, 0);
   gg_mapawin = glk_window_open(gg_mainwin, winmethod_Above + winmethod_Proportional,
                                100, wintype_Graphics, GG_MAPAWIN_ROCK);
   if (gg_mapawin == 0) return;
@@ -328,6 +328,7 @@ Verb meta 'mapa'
 
 [ CerrarVentanaMapa;
   glk_window_close(gg_mapawin, 0);
+  gg_mapawin = 0;
   closeAllWindows();
   clearMainWindow();
   EncenderGraficos();
