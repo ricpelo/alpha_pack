@@ -309,7 +309,7 @@ Object ControlTimer
         if (self.&gestores-->i ~= 0) break; 
       }
       pos = i + 1;
-      if (pos >= 0 && pos < max && self.&gestores-->pos == 0) {
+      if (pos >= 0 && pos <= max && self.&gestores-->pos == 0) {
         self.AsignarGestor(g, pos);
       } else {
         #ifdef DEBUG;
