@@ -108,17 +108,12 @@ Object ControlTimer
       glk($00D6, t);                      ! glk_request_timer_events
       self.contador_ticks = 1;
     ],
-    RestaurarLineaOrdenes [ buffer        ! Restaura la línea de órdenes
-      tick_anterior;
+    RestaurarLineaOrdenes [ buffer;       ! Restaura la línea de órdenes
       if (deadflag ~= 0) {
-        tick_anterior = self.tick;
-        self.DesactivarTick();
-        ! Todo el cuerpo del 'if' desde aquí está copiado de la librería:
+        ! Todo el cuerpo del 'if' desde aquí está copiado de la librería...
         if (deadflag ~= 2) AfterLife();
-        if (deadflag == 0) {
-          self.ActivarTick(tick_anterior);
-          return 1;
-        }
+        if (deadflag == 0) return 1;
+        self.DesactivarTick();            ! ... excepto esta línea
         print "^^    ";
         #Ifdef TARGET_ZCODE;
         #IfV5; style bold; #Endif; ! V5
