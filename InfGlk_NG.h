@@ -41,7 +41,6 @@ Constant gestalt_LineTerminators 18;
 Constant gestalt_LineTerminatorKey 19;
 Constant gestalt_DateTime 20;
 Constant gestalt_Sound2 21;
-Constant gestalt_AlphaAventuras $ffff;
 Constant evtype_None 0;
 Constant evtype_Timer 1;
 Constant evtype_CharInput 2;
@@ -994,6 +993,9 @@ Constant imagealign_MarginRight $05;
 ! EXTENSIONES DE ALPHA AVENTURAS (c) Alpha
 ! ====================================================================
 
+Constant gestalt_AlphaAventuras $ffff;
+
+! Incrementa el tamaño de las fuentes:
 [ glk_incr_fontsize _vararg_count ret;
 ! glk_incr_fontsize ()
   ! And now the @glk call
@@ -1001,6 +1003,7 @@ Constant imagealign_MarginRight $05;
   return ret;
 ];
 
+! Decrementa el tamaño de las fuentes:
 [ glk_decr_fontsize _vararg_count ret;
 ! glk_decr_fontsize ()
   ! And now the @glk call
@@ -1008,6 +1011,8 @@ Constant imagealign_MarginRight $05;
   return ret;
 ];
 
+! Establece el hint de un estilo en tiempo de ejecución
+! para una ventana dada:
 [ glk_window_stylehint_set _vararg_count ret;
 ! glk_window_stylehint_set (win styl hint val)
   ! And now the @glk call
@@ -1015,22 +1020,35 @@ Constant imagealign_MarginRight $05;
   return ret;
 ];
 
-Constant config_LinkColor   0;
-Constant config_BorderColor 1;
-Constant config_WBorderX    2;
-Constant config_WBorderY    3;
-
-[ glk_set_config _vararg_count ret;
-! glk_set_config (param value)
+! Devuelve el hint de un estilo en tiempo de ejecución
+! para una ventana dada:
+[ glk_window_stylehint_get _vararg_count ret;
+! val = glk_window_stylehint_get (win styl hint)
   ! And now the @glk call
   @glk $FFFB _vararg_count ret;
   return ret;
 ];
 
+! Opciones de configuración para glk_set_config()
+! y glk_get_config():
+Constant config_LinkColor   0;
+Constant config_BorderColor 1;
+Constant config_WBorderX    2;
+Constant config_WBorderY    3;
+
+! Establece una opción de configuración:
+[ glk_set_config _vararg_count ret;
+! glk_set_config (param value)
+  ! And now the @glk call
+  @glk $FFFA _vararg_count ret;
+  return ret;
+];
+
+! Devuelve el valor actual de una opción de configuración:
 [ glk_get_config _vararg_count ret;
 ! value = glk_get_config (param)
   ! And now the @glk call
-  @glk $FFFA _vararg_count ret;
+  @glk $FFF9 _vararg_count ret;
   return ret;
 ];
 
