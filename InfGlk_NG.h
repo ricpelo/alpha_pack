@@ -1035,6 +1035,7 @@ Constant config_LinkColor   0;
 Constant config_BorderColor 1;
 Constant config_WBorderX    2;
 Constant config_WBorderY    3;
+Constant config_LinkStyle   4;
 
 ! Establece una opción de configuración:
 [ glk_set_config _vararg_count ret;
@@ -1049,6 +1050,22 @@ Constant config_WBorderY    3;
 ! value = glk_get_config (param)
   ! And now the @glk call
   @glk $FFF9 _vararg_count ret;
+  return ret;
+];
+
+! Devuelve la posición actual del cursor en un TextGrid:
+[ glk_window_get_cursor _vararg_count ret;
+  ! glk_window_get_cursor (win x y)
+  ! And now the @glk call
+  @glk $FFF8 _vararg_count ret;
+  return ret;
+];
+
+! Devuelve el carácter situado en una posición de un TextGrid:
+[ glk_window_get_char _vararg_count ret;
+  ! char = glk_window_get_char (win x y)
+  ! And now the @glk call
+  @glk $FFF7 _vararg_count ret;
   return ret;
 ];
 
