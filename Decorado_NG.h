@@ -285,8 +285,8 @@ class Decorado
     ],
     actualizar_genero [ g;
       self.gender = g;
-      if (self.gender == G_FEMENINO) give self female;
-      if (self.gender == G_PLURAL)   give self pluralname;
+      if (self.gender & G_FEMENINO) give self female;
+      if (self.gender & G_PLURAL)   give self pluralname;
     ],
     before [;
       Examine: rfalse;
