@@ -14,24 +14,24 @@ Constant PNJ_PUERTA_CERRADA = 13;
   aux1 aux2 r;
 
   if (PuedeTocar(quien, que, 1)) {
-    aux1 = accion; aux2 = uno;
-    accion = ##Coger; actor = quien; uno = que;
+    aux1 = action; aux2 = noun;
+    action = ##Take; actor = quien; noun = que;
     r = RutinasAntesPNJ();
       
     if (r == false) {
       move que to quien;
       if (RutinasDespuesPNJ() == false)
         ! Mensaje de éxito
-        if (SeVen(quien, jugador))
-          print_ret (_El) actor, " recoge ", (el) uno, ".";
+        if (SeVen(quien, player))
+          print_ret (The) actor, " recoge ", (the) noun, ".";
 
-      accion = aux1;
-      uno = aux2;
+      action = aux1;
+      noun = aux2;
       rtrue;
     }
       
-    accion = aux1;
-    uno = aux2;
+    action = aux1;
+    noun = aux2;
   }
   rfalse;
 ];
@@ -43,25 +43,25 @@ Constant PNJ_PUERTA_CERRADA = 13;
   aux1 aux2 r;
 
   if (PuedeTocar(quien, que)) {
-    if (AntepasadoComun(quien, que) == quien) {
-      aux1 = accion; aux2 = uno; uno = que;
-      accion = ##Dejar; actor = quien;
+    if (CommonAncestor(quien, que) == quien) {
+      aux1 = action; aux2 = noun; noun = que;
+      action = ##Drop; actor = quien;
       r = RutinasAntesPNJ();
           
       if (r == false) {
         move que to parent(quien);
           if (RutinasDespuesPNJ() == false)
             ! Mensaje de éxito
-            if (SeVen(quien, jugador))
-              print_ret (_El) actor, " deja ", (el) uno, ".";
+            if (SeVen(quien, player))
+              print_ret (The) actor, " deja ", (the) noun, ".";
 
-        accion = aux1;
-        uno = aux2;
+        action = aux1;
+        noun = aux2;
         rtrue;
       }
           
-      accion = aux1;
-      uno = aux2;
+      action = aux1;
+      noun = aux2;
     }
   }
   rfalse;
@@ -71,20 +71,20 @@ Constant PNJ_PUERTA_CERRADA = 13;
 ! Acción INVENTARIO
 !
 [ PNJInvAncho quien;
-  estilo_inventario = INFOTOTAL_BIT + ESPANOL_BIT + RECURSIVO_BIT;
+  inventory_style = FULLINV_BIT + ENGLISH_BIT + RECURSE_BIT;
   PNJInv(quien);
 ];
 
 [ PNJInvAlto quien;
-  estilo_inventario = INFOTOTAL_BIT + INDENTAR_BIT + NUEVALINEA_BIT + RECURSIVO_BIT;
+  inventory_style = FULLINV_BIT + INDENT_BIT + NEWLINE_BIT + RECURSE_BIT;
   PNJInv(quien);
 ];
 
 [ PNJInv quien x
 	aux1 aux2 r;
 
-  aux1 = accion; aux2 = uno;               ! Guardar para restaurar al final
-  accion = ##Inv;
+  aux1 = action; aux2 = noun;               ! Guardar para restaurar al final
+  action = ##Inv;
   actor = quien;
   r = RutinasAntesPNJ();                   ! Ejecutar las rutinas "antesPNJ", etc...
   
@@ -92,7 +92,7 @@ Constant PNJ_PUERTA_CERRADA = 13;
     r = RutinasDespuesPNJ();
     
     if (r == false)  {                     ! Solo si retorna false emitimos nuestro
-      if (SeVen(quien, jugador) == false)  ! mensaje por defecto
+      if (SeVen(quien, player) == false)  ! mensaje por defecto
         rtrue;
         
       if (child(quien) == 0) {
@@ -100,31 +100,31 @@ Constant PNJ_PUERTA_CERRADA = 13;
         rtrue;
       }
     
-  	  if (estilo_inventario == 0)
-	      return InvAltoSub();
+  	  if (inventory_style == 0)
+	      return InvTallSub();
 
   	  print (El_) quien, "te dice -Llevo";
 
-      if (estilo_inventario & NUEVALINEA_BIT ~= 0)
+      if (inventory_style & NEWLINE_BIT ~= 0)
         print ":^";
       else
         print " ";
 
-      EscribirListaDesde(child(quien), estilo_inventario, 1);
+      WriteListFrom(child(quien), inventory_style, 1);
 	  
-      if (estilo_inventario & ESPANOL_BIT ~= 0) print ".^";
+      if (inventory_style & ENGLISH_BIT ~= 0) print ".^";
 	  
       x = 0; ! To prevent a "not used" error
 
       ! Finalizada la acción, restauramos las variables y retornamos
       ! true, para indicar que se ha realizado con éxito
-      accion = aux1; uno = aux2;
+      action = aux1; noun = aux2;
       rtrue;
     }
   }
   
   ! Si la acción no pudo efectuarse, restaurar variables y retornar false
-  accion = aux1; uno = aux2;
+  action = aux1; noun = aux2;
   rfalse;
 ];
 
@@ -134,7 +134,7 @@ Constant PNJ_PUERTA_CERRADA = 13;
 [ PNJSoplar quien que ! Los parámetros de esta acción
    aux1 aux2 r;       ! Otras variables locales
  
-  aux1 = accion; aux2 = uno;    ! Guardar para restaurar al final
+  aux1 = action; aux2 = noun;    ! Guardar para restaurar al final
 
   ! 1 y 2) Comprobar que está al alcance y que se puede tocar
   if (PuedeTocar(quien, que)) {
@@ -153,10 +153,10 @@ Constant PNJ_PUERTA_CERRADA = 13;
     ! pueda tocar.
     ! 4) Preparar variables para ejecutar la acción ...
 
-    accion = ##Soplar;        ! Soplar debe ser una accion
+    action = ##Blow;        ! Soplar debe ser una accion
                               ! definida en la gramática, si no la
                               ! constante ##Soplar no estará definida
-    actor = quien; uno = que;
+    actor = quien; noun = que;
 
     ! 4) ... y comprobar si algún objeto captura esta acción para
     !    impedirla
@@ -179,19 +179,19 @@ Constant PNJ_PUERTA_CERRADA = 13;
       
       if (r==false) {          ! Solo si retorna false emitimos nuestro mensaje por defecto
         ! 7) Emitir el mensaje de exito de esta acción
-        if (SeVen(jugador, actor))  ! Si se ven, se imprime el mensaje
-          print_ret (El_) actor, " sopla", (n) actor, " ", (el) uno, ".";
+        if (SeVen(player, actor))  ! Si se ven, se imprime el mensaje
+          print_ret (El_) actor, " sopla", (n) actor, " ", (the) noun, ".";
       }
       
       ! Finalizada la acción, restauramos las variables y retornamos
       ! true, para indicar que se ha realizado con éxito
-      accion = aux1; uno = aux2;
+      action = aux1; noun = aux2;
       rtrue;
     }
   }
 
   ! Si la acción no pudo efectuarse, restaurar variables y retornar false
-  accion = aux1; uno = aux2;
+  action = aux1; noun = aux2;
   rfalse;
 ];
 
@@ -205,15 +205,15 @@ Constant PNJ_PUERTA_CERRADA = 13;
   origen = parent(amover);
   destino = ConduceA(direccion, origen, CAMINO_CUALQUIERA);
 
-  aux1 = accion; aux2 = uno; aux3 = otro;
-  accion = ##Ir; actor = amover; uno = origen; otro = direccion;
+  aux1 = action; aux2 = noun; aux3 = second;
+  action = ##Go; actor = amover; noun = origen; second = direccion;
 
-  if (RutinasAntesPNJ()) jump Salir; ! Rutinas antesPNJ del actor y la localidad de origen
+  if (RutinasAntesPNJ()) jump Exit; ! Rutinas antesPNJ del actor y la localidad de origen
 
   ! Rutinas antesPNJ de la localidad de destino
   if (destino provides antesPNJ) {
-    uno = destino;
-    if (RutinasAntesPNJ()) jump Salir;
+    noun = destino;
+    if (RutinasAntesPNJ()) jump Exit;
   }
 
   ! Si llegamos hasta aquí, es porque ni el actor, ni la localidad de origen
@@ -226,14 +226,14 @@ Constant PNJ_PUERTA_CERRADA = 13;
       if (parser_trace > 1)
         print "[MoverPNJDir bloqueado: la dirección no lleva a ningún sitio]^";
     #endif;
-    jump Salir;
+    jump Exit;
   }
 
-  p = origen.(direccion.direcc_puerta);
+  p = origen.(direccion.door_dir);
 
   if (ZRegion(p) == 2) p = p();
 
-  if (p && p has puerta)	{
+  if (p && p has door)	{
     ! pnj_abrir retorna: 2 para atravesar la puerta normalmente
     !                    1 para atravesar la puerta pero impedir
     !                    que se imprima el texto de
@@ -252,55 +252,55 @@ Constant PNJ_PUERTA_CERRADA = 13;
           if (parser_trace > 1)
             print "[MoverPNJDir bloqueado: El pnj_abrir ", (del) p, " retornó falso]^";
         #endif;
-        jump Salir;
+        jump Exit;
       }
-    } else if (p hasnt abierto) {
+    } else if (p hasnt open) {
       RazonErrorPNJ = PNJ_PUERTA_CERRADA;
 !      amover.pnj_bloqueado();
       #ifdef DEBUG;
         if (parser_trace > 1)
-          print "[MoverPNJDir bloqueado: ", (el) p, " está cerrad", (o) p,
+          print "[MoverPNJDir bloqueado: ", (the) p, " está cerrad", (o) p,
                 " y no tiene pnj_abrir]^";
       #endif;
-      jump Salir;
+      jump Exit;
     }
   }
 
   ! Movemos al PNJ:
-  MoverPNJ(amover, destino, ##Ir, direccion);
+  MoverPNJ(amover, destino, ##Go, direccion);
 
-  uno = destino;
+  noun = destino;
   
   if (RutinasDespuesPNJ() == false) {
     ! Mensaje de éxito  
-    if (origen == localizacion && mensaje == 2) {
+    if (origen == location && mensaje == 2) {
       if (ZRegion(self.marcha) == 3)  ! Imprimir el texto
         print "^", (The) self, " ", (string) self.marcha, " ", (DirDada) direccion, ".^";
       else
         self.marcha(direccion);
     }
 
-    if (parent(self) == localizacion && mensaje == 2) {
+    if (parent(self) == location && mensaje == 2) {
       direccion = NULL;
 
-      objectloop (destino in brujula)
-        if (ConduceA(destino, localizacion, CAMINO_CUALQUIERA) == origen)
+      objectloop (destino in compass)
+        if (ConduceA(destino, location, CAMINO_CUALQUIERA) == origen)
           direccion = destino;
 
      	if (ZRegion(self.llega) == 3) {
         print "^", (The) self, " ", (string) self.llega;
         if (direccion ~= NULL)
-          print " desde ", (el) direccion;
+          print " desde ", (the) direccion;
         print ".^";
       } else
         self.llega(direccion);
     }
-    accion = aux1; uno = aux2; otro = aux3;
+    action = aux1; noun = aux2; second = aux3;
     rtrue;
   }
 
-.Salir;
-  accion = aux1; uno = aux2; otro = aux3;
+.Exit;
+  action = aux1; noun = aux2; second = aux3;
   rfalse;
 ];
 

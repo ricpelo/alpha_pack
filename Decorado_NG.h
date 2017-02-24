@@ -113,25 +113,22 @@ Message "Incluyendo Decorado_NG, por Zak y Sothoth";
 !
 ! Rutina que ejecuta rutinas si las encuentra
 !
-Ifndef VR;
+#ifndef VR;
 [ VR valor;
-
-!print "[VR: ", valor, " --> ", ZRegion( valor ), " ]^";
-
- if ( ZRegion( valor ) == 2 )
-  return valor();
- else
-  return valor;
+! print "[VR: ", valor, " --> ", ZRegion(valor), " ]^";
+  if (ZRegion(valor) == 2) return valor();
+  else                     return valor;
 ];
-EndIf;
+#endif;
 
 !
 ! CLASE DECORADO
 !
-! El algoritmo es el siguiente: se permiten varias palabras seguidas (o separadas por las
-! partículas el, la, los, las, de o del), siempre que dichas palabras sean sinónimas. Se
-! permite que una misma palabra sea sinónima de dos o más palabras distintas, lo cual se
-! usaría sobre todo para crear adjetivos. Ejemplo:
+! El algoritmo es el siguiente: se permiten varias palabras seguidas (o
+! separadas por las partículas el, la, los, las, de o del), siempre que dichas
+! palabras sean sinónimas. Se permite que una misma palabra sea sinónima de dos
+! o más palabras distintas, lo cual se usaría sobre todo para crear adjetivos.
+! Ejemplo:
 !
 ! sinonimos
 !   'grande' 'mesa'    -1
@@ -140,83 +137,88 @@ EndIf;
 !   'mesa'    "Una mesa muy bonita."          G_FEMENINO
 !   'ventana' "Una ventana abierta al mundo." G_FEMENINO
 !
-! Este ejemplo crea dos elementos en el decorado: la mesa y la ventana. Ambas tienen como
-! sinónimo la palabra 'grande' (que en realidad aquí actuaría como adjetivo de ambas).
-! Se puede usar EX MESA, EX MESA GRANDE, EX VENTANA, EX VENTANA GRANDE... pero NO puede
-! usarse EX MESA VENTANA o EX VENTANA MESA, ya que 'mesa' y 'ventana' no son sinónimos
-! (si A es sinónimo de B y de C, eso no significa que B y C también lo sean). Aunque
-! parece que no tiene demasiado sentido, sí es práctico para el caso de que el sinónimo
-! sea un adjetivo (como el 'mesa' de este caso).
-! Si el jugador escribe EX GRANDE, el algoritmo se decidirá por el primero que encuentre
-! en la lista de sinónimos (en este caso, la mesa).
+! Este ejemplo crea dos elementos en el decorado: la mesa y la ventana. Ambas
+! tienen como sinónimo la palabra 'grande' (que en realidad aquí actuaría como
+! adjetivo de ambas). Se puede usar EX MESA, EX MESA GRANDE, EX VENTANA,
+! EX VENTANA GRANDE... pero NO puede usarse EX MESA VENTANA o EX VENTANA MESA,
+! ya que 'mesa' y 'ventana' no son sinónimos (si A es sinónimo de B y de C, eso
+! no significa que B y C también lo sean). Aunque parece que no tiene demasiado
+! sentido, sí es práctico para el caso de que el sinónimo sea un adjetivo (como
+! el 'mesa' de este caso). Si el jugador escribe EX GRANDE, el algoritmo se
+! decidirá por el primero que encuentre en la lista de sinónimos (en este caso,
+! la mesa).
 !
-Class Decorado
+class Decorado
   with
-    descripcion 0,  ! La descripción del objeto
-    palabra_real 0, ! La palabra exacta que ha usado el jugador
-    genero 0,       ! El género del objeto
-    describir 0,    ! El array de descripciones
-    sinonimos 0,    ! El array de sinónimos
-    palabra 0,      ! Si es un sinónimo, la palabra correspondiente en 'describir'.
-                    ! Si no lo es, vale lo mismo que 'palabra_real'
-    nombre_corto [;
+    description 0,   ! La descripción del objeto
+    palabra_usada 0, ! La palabra exacta que ha usado el jugador
+    gender 0,        ! El género del objeto
+    describe 0,      ! El array de descripciones
+    sinonimos 0,     ! El array de sinónimos
+    palabra 0,       ! Si es sinónimo, la palabra correspondiente en 'describir'
+                     ! Si no lo es, vale lo mismo que 'palabra_usada'
+    short_name [;
       print (address) self.palabra;
       rtrue;
     ],
-    buscar_nombre [ x i j;   ! Se usa en ExaminarFalso
-      for (i = 0: i < (self.#describir) / (3 * WORDSIZE): i++) {
-        if ((self.&describir)-->(i * 3) == x) {
-          self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-          self.genero = (self.&describir)-->(i * 3 + 2);
-          self.palabra = x;
-          self.palabra_real = x;
-          rtrue;
-        }
-      }
-      if (self.sinonimos == 0) return false;
-      for (j = 0: j < (self.#sinonimos) / (3 * WORDSIZE): j++) {
-        if ((self.&sinonimos)-->(j * 3) == x) {
-          for (i = 0: i < n: i++) {
-            if ((self.&describir)-->(i * 3) == (self.&sinonimos)-->(j * 3 + 1)) {
-              self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-              self.palabra = (self.&describir)-->(i * 3);
-              self.palabra_real = (self.&sinonimos)-->(j * 3);
-              self.genero = (self.&sinonimos)-->(j * 3 + 2);
-              if (self.genero == -1) {
-                self.genero = (self.&describir)-->(i * 3 + 2);
-              }
-              rtrue;
-            }
-          }
-        }
-      }
-    ],
-    parse_nombre [ i n w c r f j p;
-      self.descripcion = 0;
-      n = (self.#describir) / (3 * WORDSIZE);
+!    buscar_nombre [ x i j;   ! Se usa en ExaminarFalso
+!      for (i = 0: i < (self.#describe) / (3 * WORDSIZE): i++) {
+!        if ((self.&describe)-->(i * 3) == x) {
+!          self.description   = VR((self.&describe)-->(i * 3 + 1));
+!          self.actualizar_genero((self.&describe)-->(i * 3 + 2));
+!          self.palabra       = x;
+!          self.palabra_usada = x;
+!          PronounNotice(self);
+!          rtrue;
+!        }
+!      }
+!      if (self.sinonimos == 0) return false;
+!      for (j = 0: j < (self.#sinonimos) / (3 * WORDSIZE): j++) {
+!        if ((self.&sinonimos)-->(j * 3) == x) {
+!          for (i = 0: i < n: i++) {
+!            if ((self.&describe)-->(i * 3) ==
+!                (self.&sinonimos)-->(j * 3 + 1)) {
+!              self.description   = VR((self.&describe)-->(i * 3 + 1));
+!              self.palabra       = (self.&describe)-->(i * 3);
+!              self.palabra_usada = (self.&sinonimos)-->(j * 3);
+!              self.gender = (self.&sinonimos)-->(j * 3 + 2);
+!              if (self.gender == -1) {
+!                self.gender = (self.&describe)-->(i * 3 + 2);
+!              }
+!              self.actualizar_genero(self.gender);
+!              PronounNotice(self);
+!              rtrue;
+!            }
+!          }
+!        }
+!      }
+!    ],
+    parse_name [ i n w c r f j p;
+      self.description = 0;
+      n = (self.#describe) / (3 * WORDSIZE);
 
       if (w == 'el' or 'la' or 'los' or 'las')
-        w = SiguientePalabra();
+        w = NextWord();
 
       c = r = 0;
-      p = null;
+      p = NULL;
 
       while (true) {
-        w = SiguientePalabraParar(); if (w == -1) return c;
+        w = NextWordStopped(); if (w == -1) return c;
         if (w == 'de' or 'del') {
-          w = SiguientePalabraParar(); if (w == -1) return c;
+          w = NextWordStopped(); if (w == -1) return c;
           r++;
         }
         if (w == 'el' or 'la' or 'los' or 'las') {
-          w = SiguientePalabraParar(); if (w == -1) return c;
+          w = NextWordStopped(); if (w == -1) return c;
           r++;
         }
 
         f = false;
 
         for (i = 0 : i < n : i++) {
-          if ((self.&describir)-->(i * 3) == w) {
-            if (p == null) {
+          if ((self.&describe)-->(i * 3) == w) {
+            if (p == NULL) {
               p = w;
             } else {
               if (p ~= w) {
@@ -224,11 +226,12 @@ Class Decorado
               }
             }
             f = true;
-            if (self.descripcion == 0) {
-              self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-              self.palabra = w;
-              self.palabra_real = w;
-              self.genero = (self.&describir)-->(i * 3 + 2);
+            if (self.description == 0) {
+              self.description   = VR((self.&describe)-->(i * 3 + 1));
+              self.palabra       = w;
+              self.palabra_usada = w;
+              self.actualizar_genero((self.&describe)-->(i * 3 + 2));
+              PronounNotice(self);
             }
             c++;
             if (r > 0) {
@@ -244,23 +247,25 @@ Class Decorado
             if ((self.&sinonimos)-->(j * 3) == w) {
               f = false;
               for (i = 0: i < n: i++) {
-                if ((self.&describir)-->(i * 3) == (self.&sinonimos)-->(j * 3 + 1)) {
-                  if (p == null) {
-                    p = (self.&describir)-->(i * 3);
+                if ((self.&describe)-->(i * 3) ==
+                    (self.&sinonimos)-->(j * 3 + 1)) {
+                  if (p == NULL) {
+                    p = (self.&describe)-->(i * 3);
                   } else {
-                    if (p ~= (self.&describir)-->(i * 3)) {
+                    if (p ~= (self.&describe)-->(i * 3)) {
                       j++;
                       jump synonymContinue;
                     }
                   }
-                  if (self.descripcion == 0) {
-                    self.descripcion = VR((self.&describir)-->(i * 3 + 1));
-                    self.palabra = (self.&describir)-->(i * 3);
-                    self.palabra_real = (self.&sinonimos)-->(j * 3);
-                    self.genero = (self.&sinonimos)-->(j * 3 + 2);
-                    if (self.genero == -1) {
-                      self.genero = (self.&describir)-->(i * 3 + 2);
+                  if (self.description == 0) {
+                    self.description   = VR((self.&describe)-->(i * 3 + 1));
+                    self.palabra       = (self.&describe)-->(i * 3);
+                    self.palabra_usada = (self.&sinonimos)-->(j * 3);
+                    self.gender        = (self.&sinonimos)-->(j * 3 + 2);
+                    if (self.gender == -1) {
+                      self.gender      = (self.&describe)-->(i * 3 + 2);
                     }
+                    self.actualizar_genero(self.gender);
                   }
                   f = true;
                   break;
@@ -274,6 +279,7 @@ Class Decorado
                 }
                 break;
               } else {
+                PronounNotice(self);
                 return c;
               }
             }
@@ -281,18 +287,24 @@ Class Decorado
         }
       }
     ],
-    antes [;
-      Examinar: rfalse;
-      Coger:    "No puedes hacerlo, ya que está", (n) self, " fij", (o) self,
-                " en su sitio.";
-      Empujar:  print_ret (_El) self, " no parece que pueda", (n) self,
-                " ser empujad", (o) self, ".";
-      Oler:     "No parece que huela", (n) self, " a nada especial.";
-      Escuchar: "No produce", (n) self, " ningún sonido.";
-      BuscarEn: "No hay nada que buscar en eso.";
-      Tocar:    "No notas nada especial al tacto.";
-      default:  "No hay ninguna razón para hacer eso.";
+    actualizar_genero [ g;
+      self.gender = g;
+      if (self.gender == G_FEMENINO) give self female;
+      if (self.gender == G_PLURAL)   give self pluralname;
+    ],
+    before [;
+      Examine: rfalse;
+      ExaminarFalso: rfalse;
+      Take:    "No puedes hacerlo, ya que está", (n) self, " fij", (o) self,
+               " en su sitio.";
+      Push:    print_ret (The) self, " no parece que pueda", (n) self,
+               " ser empujad", (o) self, ".";
+      Smell:   "No parece que huela", (n) self, " a nada especial.";
+      Listen:  "No produce", (n) self, " ningún sonido.";
+      Search:  "No hay nada que buscar en eso.";
+      Touch:   "No notas nada especial al tacto.";
+      default: "No hay ninguna razón para hacer eso.";
     ],
   has
-    escenario oculto;
+    scenery concealed;
 

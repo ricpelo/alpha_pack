@@ -1,60 +1,43 @@
 !
 ! ExaminarFalso.h
 !
-! Permite usar simplemente el nombre de un objeto como sinónimo de
-! 'examinar objeto' (copiado de Transilvania Corruption, de Alien Soft,
-! y mejorado por mí para dar soporte a objetos decorado):
+! Copyright (c) 2012 Ricardo Pérez López (Alpha Aventuras)
 !
 
+! This program is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! This program is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+!
+! Permite usar simplemente el nombre de un objeto como sinónimo de
+! 'EXAMINAR OBJETO'. Copiado de
+! http://rec.arts.int-fiction.narkive.com/Cz9j184N/inform-6-parser-question
+!
 
 System_file;
 
-#ifdef VerboDesconocido;
-  Message "[ExaminarFalso: Usando rutina VerboDesconocido() proporcionada por el juego]";
-  Message "[ExaminarFalso: IMPORTANTE: NO OLVIDES USAR EN ESA RUTINA EL RESULTADO DE...]";
-  Message "[ExaminarFalso: ExaminarFalso.EF_VerboDesconocido(x) ]";
-#endif; ! VerboDesconocido
-
-#ifndef VerboDesconocido;
-  [ VerboDesconocido x;
-    return ExaminarFalso.EF_VerboDesconocido(x);
-  ];
-#endif; ! VerboDesconocido
-
-Object ExaminarFalso
-  with
-    objetoVerboDesconocido 0,
-    EF_VerboDesconocido [x obj;
-      objectloop (obj ofclass Object && PruebaDeAlcance(obj)) {
-#ifdef Decorado;
-        if (obj ofclass Decorado && obj.buscar_nombre(x)) {
-          jump PalabraEncontrada;
-        } else
-#endif;
-          if (obj ~= jugador) {
-            if (PalabraEnPropiedad(x, obj, nombre) ||
-              PalabraEnPropiedad(x, obj, nombre_m) ||
-              PalabraEnPropiedad(x, obj, nombre_f) ||
-              PalabraEnPropiedad(x, obj, nombre_mp) ||
-              PalabraEnPropiedad(x, obj, nombre_fp)) {
-            jump PalabraEncontrada;
-          }
-        }
-      }
-      rfalse;
-    .PalabraEncontrada;
-      self.objetoVerboDesconocido = obj;
-      return 'examinar.falso';
-    ];
-
-
-Verb 'examinar.falso'
-   *                   -> ExaminarFalso;
-
-
-[ ExaminarFalsoSub;
-  uno = ExaminarFalso.objetoVerboDesconocido;
-  ActualizarPronombre(uno);
-  <<Examinar uno>>;
+#ifndef UnknownVerb;
+[ UnknownVerb x;
+  verb_wordnum = 0;
+  return 'no.verb';
 ];
+#endif; ! UnknownVerb
+
+#ifndef PrintVerb;
+[ PrintVerb v;
+  if (v == 'no.verb') "examinar";
+  rfalse;
+];
+#endif; ! PrintVerb
+
+Verb 'no.verb' * noun -> Examine;
 

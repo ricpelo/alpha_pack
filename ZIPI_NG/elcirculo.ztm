@@ -1,0 +1,274 @@
+<MENU>Sistema de pistas interactivas
+
+  <MENU>Información general - Lee esto primero
+
+    <TEXTO>¿Cómo funciona este sistema de pistas?
+      ^- Te puedes desplazar por los menús usando las flechas del cursor arriba y abajo.
+      ^- Para seleccionar una opción del menú, puedes pulsar las teclas ~Entrar~ o ~P~.
+      ^- Para volver al menú anterior, o salir del sistema de pistas, pulsa ~Q~.
+      ^- Cuando estés leyendo pistas, pulsa ~P~ para ver la pista siguiente (si es que
+      ^  hay más), o pulsa ~Q~ para retroceder a la pantalla anterior.
+    </TEXTO>
+
+    <TEXTO>Acciones y órdenes
+      ^El Círculo es una aventura conversacional que te sumerge en un mundo de terror y
+      ^suspense donde tú eres el protagonista y con el que podrás interactuar
+      ^introduciendo órdenes con el teclado.
+      
+      Dichas órdenes tienen una sintaxis típica de «VERBO» o «VERBO NOMBRE», aunque
+      ^pueden construirse órdenes mucho más complejas si fuese necesario.
+      
+      Algunos ejemplos:
+      
+      > COGE LA CAJA DE HERRAMIENTAS
+      ^> ABRE EL ARMARIO
+      ^> COGE EL TRAJE ROJO Y PONTELO
+      ^> SACA TODO DE DENTRO DEL ARMARIO
+      
+      Los verbos se pueden escribir en imperativo («COGE») o infinitivo («COGER»), si bien
+      ^se recomienda la primera opción, más que nada porque resulta más corta. Y los
+      ^artículos («EL», «LA») se pueden poner, aunque no son necesarios.
+    </TEXTO>
+
+    <TEXTO>Algunas acciones frecuentes
+      ^Las siguientes son algunas de las acciones que se utilizan de manera más frecuente en
+      ^una aventura conversacional:
+
+      COGE tal . . . .: Coger el objeto 'tal'.
+      ^DEJA tal . . . .: Dejar el objeto 'tal'.
+      ^ABRE tal . . . .: Abrir 'tal' (normalmente una puerta o algún recipiente cerrado).
+      ^CIERRA tal . . .: Cerrar 'tal' (normalmente una puerta o algún recipiente abierto).
+      ^METE tal EN cual: Meter el objeto 'tal' dentro de 'cual' (por ejemplo, una caja).
+      ^SACA tal DE cual: Sacar el objeto 'tal' de dentro de 'cual' (por ejemplo, una caja).
+      ^PONTE tal . . . : Ponerse el objeto 'tal' (normalmente una prenda de ropa).
+      ^QUITATE tal . . : Quitarse el objeto 'tal' (normalmente una prenda de ropa).
+      ^ENTRA . . . . . : Entrar dentro de algún sitio, posiblemente a través de una puerta.
+      ^SAL . . . . . . : Salir de algún sitio, posiblemente a través de una puerta.
+      ^EXAMINA tal (o
+      ^EX tal o X tal) : Describir el objeto 'tal' con detalle.
+      ^INVENTARIO (o I): Mostrar un listado con los objetos que posees actualmente.
+    </TEXTO>
+
+    <TEXTO>Moverse por el mundo
+      ^El mundo de El Círculo está compuesto por multitud de recintos interconectados entre
+      ^sí llamados localidades. Las salidas desde tu localidad actual se muestran siempre
+      ^a continuación de la descripción de dicha localidad. Para moverte de una localidad
+      ^a otra, simplemente teclea la salida correspondiente.
+      
+      Por ejemplo: supongamos que tu localidad actual tiene como salidas «norte» y
+      ^«afuera». En ese caso, para moverte hacia la localidad situada al norte de la
+      ^actual, puedes teclear las órdenes NORTE, VETE AL NORTE, IR AL NORTE o simplemente
+      ^N. Y para salir fuera, puedes teclear SAL, SALIR o FUERA. Los puntos cardinales se
+      ^pueden abreviar a N, S, E, O, NE, SE, NO y SO.
+    </TEXTO>
+
+    <TEXTO>Otros personajes del juego
+      ^A veces, será necesario enviar órdenes a algún personaje (por ejemplo, al Mayor
+      ^Jason). En tal caso, deberás indicar el nombre del personaje seguido de una coma,
+      ^y a continuación la orden que deseas enviarle:
+      
+      > JASON, COGE TU TRAJE
+      ^> JASON, SIGUEME
+      
+      Para hablar con un personaje, o bien preguntarle algo, se usa la misma sintaxis:
+
+      > JASON, HABLAME DE TI
+      ^> JASON, QUE OPINAS SOBRE EL PLANETA
+
+      Saber trabajar conjuntamente con los personajes es crucial para alcanzar el éxito
+      ^en esta aventura.
+    </TEXTO>
+
+    <TEXTO>Algunos comandos útiles
+      ^SONIDO SI/NO . . . . : Activar o desactivar todos los efectos sonoros.
+      ^SONIDO FONDO SI/NO . : Activar o desactivar el sonido de fondo.
+      ^SONIDO DETECTOR SI/NO: Activar o desactivar el sonido del detector de movimiento.
+      ^GRAFICOS SI/NO . . . : Activar o desactivar la visualización de gráficos.
+      ^GRAFICOS PEQUEÑOS/
+      ^  MEDIANOS/GRANDES . : Cambia el tamaño de la ventana de gráficos (por omisión
+      ^                       se mostrarán en tamaño MEDIANO).
+      ^CONFIGURACION . . . .: Muestra un menú de opciones de gráficos y sonido.
+      ^SALIDAS (o X) . . . .: Mostrar las salidas visibles en la localidad actual.
+      ^SALIDAS SI/NO . . . .: Mostrar (o no) automáticamente las salidas visibles en
+      ^                       cada localidad.
+      ^SAVE (o GUARDAR) . . : Almacenar la situación actual en un archivo externo, para
+      ^                       poder volver a él en cualquier momento.
+      ^LOAD (o RECUPERAR) . : Recuperar una situación previamente guardada con SAVE o
+      ^                       GUARDAR.
+      ^AYUDA . . . . . . . .: Por si alguna vez te encuentras atascado.
+      ^REINICIAR . . . . . .: Volver a empezar desde el principio.
+      ^ACABAR (o FIN) . . . : Salir de la aventura (cuidado: no guarda la situación actual).
+    </TEXTO>
+    
+    <TEXTO>Consejos y ayudas
+      ^- Examina todo lo que encuentres. Varias veces si hace falta.
+      ^- Recoge todos los objetos que puedas; podrían serte de utilidad.
+      ^- Habla con los demás personajes de la aventura. A veces te darán pistas útiles.
+      ^- El azar es parte de esta aventura. Tenlo en cuenta a la hora de llevar a cabo
+      ^  determinadas acciones.
+      ^- Graba frecuentemente tu situación con la orden GUARDAR. Nunca se sabe lo que
+      ^  puedes encontrarte tras esa esquina...
+      ^- Si te encuentras con algún fallo o no sabes cómo avanzar, puedes plantear tus
+      ^  dudas en el foro del CAAD o en alpha.aventuras@gmail.com.
+    </TEXTO>
+
+    <MENU>Problemas y preguntas frecuentes
+
+      <TEXTO>Al jugar la aventura, las letras se ven feas o con colores extraños
+   ^a) [Si usas otro sistema que no sea Windows] Asegúrate de tener instalada
+   ^   la última versión de Gargoyle (al menos, la 2011.1). Los usuarios de
+   ^   Windows que instalen la aventura con el programa de instalación no
+   ^   necesitan comprobar esto, ya que Gargoyle se instala con la aventura.
+   ^
+   ^b) Asegúrate de que exista el archivo 'garglk.ini' en la misma carpeta que
+   ^   la aventura. Para ello:
+   ^
+   ^    i. Si usas Linux, y has instalado la aventura usando el paquete .deb,
+   ^       comprueba si existe el archivo en esta ruta:
+   ^
+   ^         /usr/share/games/alphaaventuras-elcirculo/garglk.ini
+   ^
+   ^   ii. Si estas usando la versión multiplataforma, comprueba simplemente
+   ^       que el archivo 'garglk.ini' se encuentra en la misma carpeta que la
+   ^       aventura 'elcirculo.blb', junto al resto de los archivos incluidos.
+   ^
+   ^Si todo lo anterior no funciona, instala de nuevo la aventura.
+      </TEXTO>
+
+      <TEXTO>Las letras se ven demasiado grandes o demasiado pequeñas
+  ^Puedes cambiar el tamaño de las letras editando el archivo 'garglk.ini':
+  ^
+  ^a) En Windows estará en la ruta:
+  ^   \Program Files\Juegos Conversacionales\El círculo\
+  ^
+  ^b) En Linux, si instalaste la aventura con el paquete .deb, estará en:
+  ^   /usr/share/games/alphaaventuras-elcirculo/
+  ^
+  ^c) En la versión multiplataforma lo encontrarás en la misma ruta que el resto
+  ^   de los archivos distribuidos con la aventura.
+  ^
+  ^Cuando hayas abierto el archivo 'garglk.ini' con tu editor de textos favorito,
+  ^localiza las líneas que empiecen por 'monosize' y 'propsize'. Para ajustar el
+  ^tamaño de las letras, simplemente cambia los números que aparezcan al lado.
+  ^Poniendo números mayores, las letras se verán más grandes, y viceversa. Asegúrate
+  ^de que el 'propsize' sea siempre un poco mayor que el 'monosize'.
+  ^
+  ^Guarda los cambios en el mismo archivo y ejecuta de nuevo la aventura.
+      </TEXTO>
+
+      <TEXTO>Los gráficos se ven demasiado grandes y es incómodo jugar así
+   ^a) Amplía el tamaño de la ventana del juego, maximizándola hasta ocupar
+   ^   todo el escritorio.
+   ^
+   ^b) Configura la aventura para que use gráficos más pequeños, usando el
+   ^   comando siguiente dentro del juego:
+   ^
+   ^   > CONFIGURACIÓN
+   ^   
+   ^   Una vez dentro, cambia el tamaño de los gráficos a uno pequeño (entre
+   ^   200 y 350 píxeles puede resultar más adecuado para tu pantalla).
+   ^
+   ^c) Si lo anterior no fuera suficiente, siempre puedes desactivar los gráficos
+   ^   completamente, aunque no te lo recomendamos, ya que con ello perderías
+   ^   gran parte del atractivo de la aventura. Para ello, ejecuta el comando
+   ^   siguiente dentro del juego:
+   ^
+   ^   > GRÁFICOS NO
+      </TEXTO>
+
+      <TEXTO>Los gráficos se ven demasiado pequeños
+  ^Prueba lo siguiente:
+  ^
+  ^ a) Amplía el tamaño de la ventana del juego, maximizándola hasta ocupar
+  ^    todo el escritorio. Si la ventana es demasiado pequeña, los gráficos
+  ^    se reescalarán automáticamente para que quepan completos dentro de la
+  ^    misma, pero se verán muy pequeños.
+  ^
+  ^ b) Configura la aventura para que use gráficos más grandes, usando uno de
+  ^    los comandos siguientes dentro del juego:
+  ^
+  ^    > GRÁFICOS MEDIANOS
+  ^        (esto hará que la aventura use los gráficos a tamaño mediano)
+  ^
+  ^    > GRÁFICOS GRANDES
+  ^        (esto hará que la aventura use los gráficos al tamaño más grande)
+  ^
+  ^    > CONFIGURACIÓN
+  ^        (mostrará un menú donde podrás cambiar el tamaño con más detalle)
+      </TEXTO>
+
+      <TEXTO>¡No veo gráficos en ningún momento!
+  ^Comprueba lo siguiente:
+  ^
+  ^ a) Asegúrate de tener activados los gráficos dentro del juego. Para ello,
+  ^    usa el comando siguiente dentro del juego:
+  ^
+  ^    > GRÁFICOS SI
+  ^
+  ^    Ten en cuenta también que los gráficos se apagan automáticamente en
+  ^    ciertas partes de la aventura, para que el texto ocupe toda la ventana
+  ^    de juego.
+  ^
+  ^ b) Asegúrate de que no estás en un lugar a oscuras y sin ninguna fuente de
+  ^    luz, como una linterna encendida.
+      </TEXTO>
+
+      <TEXTO>¡No oigo nada!
+  ^Si no oyes música ni sonidos durante el juego, comprueba lo siguiente:
+  ^
+  ^ a) Asegúrate de tener activados los sonidos dentro del juego. Para ello,
+  ^    usa el comando siguiente dentro del juego:
+  ^
+  ^    > SONIDO SI
+  ^
+  ^ b) Si no oyes el sonido de fondo, asegúrate de tenerlo activado usando el
+  ^    comando siguiente:
+  ^
+  ^    > SONIDO FONDO SI
+      </TEXTO>
+
+      <TEXTO>Estoy atascado y no sé cómo continuar
+  ^Si andas perdido y no sabes cómo resolver algún puzzle o situación:
+  ^
+  ^ a) Usa el sistema de pistas interactivas, tecleando:
+  ^
+  ^      > PISTAS
+  ^
+  ^    en cualquier momento del juego.
+  ^
+  ^ b) Pregunta en el foro del CAAD, en la siguiente dirección:
+  ^
+  ^      http://foro.caad.es
+  ^
+  ^ c) Contacta con nosotros por alguna de las las estas vías:
+  ^
+  ^    - email: alpha.aventuras@gmail.com
+  ^    - web: http://www.alpha-aventuras.es
+  ^    - facebook: https://www.facebook.com/alphaaventuras
+  ^    - wikiCAAD: http://wiki.caad.es/Alpha_Aventuras
+      </TEXTO>
+
+    </MENU>
+
+    <TEXTO>Créditos
+       EL CÍRCULO (c) 2012 Alpha Aventuras^
+      ^- PROGRAMACIÓN Y DISEÑO:
+      ^     Ricardo Pérez López (Sothoth)
+      ^- GRÁFICOS:
+      ^     Manuel Millán Ruiz (Ubik)
+      ^- TEXTOS:
+      ^     Ricardo Pérez López
+      ^- MAPEADO Y DOCUMENTACIÓN:
+      ^     Ricardo Pérez López
+      ^- PRUEBAS:
+      ^     Ricardo Pérez López
+      ^     dddddd^
+      ^  Para más información, usa el comando CRÉDITOS durante el juego.
+    </TEXTO>
+    
+  </MENU>
+
+  <NADA>
+
+</MENU>
+

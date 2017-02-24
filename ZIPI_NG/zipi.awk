@@ -25,7 +25,7 @@ BEGIN{
   }
   intro=1;
   hay_intro=1;
-  print "[ ZIPI_Intro ; ";
+  print "![ ZIPI_Intro ; ";
   next;
 }
 /<\/INTRO>/{
@@ -33,7 +33,7 @@ BEGIN{
   print "!  print \"[Pulsa 'T' para ejecutar en modo texto (las teclas no funcionarán)]^\";\n"\
     "!  print \"[o cualquier otra tecla para ejecutar en modo menu manejado por teclas]^\";\n"\
     "!  ZIPI_modo=0;\n!  tecla=ZIPI_tecla();  if (tecla=='T' or 't') ZIPI_modo=1;\n"\
-    "];\n";
+    "!];\n";
   next;
 }
 /<TEXTO>/{
@@ -190,6 +190,8 @@ END{
 #    print "  text";
 #    for (j=0;j<opciones[i]; j++)
 #      print "    \"" opcion[i, j] "\"";
+    if (i == 1)
+        print "  ZIPI_informacion \"Instrucciones básicas de interés si juegas a una aventura por primera vez\",";
     print "  ZIPI_item";
     for (j=0;j<opciones[i]; j++)
       print "    " item[i,j] ;
@@ -214,18 +216,18 @@ END{
     print "  ];";
   }
   if (hay_intro==0) {
-    print "\n\n[ ZIPI_Intro;";
-    print "  print \"Desplázate con las flechas del cursor. Pulsa \", (s_in) \"Enter\", \" para seleccionar, \", (s_in) \"P\", \" para continuar, o \", (s_in) \"Q\", \" para salir.\";";
+    print "\n\n![ ZIPI_Intro;";
+    print "!  print \"Desplázate con las flechas del cursor. Pulsa \", (s_input) \"Enter\", \" para seleccionar, \", (s_input) \"P\", \" para continuar, o \", (s_input) \"Q\", \" para salir.\";";
 #    print "  print \"[Pulsa 'T' para ejecutar en modo texto (sin menus)]^\";\n"\
 #      "  print \"[o cualquier otra tecla para ejecutar en modo menu]^\";\n"\
 #      "  ZIPI_modo=0;\n  tecla=ZIPI_Tecla();\n  if (tecla=='T' or 't') ZIPI_modo=1;\n"\
-    print "];\n\n";
+    print "!];\n\n";
   }
 
   print "[ ZIPI_Empezar ;";
   print "!  ZIPI_InitGlk();";
-  print "  clearMainWindow();";
-  print "  ZIPI_Intro();";
+  print "!  clearMainWindow();";
+  print "!  ZIPI_Intro();";
   print "!  barra_estado.numero_lineas = 26;";
   print "!  barra_estado.dibujar();";
   print "  ZIPI_RunMenu(ZIPI_Menu0, true);";

@@ -34,7 +34,13 @@ Constant LETRA_CURSIVA = $$00100;
 Constant LETRA_FIJA    = $$01000;
 Constant LETRA_INVERSA = $$10000;
 
-class Teletipo
+#ifndef WaitDelay;
+[ WaitDelay delay;
+  return ControlTimer.CT_WaitDelay(delay);
+];
+#endif;
+
+Class Teletipo
   with
     elementos 0,
     gancho_antes 0,
