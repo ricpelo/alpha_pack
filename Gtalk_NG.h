@@ -601,7 +601,7 @@ Class Conversacion
       y = gg_arguments-->1;
       new_line;
       if (y >= self.altura()) {
-        self.cambiar_altura(gg_arguments-->1 + 1);
+        self.cambiar_altura(y + 1);
         glk_window_move_cursor(gg_conversawin, 0, oldy);
       } else {
         break;
@@ -752,7 +752,7 @@ Class Conversacion
             continue;
 
           keycode_Down:
-            if (y >= self.altura() - 1) continue;
+            if (y >= self.altura() - 2) continue;
             oldy = y;
             do {
               y++;
